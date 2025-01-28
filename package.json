@@ -1,18 +1,21 @@
 {
-    "name": "monorepo-app",
-    "version": "1.0.0",
-    "description": "A monorepo for my full-stack Heroku-deployed application",
-    "scripts": {
-      "start": "node server/server.js",                     
-      "heroku-postbuild": "npm install --prefix client && npm run build --prefix client" 
-    },
-    "engines": {
-      "node": ">=16.x",                                    
-      "npm": ">=8.x"                                       
-    },
-    "dependencies": {
-    },
-    "devDependencies": {
-    }
-  }
-  
+  "name": "cvagent",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jonelix/cvAgent_IV1201.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Jonelix/cvAgent_IV1201/issues"
+  },
+  "homepage": "https://github.com/Jonelix/cvAgent_IV1201#readme",
+  "description": ""
+}
