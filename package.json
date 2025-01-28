@@ -17,5 +17,9 @@
     "url": "https://github.com/Jonelix/cvAgent_IV1201/issues"
   },
   "homepage": "https://github.com/Jonelix/cvAgent_IV1201#readme",
-  "description": ""
+  "description": "",
+  "engines": {
+    "node": "22.13.1",
+    "npm": "11.0"
+  }
 }
