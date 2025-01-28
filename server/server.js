@@ -12,7 +12,7 @@ const cors = require('cors');
 app.use(cors());
 
 // Middleware to serve frontend build files
-app.use(express.static(path.join(__dirname, '../client/build')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // API routes (example)
 app.get('/api/hello', (req, res) => {
@@ -21,9 +21,9 @@ app.get('/api/hello', (req, res) => {
 
 // Catch-all handler to serve React app for unknown routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
 });
 
-const PORT = process.env.PORT || 5001;
+const PORT = 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
