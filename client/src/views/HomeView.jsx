@@ -1,13 +1,7 @@
-const HomeView = ({ text, onTextChange, onSearch }) => {
+const HomeView = () => {
     return (
-        <div>
-            <input
-                type="text"
-                value={text}
-                onChange={onTextChange}
-                placeholder="Search for a player"
-            />
-            <button onClick={onSearch}>Search</button>
+        <div className="flex items-center justify-center w-full h-full">
+            <p className="italic text-xl">Welcome to CV Agent</p>
         </div>
     );
 };

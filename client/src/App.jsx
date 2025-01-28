@@ -9,8 +9,8 @@ function App() {
             {/* Header */}
             <HeaderPresenter model={userModel} />
 
-            {/* Main content (with padding to avoid overlap) */}
-            <main className="flex-grow pt-18 pb-18">
+            {/* Main content (Ensures it expands between header and footer) */}
+            <main className="flex-grow flex">
                 <MainPresenter model={userModel} />
             </main>
 
@@ -19,6 +19,5 @@ function App() {
         </div>
     );
 }
-
 
 export default App;
