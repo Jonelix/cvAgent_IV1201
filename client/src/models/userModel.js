@@ -1,20 +1,19 @@
 import { makeAutoObservable } from "mobx";
 
 class UserModel {
-    userEmail = "";
     loggedIn = false;
-    text = "Player name";
+    username = "";
+    firstName = "";
+    lastName = "";
+    personNumber = "";
+    email = "";
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    setLoggedIn() {
-        this.loggedIn = true;
-    }
-
-    setText(input) {
-        this.text = input;
+    setLoggedIn(value) {
+        this.loggedIn = value;
     }
 }
 

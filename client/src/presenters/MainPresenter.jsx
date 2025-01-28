@@ -12,7 +12,7 @@ const MainPresenter = observer(({ model }) => {
                 <Route path="/" element={<HomePresenter model={model} />} />
                 <Route path="/profile" element={<ProfilePresenter />} />
                 <Route path="/auth" element={<AuthentificationPresenter />} />
-                <Route path="/reg" element={<RegisterPresenter />} />
+                <Route path="/registration" element={<RegisterPresenter />} />
             </Routes>
         </div>
     );

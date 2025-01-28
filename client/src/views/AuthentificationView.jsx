@@ -1,7 +1,7 @@
 const AuthentificationView = () => {
     function goToRegister() {
         // Redirect to the register page
-        window.location.href = "#/reg";
+        window.location.href = "#/registration";
     }
     
     return (
