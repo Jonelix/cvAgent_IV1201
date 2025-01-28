@@ -3,7 +3,7 @@
 // It is just an example.
 //-----------------------------------------------------------------
 
-//require('dotenv').config();
+require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
@@ -24,6 +24,9 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
 });
 
-const PORT = 5001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 5000; // Use $PORT on Heroku, default to 5000 locally
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
