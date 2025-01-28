@@ -9,8 +9,8 @@ function App() {
             {/* Header */}
             <HeaderPresenter model={userModel} />
 
-            {/* Main content (Ensures it expands between header and footer) */}
-            <main className="flex-grow flex">
+            {/* Main content - ensuring it starts below header and ends above footer */}
+            <main className="flex-grow flex pt-[6rem]">
                 <MainPresenter model={userModel} />
             </main>
 
