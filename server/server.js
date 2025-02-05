@@ -48,8 +48,8 @@ app.get('/api/name', async (req, res) => {
   }
 });
 
-app.get('/api/login_info', async (req, res) => {
-  console.log('Request received at /api/username');
+app.get('/api/user', async (req, res) => {
+  console.log('Request received at /api/user');
   try {
     const result = await pool.query("SELECT username, password FROM person WHERE username IS NOT NULL AND password IS NOT NULL");
     console.log("DB ACCESS!", result.rows);

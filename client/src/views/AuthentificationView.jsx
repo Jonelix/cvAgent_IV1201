@@ -8,6 +8,7 @@ const AuthentificationView = () => {
     }
 
     const [data, setData] = useState([]);
+    const [user, setUser] = useState([]);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -15,6 +16,18 @@ const AuthentificationView = () => {
         e.preventDefault(); // Prevent form submission from reloading the page
         try {
           const response = await fetch('http://localhost:5005/api/data');
+          const result = await response.json();
+          setData(result); // Set the data to be displayed
+          console.log(result); // Log the result for debugging
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+
+      const fetchUser = async (e) => {
+        e.preventDefault(); // Prevent form submission from reloading the page
+        try {
+          const response = await fetch('http://localhost:5005/api/user');
           const result = await response.json();
           setData(result); // Set the data to be displayed
           console.log(result); // Log the result for debugging
@@ -68,6 +81,17 @@ const AuthentificationView = () => {
                         <div>
                     <h3>Data:</h3>
                     <pre>{JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                    </div>
+
+                    <div>                         
+                        <button type="button" onClick={fetchUser} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
+                                Show all user crendentials
+                        </button>
+
+                        <div>
+                    <h3>User:</h3>
+                    <pre>{JSON.stringify(user, null, 2)}</pre>
                     </div>
                     </div>
 
