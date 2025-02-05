@@ -7,8 +7,9 @@ const AuthentificationView = () => {
         window.location.href = "#/reg";
     }
 
+
     const [data, setData] = useState([]);
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState([]);  
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -62,10 +63,11 @@ const AuthentificationView = () => {
                         <label className="block text-gray-600 text-sm font-semibold mb-2">Password</label>
                         <input 
                             type="password" 
+                            value={password}  // Bind the password state here
+                            onChange={(e) => setPassword(e.target.value)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
                         />
                     </div>
-
                     {/* Login Button */}
                     <div>
                         <button className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
@@ -84,17 +86,17 @@ const AuthentificationView = () => {
                     </div>
                     </div>
 
-                    <div>                         
+                   {/* Fetch User Button */}
+                   <div>                         
                         <button type="button" onClick={fetchUser} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
-                                Show all user crendentials
+                            Show all user credentials
                         </button>
 
                         <div>
-                    <h3>User:</h3>
-                    <pre>{JSON.stringify(user, null, 2)}</pre>
+                            <h3>User:</h3>
+                            <pre>{JSON.stringify(user, null, 2)}</pre> {/* Display fetched user data here */}
+                        </div>
                     </div>
-                    </div>
-
 
                     {/* Register Link */}
                     <div className="text-center">
