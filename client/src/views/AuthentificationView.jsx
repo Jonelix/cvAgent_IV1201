@@ -16,7 +16,7 @@ const AuthentificationView = () => {
     const fetchData = async (e) => {
         e.preventDefault(); // Prevent form submission from reloading the page
         try {
-          const response = await fetch('http://localhost:5005/api/data');
+          const response = await fetch('http://localhost:5005/api/applicant');
           const result = await response.json();
           setData(result); // Set the data to be displayed
           console.log(result); // Log the result for debugging
@@ -28,7 +28,7 @@ const AuthentificationView = () => {
       const fetchUser = async (e) => {
         e.preventDefault(); // Prevent form submission from reloading the page
         try {
-          const response = await fetch('http://localhost:5005/api/data/username');
+          const response = await fetch('http://localhost:5005/api/recruiter');
           const result = await response.json();
           setUser(result); // Set the data to be displayed
           console.log(result); // Log the result for debugging
@@ -75,28 +75,30 @@ const AuthentificationView = () => {
                         </button>
                     </div>
 
-                    <div>                         
-                        <button type="button" onClick={fetchData} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
-                                Connect to DB
-                        </button>
-
-                        <div>
-                    <h3>Data:</h3>
-                    <pre>{JSON.stringify(data, null, 2)}</pre>
-                    </div>
-                    </div>
-
-                   {/* Fetch User Button */}
+                    {/* Fetch User Button */}
                    <div>                         
                         <button type="button" onClick={fetchUser} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
-                            Show all user credentials
+                            Show all recruiter
                         </button>
 
                         <div>
-                            <h3>User:</h3>
+                            <h3>Recruiter:</h3>
                             <pre>{JSON.stringify(user, null, 2)}</pre> {/* Display fetched user data here */}
                         </div>
                     </div>
+
+                    <div>                         
+                        <button type="button" onClick={fetchData} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
+                                Show first 20 applikant
+                        </button>
+
+                        <div>
+                            <h3>Applikant:</h3>
+                            <pre>{JSON.stringify(data, null, 2)}</pre> {/* Display fetched user data here */}
+                        </div>
+                    </div>
+
+                   
 
                     {/* Register Link */}
                     <div className="text-center">

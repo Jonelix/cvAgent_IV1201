@@ -48,10 +48,10 @@ app.get('/api/name', async (req, res) => {
   }
 });
 
-app.get('/api/data/username', async (req, res) => {
-  console.log('Request received at /api/user');
+app.get('/api/recruiter', async (req, res) => {
+  console.log('Request received at /api/recruiter');
   try {
-    const result = await pool.query("SELECT username, password FROM person WHERE username IS NOT NULL AND password IS NOT NULL");
+    const result = await pool.query("SELECT * FROM person WHERE role_id = 1 AND username IS NOT NULL AND password IS NOT NULL");
     console.log("DB ACCESS!", result.rows);
     res.json(result.rows);
   } catch (err) {
@@ -61,10 +61,10 @@ app.get('/api/data/username', async (req, res) => {
 });
 
 // Fetch DB info (ZW)
-app.get('/api/data', async (req, res) => {
-  console.log('Request received at /api/data');
+app.get('/api/applicant', async (req, res) => {
+  console.log('Request received at /api/applicant');
   try {
-    const result = await pool.query('SELECT * FROM person LIMIT 10');
+    const result = await pool.query('SELECT * FROM person WHERE role_id = 2 LIMIT 20');
     console.log("DB ACCESS!", result.rows);
     res.json(result.rows);
   } catch (err) {
