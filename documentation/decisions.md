@@ -114,6 +114,7 @@ Backend:
 - Express
 - CORS
 - DotEnv
+- pg
 
 Database:
 - PostgreSQL
