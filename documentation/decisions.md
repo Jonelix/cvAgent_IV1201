@@ -3,20 +3,58 @@
 ## Decisions
 
 ### Architecture
-**Monolith**
+**Monolith** - (Create Diagram) + Why?
+
+**Frontend** - (Create Diagram) + Why?
+
+**Databse** - (Create Diagram) + Why?
 
 ### Build tool
-**npm & Vite**
+**npm & Vite** Why?
 
 ### Version Control
-**Git & GitHub**
+**Git & GitHub** Why?
 
 ### Deployment
-**Heroku**
+**Heroku** Why?
 
 ### IDE
 **VS Code**
 All developers on the team are familiar with and using this IDE and therefore we chose it. 
+
+### Database
+**Implementation**
+What database are we using?
+
+**Data migration**
+How was migration handled?
+
+### Authentification (+Password encryption)
+How and why?
+
+### Authorization
+How and why?
+
+### Backend GUI
+Explanation needed on what they mean by this?
+
+### Validation
+**Server-side**
+
+**Client-side**
+
+**Integration**
+
+### Persistance
+
+### CORS Policy
+
+### Logging
+
+### Internationality & Localization
+
+### Concurrent application handling
+
 
 ### Code writing
 **Coding**
@@ -36,6 +74,12 @@ Here is a example of how to document a method or object.
 >    return a + b;
 >}
 >```
+
+### Consistent GUI components
+Header, footer and main body. Why?
+
+### Canvas Links
+**Vite** - Uploaded
 
 
 
