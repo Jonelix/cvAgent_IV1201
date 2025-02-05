@@ -30,7 +30,7 @@ const AuthentificationView = () => {
         try {
           const response = await fetch('http://localhost:5005/api/data/username');
           const result = await response.json();
-          setData(result); // Set the data to be displayed
+          setUser(result); // Set the data to be displayed
           console.log(result); // Log the result for debugging
         } catch (error) {
           console.error('Error fetching data:', error);
