@@ -20,7 +20,7 @@ const pool = new Pool({
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT || 5432, 
+  port: process.env.DB_PORT || 5000, 
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
 });
 
@@ -83,7 +83,7 @@ app.use((req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000; // Use $PORT on Heroku, default to 5001 locally
+const PORT = process.env.PORT || 5000; // Use $PORT on Heroku, default to 5000 locally
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
