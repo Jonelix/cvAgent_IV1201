@@ -14,7 +14,7 @@ const AuthentificationView = () => {
     const fetchData = async (e) => {
         e.preventDefault(); // Prevent form submission from reloading the page
         try {
-          const response = await fetch('http://localhost:5000/api/data');
+          const response = await fetch('http://localhost:5005/api/data');
           const result = await response.json();
           setData(result); // Set the data to be displayed
           console.log(result); // Log the result for debugging
