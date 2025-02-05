@@ -1,11 +1,22 @@
 # CV AGENT - A CV application for creating and reviewing CV's
 
 ## Decisions
-### Setup
-- Build tool - npm
-- Version Control - Git(Hub)
-- Deployment - Heroku
-- IDE - VS Code
+
+### Architecture
+**Monolith**
+
+### Build tool
+**npm & Vite**
+
+### Version Control
+**Git & GitHub**
+
+### Deployment
+**Heroku**
+
+### IDE
+**VS Code**
+All developers on the team are familiar with and using this IDE and therefore we chose it. 
 
 ### Code writing
 **Coding**
