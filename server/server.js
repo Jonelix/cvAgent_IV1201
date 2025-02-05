@@ -29,7 +29,7 @@ const pool = new Pool({
 app.use(cors());
 
 // Middleware to serve frontend build files
-app.use(express.static(path.join(__dirname, '../client')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // API routes (example)
 app.get('/api/hello', (req, res) => {
