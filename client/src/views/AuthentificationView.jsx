@@ -9,7 +9,8 @@ const AuthentificationView = () => {
 
 
     const [data, setData] = useState([]);
-    const [user, setUser] = useState([]);  
+    const [user, setUser] = useState([]); 
+    const [userPassword, setUserPassword] = useState([]); 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -36,6 +37,26 @@ const AuthentificationView = () => {
           console.error('Error fetching data:', error);
         }
       };
+
+      const fetchPassword = async (e) => {
+        e.preventDefault(); // Prevent form submission from reloading the page
+        if (!username){alert("Please enter a username");}
+        try {
+            const response = await fetch(`http://localhost:5005/api/password/${username}`);
+            if(!response.ok){
+                throw new Error("User not found or other error.");   
+            }
+            const result = await response.json();
+            setUserPassword(result.password || "No password found");
+            console.log(result); // Log the result for debugging
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          setUserPassword("User not found"); 
+
+        }
+      };
+
+      
     
     
 
@@ -58,6 +79,19 @@ const AuthentificationView = () => {
                         />
                     </div>
 
+
+                    {/* Fetch User Button */}
+                   <div>                         
+                        <button type="button" onClick={fetchPassword} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
+                            Get password with username
+                        </button>
+
+                        <div>
+                            <h3>Password:</h3>
+                            <pre>{userPassword ? userPassword : "No password found"}</pre>
+                            </div>
+                    </div>
+
                     {/* Password */}
                     <div>
                         <label className="block text-gray-600 text-sm font-semibold mb-2">Password</label>
@@ -75,6 +109,8 @@ const AuthentificationView = () => {
                         </button>
                     </div>
 
+
+ 
                     {/* Fetch User Button */}
                    <div>                         
                         <button type="button" onClick={fetchUser} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">

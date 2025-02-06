@@ -31,20 +31,21 @@ app.use(cors());
 // Middleware to serve frontend build files
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// API routes (example)
-app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello from backend!' });
-});
 
-app.get('/api/name', async (req, res) => {
-  console.log('Request received at /api/data');
+
+app.get('/api/password/:username', async (req, res) => {
+  const {username} = req.params;
+  console.log(`Fetching password for username: ${username}`);
   try {
-    const result = await pool.query("SELECT name FROM person WHERE name LIKE 'A%'");
-    console.log("DB ACCESS!", result.rows);
-    res.json(result.rows);
-  } catch (err) {
+    const result = await pool.query("SELECT password FROM person WHERE username = $1", [username]);
+    if(result.rows.length > 0){
+      res.json(result.rows[0]);
+    }else{
+      res.status(404).json({error: "User not found"});
+    }
+  }catch(err){
     console.error(err);
-    res.status(500).json({ error: 'Database query failed' });
+    res.status(500).json({error:"Database query failed"});
   }
 });
 
