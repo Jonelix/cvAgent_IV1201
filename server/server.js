@@ -31,6 +31,10 @@ app.use(cors());
 // Middleware to serve frontend build files
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
+// API routes (example)
+app.get('/api/hello', (req, res) => {
+  res.json({ message: 'Hello from backend!' });
+});
 
 
 app.get('/api/password/:username', async (req, res) => {
