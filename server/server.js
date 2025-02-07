@@ -88,9 +88,19 @@ app.use((req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5005; // Use $PORT on Heroku, default to 5000 locally
+const PORT = process.env.PORT || 5000; // Use $PORT on Heroku, default to 5000 locally
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const reqHandlerLoader = require('./api');
+reqHandlerLoader.loadHandlers(app);
+reqHandlerLoader.loadErrorHandlers(app);
+
+const server = app.listen(
+    process.env.SERVER_PORT,
+    process.env.SERVER_HOST,
+    () => {
+      console.log(
+          `Server up at ${server.address().address}:${server.address().port}`,
+      );
+    },
+);
 
