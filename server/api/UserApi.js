@@ -65,7 +65,7 @@ class UserApi extends RequestHandler {
                 return;
               } else {
                 Authorization.sendAuthCookie(loggedInUser, res);
-                this.sendHttpResponse(res, 204);
+                this.sendHttpResponse(res, 204, loggedInUser);
                 return;
               }
             } catch (err) {

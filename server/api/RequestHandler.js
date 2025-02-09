@@ -17,7 +17,7 @@ class RequestHandler {
     this.router = express.Router(); // eslint-disable-line new-cap
     this.logger = new Logger();
   }
-
+  
   /**
    * Protocol part (http) of a URL.
    */
