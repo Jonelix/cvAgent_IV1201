@@ -59,7 +59,7 @@ class UserApi extends RequestHandler {
                 return;
               }*/
 
-              const loggedInUser = await this.contr.login(req.body.email, req.body.password);
+              const loggedInUser = await this.contr.login(req.body.username, req.body.password);
               if (loggedInUser === null) {
                 this.sendHttpResponse(res, 401, 'Login failed');
                 return;

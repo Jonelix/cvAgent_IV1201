@@ -36,11 +36,11 @@ class Controller {
    * @return {User} The logged in user if login succeeded, or null if login failed.
    * @throws Throws an exception if unable to attempt to login the specified user.
    */
-  async login(email, password) {
+  async login(username, password) {
     return this.transactionMgr.transaction(async (t1) => {
       //Validators.isNonZeroLengthString(username, 'username');
       //Validators.isAlnumString(username, 'username');
-      const user = await this.agentDAO.findUserByEmail(email);
+      const user = await this.agentDAO.findUserByUsername(username);
       if (user.length === 0) {
         return null;
       }

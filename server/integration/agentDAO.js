@@ -67,18 +67,18 @@ class AgentDAO {
   /**
    * Searches for a user with the specified username.
    *
-   * @param {string} email The email of the searched user.
+   * @param {string} username The username of the searched user.
    * @return {array} An array containing the user with the
-   *                 specified email. The array is empty if no matching
+   *                 specified username. The array is empty if no matching
    *                 users were found.
    * @throws Throws an exception if failed to search for the specified user.
    */
-  async findUserByEmail(email) {
+  async findUserByUsername(username) {
     try {
       //Validators.isNonZeroLengthString(username, 'username');
       //Validators.isAlnumString(username, 'username');
       const user = await User.findAll({
-        where: {email: email},
+        where: {username: username},
       });
       return user.map((userModel) => this.createUserDto(userModel));
     } catch (err) {
@@ -87,10 +87,10 @@ class AgentDAO {
             cause: err,
             info: {
               AgentDAO: 'Failed to search for user.',
-              email: email,
+              username: username,
             },
           },
-          `Could not search for user ${email}.`,
+          `Could not search for user ${username}.`,
       );
     }
   }
