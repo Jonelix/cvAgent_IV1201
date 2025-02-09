@@ -3,7 +3,7 @@
 // It is just an example.
 //-----------------------------------------------------------------
 
- require('dotenv').config();
+require('dotenv').config({ path: __dirname + '/.env' });
 
 // (ZW)
 // require('dotenv').config({ path: 'server/server.js' }); // Path
@@ -23,8 +23,6 @@ const pool = new Pool({
   port: process.env.DB_PORT || 5000, 
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
 });
-
-
 
 app.use(cors());
 
