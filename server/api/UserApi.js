@@ -84,14 +84,16 @@ class UserApi extends RequestHandler {
        */
       this.router.get(
           '/:id',
-          check('id').isNumeric({no_symbols: true}),
+          //check('id').isNumeric({no_symbols: true}),
           async (req, res, next) => {
             try {
+              /*
               const errors = validationResult(req);
               if (!errors.isEmpty()) {
                 this.sendHttpResponse(res, 400, errors.array());
                 return;
               }
+              */
 
               if (
                 !(await Authorization.checkLogin(
