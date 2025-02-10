@@ -20,14 +20,18 @@ const AuthentificationView = () => {
                 body: JSON.stringify({ username, password }),
             });
     
+            const data = await response.json(); // Parse JSON response
+            
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                // Return the detailed error message from the server response
+                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             }
     
-            const data = await response.json();
             console.log("Response:", data);
+            return data; // Return user data if successful
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error:", error.message);
+            return { error: error.message }; // Return error message instead of throwing
         }
     };
     
