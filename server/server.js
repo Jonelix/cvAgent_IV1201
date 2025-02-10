@@ -22,7 +22,7 @@ const pool = new Pool({
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT || 5001, 
+  port: process.env.DB_PORT || 5000, 
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
 });
 
@@ -119,7 +119,7 @@ reqHandlerLoader.loadErrorHandlers(app);
 
 const server = app.listen(
     process.env.SERVER_PORT,
-    //process.env.SERVER_HOST,
+    process.env.SERVER_HOST,
     () => {
       console.log(
           `Server up at ${server.address().address}:${server.address().port}`,
