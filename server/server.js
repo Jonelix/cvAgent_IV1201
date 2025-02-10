@@ -5,7 +5,7 @@
 
 const UserApi = require('./api/UserApi');
 
-require('dotenv').config({ path: __dirname + '/.env' });
+require('dotenv')//.config({ path: __dirname + '/.env' });
 
 // (ZW)
 // require('dotenv').config({ path: 'server/server.js' }); // Path
@@ -99,11 +99,11 @@ app.use((req, res, next) => {
 
 const PORT = process.env.PORT || 5000; // Use $PORT on Heroku, default to 5000 locally
 
-
+/*
 const reqHandlerLoader = require('./api');
 reqHandlerLoader.loadHandlers(app);
 reqHandlerLoader.loadErrorHandlers(app);
-
+*/
 const server = app.listen(
     process.env.SERVER_PORT,
     process.env.SERVER_HOST,
