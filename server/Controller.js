@@ -13,6 +13,20 @@ class Controller {
         }
         return null;
     }
+
+    async register(firstName, lastName, personNumber, username, email, password, confirmPassword, role_id) {
+        console.log("Creating user in contr...")
+        if (password !== confirmPassword) {
+            throw new Error("Passwords do not match");
+        }
+        const user = await this.agentDAO.registerUser(firstName, lastName, personNumber, username, email, password, role_id);
+        console.log(user)
+        if (user) {
+            const { password, ...userData } = user.dataValues;
+            return userData;
+        }
+        return null;
+    }
 }
 
 module.exports = Controller;
