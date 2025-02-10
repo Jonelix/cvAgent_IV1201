@@ -11,7 +11,7 @@ const RegisterPresenter = observer(() => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const fetchUser = async (e) => {
+    const registerUser = async (e) => {
         e.preventDefault();
         try {
             const hostURL = "https://cvagent-b8c3fb279d06.herokuapp.com/api/register";
@@ -126,7 +126,7 @@ const RegisterPresenter = observer(() => {
 
                         {/* Register Button */}
                         <div>
-                            <button onClick={fetchUser} className="w-full mt-7 bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
+                            <button onClick={registerUser} className="w-full mt-7 bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
                                 Register
                             </button>
                         </div>
