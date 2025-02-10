@@ -1,6 +1,5 @@
 // Controller.js
 const AgentDAO = require('./AgentDAO');
-const bcrypt = require('bcrypt');
 
 class Controller {
     constructor() {
