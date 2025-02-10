@@ -6,25 +6,25 @@ const AuthentificationView = () => {
         // Redirect to the register page
         window.location.href = "#/registration";
     }
-
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
+    
     const fetchUser = async (e) => {
         e.preventDefault(); // Prevent form from refreshing the page
-
+    
         try {
-            const apiURL = (window.location.href + "/api/password/" + username).replace("/#/auth", ""); ;
-            console.log(apiURL)
+            const apiURL = (window.location.href + "/api/login").replace("/#/auth", "");
+            console.log(apiURL);
             const response = await fetch(apiURL, {
-                method: "GET",
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
+                body: JSON.stringify({ username, password }), // Send username and password as JSON
             });
-
+    
             const data = await response.json(); // Parse JSON response
-
+    
             if (response.ok) {
                 console.log("Login successful:", data);
                 // Handle successful login (e.g., save token, redirect)
@@ -37,8 +37,6 @@ const AuthentificationView = () => {
             alert("An error occurred. Please try again.");
         }
     };
-      
-    
     
 
     return (
