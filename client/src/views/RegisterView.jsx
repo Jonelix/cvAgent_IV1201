@@ -14,7 +14,7 @@ const RegisterPresenter = observer(() => {
     const registerUser = async (e) => {
         e.preventDefault();
         try {
-            console.log("https://cvagent-b8c3fb279d06.herokuapp.com/api/register");
+            //console.log("https://cvagent-b8c3fb279d06.herokuapp.com/api/register");
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/register", {
                 method: "POST",
                 headers: {
