@@ -12,6 +12,7 @@
   "type": "commonjs",
   "description": "",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cls-hooked": "^4.2.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
