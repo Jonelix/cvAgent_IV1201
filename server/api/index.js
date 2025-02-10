@@ -44,6 +44,7 @@ class RequestHandlerLoader {
   loadHandlers(app) {
     this.reqHandlers.forEach((reqHandler) => {
         reqHandler.registerHandler();
+        console.log(`Registering handler for path: ${reqHandler.path}`);
         app.use(reqHandler.path, reqHandler.router);
     });
 }

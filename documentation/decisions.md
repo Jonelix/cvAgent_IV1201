@@ -10,13 +10,13 @@
 **Databse** - (Create Diagram) + Why?
 
 ### Build tool
-**npm & Vite** Why?
+**Vite** Why?
 
 ### Version Control
-**Git & GitHub** Why?
+**Git & GitHub** Is is the industry standard when in comes to version control and everyone has some familiarity with it.
 
 ### Deployment
-**Heroku** Why?
+**Heroku** It was the site recommended by the course and uppon looking into it inculded everything we needed to implement and scale the service, both with a backend server and database support. 
 
 ### IDE
 **VS Code**
@@ -25,6 +25,7 @@ All developers on the team are familiar with and using this IDE and therefore we
 ### Database
 **Implementation**
 What database are we using?
+We are using a PostgreSQL server hosted on the Heroku platform. 
 
 **Data migration**
 How was migration handled?

@@ -28,15 +28,27 @@ const pool = new Pool({
 
 app.use(cors());
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 // Middleware to serve frontend build files
 app.use(express.static(path.join(__dirname, '../client/dist')));
+
+const userApi = new UserApi();
+userApi.registerHandler(); // Ensure handlers are registered
+app.use('/api/user', userApi.router);
+console.log("Mounted UserApi at /api/user");
+
 
 // API routes (example)
 app.get('/api/hello', (req, res) => {
   res.json({ message: 'Hello from backend!' });
 });
 
-/*
+
 app.get('/api/password/:username', async (req, res) => {
   const {username} = req.params;
   console.log(`Fetching password for username: ${username}`);
@@ -52,7 +64,7 @@ app.get('/api/password/:username', async (req, res) => {
     res.status(500).json({error:"Database query failed"});
   }
 });
-
+/*
 app.get('/api/recruiter', async (req, res) => {
   console.log('Request received at /api/recruiter');
   try {
@@ -92,9 +104,18 @@ app.use((req, res, next) => {
 
 const PORT = process.env.PORT || 5000; // Use $PORT on Heroku, default to 5000 locally
 
+/*
 const reqHandlerLoader = require('./api');
 reqHandlerLoader.loadHandlers(app);
+console.log("Registered Routes:");
+app._router.stack.forEach((middleware) => {
+  if (middleware.route) {
+    console.log(`${Object.keys(middleware.route.methods).join(', ').toUpperCase()} - ${middleware.route.path}`);
+  }
+});
 reqHandlerLoader.loadErrorHandlers(app);
+reqHandlerLoader.loadErrorHandlers(app);
+*/
 
 const server = app.listen(
     process.env.SERVER_PORT,
@@ -106,18 +127,3 @@ const server = app.listen(
     },
 );
 
-setTimeout(() => {
-  console.log("Registered Routes:");
-  app._router.stack.forEach((middleware) => {
-    if (middleware.route) { // Routes registered directly on the app
-      console.log(`${Object.keys(middleware.route.methods).join(', ').toUpperCase()} - ${middleware.route.path}`);
-    } else if (middleware.name === 'router') { // Router middleware
-      middleware.handle.stack.forEach((handler) => {
-        const route = handler.route;
-        if (route) {
-          console.log(`${Object.keys(route.methods).join(', ').toUpperCase()} - ${route.path}`);
-        }
-      });
-    }
-  });
-}, 5000);

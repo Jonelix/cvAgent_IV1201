@@ -14,14 +14,13 @@ const AuthentificationView = () => {
         e.preventDefault(); // Prevent form from refreshing the page
 
         try {
-            const apiURL = (window.location.href + "/api/user/login").replace("/#/auth", ""); ;
+            const apiURL = (window.location.href + "/api/password/" + username).replace("/#/auth", ""); ;
             console.log(apiURL)
             const response = await fetch(apiURL, {
-                method: "POST",
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ username: username, password: password}), // Sending username and password
             });
 
             const data = await response.json(); // Parse JSON response

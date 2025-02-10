@@ -35,6 +35,7 @@ class UserApi extends RequestHandler {
   async registerHandler() {
     try {
         await this.retrieveController();
+        console.log(`Registering route: ${this.path}/login`);
 
         this.router.post('/login', async (req, res, next) => {
             try {
