@@ -33,6 +33,12 @@ How was migration handled?
 ### Authentification (+Password encryption)
 How and why?
 
+Passwords are sent from client to server in plaintext,
+due to HTTPs already encrypting traffic.
+Server hashes password and checks for hash in DB.
+
+
+
 ### Authorization
 How and why?
 
@@ -41,12 +47,16 @@ Explanation needed on what they mean by this?
 
 ### Validation
 **Server-side**
+Validation of data will be done in the topmost layer possible and right before accessing the DB.
 
 **Client-side**
+Validation of data is done on login or account creation before data gets sent. 
+This will lower load on server.
 
 **Integration**
 
 ### Persistance
+
 
 ### CORS Policy
 
@@ -119,3 +129,24 @@ Backend:
 
 Database:
 - PostgreSQL
+
+
+
+### Client Standards
+#### Naming: 
+
+#### Documentation: 
+
+#### Unit tests: 
+
+#### Structure:
+Model, View, Presenter.
+
+Model should have all data saved for current session. ? 
+
+View should have as little logic as possible. 
+
+Presenter handels CORS req, and data validation.
+
+model is passed through Presenter to view via ... to fix model.model.
+
