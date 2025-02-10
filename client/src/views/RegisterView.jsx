@@ -14,10 +14,8 @@ const RegisterPresenter = observer(() => {
     const registerUser = async (e) => {
         e.preventDefault();
         try {
-            const hostURL = "https://cvagent-b8c3fb279d06.herokuapp.com/api/register";
-            const localHost = "http://localhost:5000/api/register";
-            console.log(hostURL)
-            const response = await fetch(hostURL, {
+            console.log("https://cvagent-b8c3fb279d06.herokuapp.com/api/register");
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

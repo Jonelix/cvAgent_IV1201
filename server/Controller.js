@@ -20,9 +20,10 @@ class Controller {
             throw new Error("Passwords do not match");
         }
         const user = await this.agentDAO.registerUser(firstName, lastName, personNumber, username, email, password, role_id);
-        console.log(user)
+        
         if (user) {
             const { password, ...userData } = user.dataValues;
+            console.log(userData)
             return userData;
         }
         return null;

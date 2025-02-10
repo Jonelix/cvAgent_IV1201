@@ -36,14 +36,14 @@ class AgentDAO {
 
     async registerUser(firstName, lastName, personNumber, username, email, password, role_id) {
         console.log("Creating user in db...")
-        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+        //const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
         return await Person.create({ 
             name: firstName, 
             surname: lastName, 
             pnr: personNumber, 
             username, 
             email, 
-            password: hashedPassword, 
+            password: password, 
             role_id 
         });
     }
