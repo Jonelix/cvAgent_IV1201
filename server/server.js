@@ -37,11 +37,6 @@ app.use(cookieParser());
 // Middleware to serve frontend build files
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-const userApi = new UserApi();
-userApi.registerHandler(); // Ensure handlers are registered
-app.use('/api/user', userApi.router);
-console.log("Mounted UserApi at /api/user");
-
 
 // API routes (example).
 app.get('/api/hello', (req, res) => {
@@ -104,18 +99,10 @@ app.use((req, res, next) => {
 
 const PORT = process.env.PORT || 5000; // Use $PORT on Heroku, default to 5000 locally
 
-/*
+
 const reqHandlerLoader = require('./api');
 reqHandlerLoader.loadHandlers(app);
-console.log("Registered Routes:");
-app._router.stack.forEach((middleware) => {
-  if (middleware.route) {
-    console.log(`${Object.keys(middleware.route.methods).join(', ').toUpperCase()} - ${middleware.route.path}`);
-  }
-});
 reqHandlerLoader.loadErrorHandlers(app);
-reqHandlerLoader.loadErrorHandlers(app);
-*/
 
 const server = app.listen(
     process.env.SERVER_PORT,
