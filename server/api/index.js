@@ -43,10 +43,10 @@ class RequestHandlerLoader {
    */
   loadHandlers(app) {
     this.reqHandlers.forEach((reqHandler) => {
-      reqHandler.registerHandler();
-      app.use(reqHandler.path, reqHandler.router);
+        reqHandler.registerHandler();
+        app.use(reqHandler.path, reqHandler.router);
     });
-  }
+}
 
   /**
    * Makes all error handlers available in the specified express

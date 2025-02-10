@@ -3,6 +3,8 @@
 // It is just an example.
 //-----------------------------------------------------------------
 
+const UserApi = require('./api/UserApi');
+
 require('dotenv').config({ path: __dirname + '/.env' });
 
 // (ZW)
@@ -34,7 +36,7 @@ app.get('/api/hello', (req, res) => {
   res.json({ message: 'Hello from backend!' });
 });
 
-
+/*
 app.get('/api/password/:username', async (req, res) => {
   const {username} = req.params;
   console.log(`Fetching password for username: ${username}`);
@@ -85,6 +87,8 @@ app.use((req, res, next) => {
     }
   });
 });
+*/
+
 
 const PORT = process.env.PORT || 5000; // Use $PORT on Heroku, default to 5000 locally
 
@@ -102,3 +106,18 @@ const server = app.listen(
     },
 );
 
+setTimeout(() => {
+  console.log("Registered Routes:");
+  app._router.stack.forEach((middleware) => {
+    if (middleware.route) { // Routes registered directly on the app
+      console.log(`${Object.keys(middleware.route.methods).join(', ').toUpperCase()} - ${middleware.route.path}`);
+    } else if (middleware.name === 'router') { // Router middleware
+      middleware.handle.stack.forEach((handler) => {
+        const route = handler.route;
+        if (route) {
+          console.log(`${Object.keys(route.methods).join(', ').toUpperCase()} - ${route.path}`);
+        }
+      });
+    }
+  });
+}, 5000);
