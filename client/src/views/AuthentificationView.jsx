@@ -10,31 +10,20 @@ const AuthentificationView = () => {
     const [password, setPassword] = useState('');
     
     const fetchUser = async (e) => {
-        e.preventDefault(); // Prevent form from refreshing the page
-    
+        e.preventDefault();
         try {
-            const apiURL = (window.location.href + "/api/login").replace("/#/auth", "");
-            console.log(apiURL);
-            const response = await fetch(apiURL, {
+            const response = await fetch("http://localhost:5000/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ username, password }), // Send username and password as JSON
+                body: JSON.stringify({ username, password }),
             });
     
-            const data = await response.json(); // Parse JSON response
-    
-            if (response.ok) {
-                console.log("Login successful:", data);
-                // Handle successful login (e.g., save token, redirect)
-            } else {
-                console.error("Login failed:", data);
-                alert("Invalid username or password"); // Show error message
-            }
+            const data = await response.json();
+            console.log("Response:", data);
         } catch (error) {
-            console.error("Error during login:", error);
-            alert("An error occurred. Please try again.");
+            console.error("Error:", error);
         }
     };
     
