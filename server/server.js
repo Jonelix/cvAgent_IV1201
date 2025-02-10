@@ -43,7 +43,7 @@ app.use('/api/user', userApi.router);
 console.log("Mounted UserApi at /api/user");
 
 
-// API routes (example)
+// API routes (example).
 app.get('/api/hello', (req, res) => {
   res.json({ message: 'Hello from backend!' });
 });
