@@ -26,7 +26,7 @@ const Person = database.define('person', {
 });
 
 const Competency = database.define('competency', {
-    competency_id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    competence_id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     name: { type: DataTypes.STRING, allowNull: true }
 },{
     tableName: 'competency',
