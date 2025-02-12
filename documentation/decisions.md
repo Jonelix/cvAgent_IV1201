@@ -150,3 +150,8 @@ Presenter handels CORS req, and data validation.
 
 model is passed through Presenter to view via ... to fix model.model.
 
+## Meeting 2025/12/2
+
+We are spliiting up the work until the next report.
+Go through what have been done to this point so all members in the group understand
+We are togheter deciding on how we will design and construct the dashboard for applicants and reqruiters aswell as the specified applicant page (view) and how the data will be updated / fetched.
