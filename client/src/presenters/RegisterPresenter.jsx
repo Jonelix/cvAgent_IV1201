@@ -1,9 +1,10 @@
-const RegisterView = () => {
-    return (
-        <div>
-            <p>Register Content</p>
-        </div>
-    );
-};
+import RegisterView from '../views/RegisterView';
+import { observer } from 'mobx-react-lite';
 
-export default RegisterView;
+const RegisterPresenter = observer(() => {
+    return (
+        <RegisterView/>
+    );
+});
+
+export default RegisterPresenter;
