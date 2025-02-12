@@ -6,7 +6,7 @@ class UserModel {
     password = "";
     person_id = null;
     pnr = "";
-    role_id = null;
+    role_id = 1;
     surname = "";
     username = "";
     isLoggedIn = false;

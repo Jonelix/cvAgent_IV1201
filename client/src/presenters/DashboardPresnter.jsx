@@ -1,9 +1,9 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
-import DashboardView from "../views/DashboardView.jsx";
+import RecruiterPresenter from "./RecruiterPresenter.jsx";
 
 const DashboardPresenter = observer(({ model }) => {
-    return <DashboardView model={model} />;
+    return (model.isLoggedIn ? <RecruiterPresenter model={model}/> : <ApplicantPresenter model={model}/> );
 });
 
 export default DashboardPresenter;
