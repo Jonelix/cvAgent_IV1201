@@ -12,7 +12,7 @@ class RequestHandler {
 
         //Create application (post)
 
-        app.get('api/competencies', async (req, res) => {
+        app.get('/api/competencies', async (req, res) => {
             try {
                 const competencies = await this.controller.competencies();
                 if(!competencies) {
