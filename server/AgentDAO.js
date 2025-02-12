@@ -48,7 +48,7 @@ class AgentDAO {
         return await Person.create({ 
             name: firstName, 
             surname: lastName, 
-            pnr: personNumber, 
+            pnr: personNumber,   
             username, 
             email, 
             password: password, 
