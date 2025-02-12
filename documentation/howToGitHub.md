@@ -27,15 +27,7 @@ git push
 
 (Make sure you saved (control+s) all your work)
 
-### 1. Make sure your main is updated
-
-git checkout main
-
-git pull
-
-### 2. Go back to your back to your branch and store your stuff
-
-git checkout branch_name
+### 1. Go back to your back to your branch and store your stuff
 
 git add .
 
@@ -43,7 +35,15 @@ git commit -m "New stuff"
 
 git push
 
+### 2. Make sure your main is updated
+
+git checkout main
+
+git pull
+
 ### 3. Merge with Main
+
+git checkout branch_name
 
 git merge main (then resolve conflicts)
 
