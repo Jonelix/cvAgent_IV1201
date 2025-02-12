@@ -47,9 +47,9 @@ git push
 
 git merge main (then resolve conflicts)
 
-git add . 
+git add .
 
-git commit -m "merge with main"
+git commit -m "Merged"
 
 git push
 
