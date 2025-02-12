@@ -1,7 +1,19 @@
-const HeaderView = ({ userEmail, loggedIn }) => {
+const HeaderView = ({ model, isLoggedIn }) => {
 
     function goToHome(){
         window.location.href = "#/";
+    }
+
+    function handleProfileButton() {
+        if (isLoggedIn) {
+            goToProfile();
+        } else {
+            goToAuthentification();
+        }
+    }
+
+    function goToProfile() {
+        window.location.href = "#/profile";
     }
 
     function goToAuthentification() {
@@ -18,15 +30,9 @@ const HeaderView = ({ userEmail, loggedIn }) => {
 
             {/* Profile Button */}
             <div>
-                {loggedIn ? (
-                    <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
-                        {userEmail || "Username"}
-                    </button>
-                ) : (
-                    <button onClick={goToAuthentification} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
-                        Profile
-                    </button>
-                )}
+                <button onClick={handleProfileButton} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
+                    Profile
+                </button>
             </div>
         </header>
     );

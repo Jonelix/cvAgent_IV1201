@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 
-const AuthentificationView = () => {
+const AuthentificationView = ({onLoginSuccess}) => {
     function goToRegister() {
         // Redirect to the register page
         window.location.href = "#/registration";
@@ -28,6 +28,8 @@ const AuthentificationView = () => {
             }
     
             console.log("Response:", data);
+            // Pass user data up to the presenter
+            onLoginSuccess(data);
             return data; // Return user data if successful
         } catch (error) {
             console.error("Error:", error.message);

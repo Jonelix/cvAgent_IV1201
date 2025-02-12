@@ -10,9 +10,9 @@ const MainPresenter = observer(({ model }) => {
         <div className="flex flex-grow items-center justify-center">
             <Routes>
                 <Route path="/" element={<HomePresenter model={model} />} />
-                <Route path="/profile" element={<ProfilePresenter />} />
-                <Route path="/auth" element={<AuthentificationPresenter />} />
-                <Route path="/registration" element={<RegisterPresenter />} />
+                <Route path="/profile" element={<ProfilePresenter model={model}/>} />
+                <Route path="/auth" element={<AuthentificationPresenter model={model}/>} />
+                <Route path="/registration" element={<RegisterPresenter model={model}/>} />
             </Routes>
         </div>
     );
