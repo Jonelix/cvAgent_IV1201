@@ -6,6 +6,13 @@ class RequestHandler {
     }
 
     initializeRoutes(app) {
+        //Get competencies (get)
+
+        //Load previous application (get)
+
+        //Create application (post)
+
+
         app.post('/api/login', async (req, res) => {
             const { username, password } = req.body;
             try {
