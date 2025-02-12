@@ -25,6 +25,14 @@ const Person = database.define('person', {
     timestamps: false     // Disable automatic createdAt/updatedAt columns if not needed
 });
 
+const Competency = database.define('competency', {
+    competency_id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    name: { type: DataTypes.STRING, allowNull: true }
+},{
+    tableName: 'competency',
+    timestamps: false     // Disable automatic createdAt/updatedAt columns if not needed
+});
+
 (async () => {
     await database.sync({ force: false }); // Adjust as needed
 })();
@@ -46,6 +54,10 @@ class AgentDAO {
             password: password, 
             role_id 
         });
+    }
+
+    async getCompetencies() {
+        return await Competency.findAll();
     }
 }
 
