@@ -71,25 +71,42 @@ class AgentDAO {
     }
     */
     
-async getApplicantProfile() {
-    const applicant = await database.query(
-        `SELECT p.person_id, 
-                p.name AS person_name, 
-                p.surname, 
-                JSON_AGG(
-                    JSON_BUILD_OBJECT(
-                        'competence_name', c.name, 
-                        'years_of_experience', cp.years_of_experience
-                    )
-                ) AS competencies
+    async getApplicantProfile() {
+        const applicant = await database.query(
+        `
+        SELECT 
+            p.person_id, 
+            p.name AS person_name, 
+            p.surname, 
+        JSON_AGG(
+            JSON_BUILD_OBJECT(
+            'competence_name', c.name, 
+            'years_of_experience', cp.years_of_experience
+            )
+        ) AS competencies,
+        
+        avail.from_date,
+        avail.to_date
         FROM competence_profile cp
+
         JOIN person p ON cp.person_id = p.person_id
         JOIN competence c ON cp.competence_id = c.competence_id
-        GROUP BY p.person_id, p.name, p.surname;`,
-        { type: database.QueryTypes.SELECT }
-    );   
-    return applicant;
-}
+    LEFT JOIN (
+    SELECT 
+        person_id,
+        MIN(from_date) AS from_date,
+        MAX(to_date) AS to_date
+    FROM availability
+    GROUP BY person_id
+    ) avail ON p.person_id = avail.person_id
+    GROUP BY p.person_id, p.name, p.surname, avail.from_date, avail.to_date; `
+    ,  
+            { type: database.QueryTypes.SELECT }
+        );   
+        return applicant;
+    }
+    
+    
 
 }
 
