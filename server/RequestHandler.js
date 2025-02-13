@@ -28,18 +28,7 @@ class RequestHandler {
         });
 
 
-        app.get('/api/competencies', async (req, res) => {
-            try {
-                const competencies = await this.controller.getCompetencies();
-                if (!competencies) {
-                    res.status(404).json({ message: 'No competencies found' });
-                }else{
-                    res.status(200).json(competencies);
-                }
-            } catch (error) {
-                res.status(500).json({ message: 'Server error', error: error.message });
-            }
-        });
+
 
         app.get('/api/applicantProfile', async (req, res) => {
             try {

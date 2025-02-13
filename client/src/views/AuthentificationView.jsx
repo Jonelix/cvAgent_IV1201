@@ -11,7 +11,7 @@ const AuthentificationView = ({ onLoginSuccess }) => {
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const passwordInputRef = useRef(null);
 
-
+    
     const fetchCompetencies = async (e) => {
         e.preventDefault();
         try{
@@ -33,6 +33,7 @@ const AuthentificationView = ({ onLoginSuccess }) => {
             return { error: error.message };
         }
     }
+        
     
     const fetchUser = async (e) => {
         e.preventDefault();
@@ -153,13 +154,6 @@ const AuthentificationView = ({ onLoginSuccess }) => {
                             Check earlier applcant compentencies                        </p>
                     </div>
 
-
-                    {/* Register Link */}
-                    <div className="text-center">
-                        <p onClick={fetchCompetencies} className="text-blue-500 hover:underline">
-                            fetch competencies
-                        </p>
-                    </div>
 
                 </form>
             </div>
