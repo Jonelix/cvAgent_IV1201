@@ -30,7 +30,7 @@ const HeaderView = ({ model, isLoggedIn }) => {
 
             {/* Profile Button */}
             <div>
-                <button onClick={handleProfileButton} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
+                <button onClick={handleProfileButton} className="bg-slate-600 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
                     Profile
                 </button>
             </div>
