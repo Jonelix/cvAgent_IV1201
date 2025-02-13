@@ -14,7 +14,7 @@ const AuthentificationView = ({ onLoginSuccess }) => {
     const fetchUser = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:5005/api/login", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -38,7 +38,7 @@ const AuthentificationView = ({ onLoginSuccess }) => {
 
     const fetchCompetencies = async (e) => {
         try {
-            const response = await fetch("http://localhost:5005/api/competencies", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -61,7 +61,7 @@ const AuthentificationView = ({ onLoginSuccess }) => {
 
     const fetchProfile = async (e) => {
         try {
-            const response = await fetch("http://localhost:5005/api/applicantProfile", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/applicantProfile", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
