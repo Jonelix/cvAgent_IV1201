@@ -11,11 +11,9 @@ const RegisterView = observer(() => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState({});
     
-    // Track password visibility state
+    
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-    // Track field focus
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
 
