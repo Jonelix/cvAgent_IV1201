@@ -47,6 +47,50 @@ class AgentDAO {
             role_id 
         });
     }
+
+    async getCompetencies() {
+        const competencies = await database.query('SELECT * FROM competence', { type: database.QueryTypes.SELECT });
+        return competencies;
+        
+    }
+
+    /*
+    async getApplicantProfile() {
+        const applicant = await database.query(
+    `  SELECT cp.*, 
+        p.name AS person_name, 
+        p.surname, 
+        c.name AS competence_name 
+    FROM competence_profile cp
+        JOIN person p ON cp.person_id = p.person_id
+        JOIN competence c ON cp.competence_id = c.competence_id
+        LIMIT 40;
+
+    `, { type: database.QueryTypes.SELECT });   
+    return applicant;
+    }
+    */
+    
+async getApplicantProfile() {
+    const applicant = await database.query(
+        `SELECT p.person_id, 
+                p.name AS person_name, 
+                p.surname, 
+                JSON_AGG(
+                    JSON_BUILD_OBJECT(
+                        'competence_name', c.name, 
+                        'years_of_experience', cp.years_of_experience
+                    )
+                ) AS competencies
+        FROM competence_profile cp
+        JOIN person p ON cp.person_id = p.person_id
+        JOIN competence c ON cp.competence_id = c.competence_id
+        GROUP BY p.person_id, p.name, p.surname;`,
+        { type: database.QueryTypes.SELECT }
+    );   
+    return applicant;
+}
+
 }
 
 module.exports = AgentDAO;

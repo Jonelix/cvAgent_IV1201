@@ -28,6 +28,16 @@ class Controller {
         }
         return null;
     }
+
+    async getCompetencies() {
+        const competencies = await this.agentDAO.getCompetencies();
+        return competencies;
+    }
+
+    async applicantProfile() {
+        const applicant = await this.agentDAO.getApplicantProfile();
+        return applicant;
+    }
 }
 
 module.exports = Controller;

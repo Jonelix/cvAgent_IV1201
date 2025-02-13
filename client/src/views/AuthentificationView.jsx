@@ -12,7 +12,7 @@ const AuthentificationView = ({onLoginSuccess}) => {
     const fetchUser = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/login", {
+            const response = await fetch("http://localhost:5005/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -36,7 +36,51 @@ const AuthentificationView = ({onLoginSuccess}) => {
             return { error: error.message }; // Return error message instead of throwing
         }
     };
+
+    const fetchCompetencies = async (e) => {
+        try {
+            const response = await fetch("http://localhost:5005/api/competencies", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await response.json(); // Parse JSON response
+            
+            if (!response.ok) {
+                // Return the detailed error message from the server response
+                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            }
     
+            console.log("Response:", data);
+            return data; // Return user data if successful
+        } catch (error) {
+            console.error("Error:", error.message);
+            return { error: error.message }; // Return error message instead of throwing
+        }
+    };
+
+    const fetchProfile = async (e) => {
+        try {
+            const response = await fetch("http://localhost:5005/api/applicantProfile", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                // Return the detailed error message from the server response
+                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            }
+
+            console.log("Response:", data);
+            return data; // Return user data if successfuls
+        }catch (error) {
+            console.error("Error:", error.message);
+            return { error: error.message }; // Return error message instead of throwing
+        }
+    };
     
 
     return (
@@ -82,6 +126,16 @@ const AuthentificationView = ({onLoginSuccess}) => {
                         <p onClick={goToRegister} className="text-blue-500 hover:underline">
                             Register an account
                         </p>
+                    </div>
+
+                    <div className="text-center">
+                        <p onClick={fetchCompetencies} className="text-blue-500 hover:underline">
+                            Fetch Competencies                        </p>
+                    </div>
+
+                    <div className="text-center">
+                        <p onClick={fetchProfile} className="text-blue-500 hover:underline">
+                            Check earlier applcant compentencies                        </p>
                     </div>
                 </form>
             </div>
