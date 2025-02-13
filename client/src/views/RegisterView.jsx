@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from "mobx-react-lite";
 
-const RegisterPresenter = observer(() => {
+const RegisterView = observer(() => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [personNumber, setPersonNumber] = useState('');
@@ -10,45 +10,46 @@ const RegisterPresenter = observer(() => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState({});
+    
+    // Track password visibility state
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    // Track field focus
+    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+    const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
 
     const validateFields = () => {
         let newErrors = {};
 
-        // First Name Validation
         setFirstName(firstName.trim());
         if (!/^[A-Za-z]{2,255}$/.test(firstName)) {
             newErrors.firstName = "First name must be alphabetic, 2-255 characters.";
         }
 
-        // Last Name Validation
         setLastName(lastName.trim());
         if (!/^[A-Za-z]{2,255}$/.test(lastName)) {
             newErrors.lastName = "Last name must be alphabetic, 2-255 characters.";
         }
 
-        // Person Number Validation
         const cleanedPersonNumber = personNumber.replace(/-/g, '');
         if (!/^\d{12}$/.test(cleanedPersonNumber)) {
             newErrors.personNumber = "ID Number must be exactly 12 digits.";
         }
 
-        // Username Validation
         setUsername(username.trim());
         if (!/^[A-Za-z0-9]{6,255}$/.test(username)) {
             newErrors.username = "Username must be alphanumeric, 6-255 characters.";
         }
 
-        // Email Validation
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             newErrors.email = "Invalid email format.";
         }
 
-        // Password Validation
         if (!/^[A-Za-z0-9!@$%^&*+#]{6,255}$/.test(password)) {
             newErrors.password = "Password must be 6-255 characters and may contain alphanumeric characters with (!, @, $, %, ^, &, *, +, #).";
         }
 
-        // Confirm Password Validation
         if (confirmPassword !== password) {
             newErrors.confirmPassword = "Passwords do not match.";
         }
@@ -103,26 +104,71 @@ const RegisterPresenter = observer(() => {
                         ))}
                     </div>
                     <div className="flex flex-col gap-6">
-                        {[{ label: "Email", state: email, setState: setEmail, name: "email" },
-                          { label: "Password", state: password, setState: setPassword, name: "password" },
-                          { label: "Confirm Password", state: confirmPassword, setState: setConfirmPassword, name: "confirmPassword" }]
-                        .map(({ label, state, setState, name }) => (
-                            <div key={name}>
-                                <label className="block text-gray-600 text-sm font-semibold mb-2">{label}</label>
-                                <input 
-                                    type="text" 
-                                    value={state} 
-                                    onChange={(e) => setState(e.target.value)} 
-                                    className={`w-full p-3 border ${errors[name] ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                                />
-                                {errors[name] && <p className="text-red-500 text-sm">{errors[name]}</p>}
-                            </div>
-                        ))}
+                        {/* Email Field */}
                         <div>
-                            <button onClick={registerUser} className="w-full mt-7 bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
-                                Register
-                            </button>
+                            <label className="block text-gray-600 text-sm font-semibold mb-2">Email</label>
+                            <input 
+                                type="text"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className={`w-full p-3 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                            />
+                            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
                         </div>
+
+                        {/* Password Field with Show/Hide */}
+                        <div className="relative">
+                            <label className="block text-gray-600 text-sm font-semibold mb-2">Password</label>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                onFocus={() => setIsPasswordFocused(true)}
+                                onBlur={() => setIsPasswordFocused(false)}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16"
+                            />
+                            {isPasswordFocused && (
+                                <button
+                                    type="button"
+                                    onMouseDown={(e) => {
+                                        e.preventDefault();
+                                        setShowPassword(!showPassword);
+                                    }}
+                                    className="absolute right-3 text-sm text-blue-500 hover:underline"
+                                >
+                                    {showPassword ? "Hide" : "Show"}
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Confirm Password Field with Show/Hide */}
+                        <div className="relative">
+                            <label className="block text-gray-600 text-sm font-semibold mb-2">Confirm Password</label>
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                onFocus={() => setIsConfirmPasswordFocused(true)}
+                                onBlur={() => setIsConfirmPasswordFocused(false)}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16"
+                            />
+                            {isConfirmPasswordFocused && (
+                                <button
+                                    type="button"
+                                    onMouseDown={(e) => {
+                                        e.preventDefault();
+                                        setShowConfirmPassword(!showConfirmPassword);
+                                    }}
+                                    className="absolute right-3 text-sm text-blue-500 hover:underline"
+                                >
+                                    {showConfirmPassword ? "Hide" : "Show"}
+                                </button>
+                            )}
+                        </div>
+
+                        <button onClick={registerUser} className="w-full mt-7 bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
+                            Register
+                        </button>
                     </div>
                 </form>
             </div>
@@ -130,4 +176,4 @@ const RegisterPresenter = observer(() => {
     );
 });
 
-export default RegisterPresenter;
+export default RegisterView;
