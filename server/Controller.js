@@ -29,7 +29,7 @@ class Controller {
         return null;
     }
 
-    async getCompetencies() {
+    async competencies() {
         const competencies = await this.agentDAO.getCompetencies();
         return competencies;
     }

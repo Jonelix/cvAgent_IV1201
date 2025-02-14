@@ -11,10 +11,34 @@ const AuthentificationView = ({ onLoginSuccess }) => {
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const passwordInputRef = useRef(null);
 
+    
+    const fetchCompetencies = async (e) => {
+        e.preventDefault();
+        try{
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                // Return the detailed error message from the server response
+                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            }
+            console.log("Response:", data);
+            return data;
+        }catch(error){
+            console.error("Error:", error.message);
+            return { error: error.message };
+        }
+    }
+        
+    
     const fetchUser = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:5005/api/login", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -36,32 +60,9 @@ const AuthentificationView = ({ onLoginSuccess }) => {
         }
     };
 
-    const fetchCompetencies = async (e) => {
-        try {
-            const response = await fetch("http://localhost:5005/api/competencies", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            const data = await response.json(); // Parse JSON response
-            
-            if (!response.ok) {
-                // Return the detailed error message from the server response
-                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
-            }
-    
-            console.log("Response:", data);
-            return data; // Return user data if successful
-        } catch (error) {
-            console.error("Error:", error.message);
-            return { error: error.message }; // Return error message instead of throwing
-        }
-    };
-
     const fetchProfile = async (e) => {
         try {
-            const response = await fetch("http://localhost:5005/api/applicantProfile", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/applicantProfile", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -152,6 +153,8 @@ const AuthentificationView = ({ onLoginSuccess }) => {
                         <p onClick={fetchProfile} className="text-blue-500 hover:underline">
                             Check earlier applcant compentencies                        </p>
                     </div>
+
+
                 </form>
             </div>
         </div>

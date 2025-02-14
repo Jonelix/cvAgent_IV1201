@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 const RegisterPresenter = observer(() => {
     return (
-        <RegisterView/>
+        <RegisterView model={model}/>
     );
 });
 

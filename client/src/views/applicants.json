@@ -1,0 +1,212 @@
+[
+    {
+        "person_id": 1,
+        "person_name": "John",
+        "surname": "Doe",
+        "competencies": [
+            {
+                "competence_name": "JavaScript",
+                "years_of_experience": 5
+            },
+            {
+                "competence_name": "Python",
+                "years_of_experience": 3
+            }
+        ],
+        "availability": [
+            {"startdate": "2024-03-01", "enddate": "2024-06-01"}
+        ],
+        "status": 0
+    },
+    {
+        "person_id": 2,
+        "person_name": "Jane",
+        "surname": "Smith",
+        "competencies": [
+            {
+                "competence_name": "Java",
+                "years_of_experience": 7
+            },
+            {
+                "competence_name": "SQL",
+                "years_of_experience": 4
+            }
+        ],
+        "availability": [
+            {"startdate": "2024-04-15", "enddate": "2024-08-15"},
+            {"startdate": "2024-10-01", "enddate": "2024-12-31"}
+        ],
+        "status": 1
+    },
+    {
+        "person_id": 3,
+        "person_name": "Alice",
+        "surname": "Johnson",
+        "competencies": [
+            {
+                "competence_name": "C++",
+                "years_of_experience": 6
+            },
+            {
+                "competence_name": "Go",
+                "years_of_experience": 2
+            }
+        ],
+        "availability": [
+            {"startdate": "2024-05-01", "enddate": "2024-09-01"}
+        ],
+        "status": 2
+    },
+    {
+        "person_id": 4,
+        "person_name": "Michael",
+        "surname": "Brown",
+        "competencies": [
+            {
+                "competence_name": "Ruby",
+                "years_of_experience": 8
+            },
+            {
+                "competence_name": "PHP",
+                "years_of_experience": 5
+            }
+        ],
+        "availability": [
+            {"startdate": "2024-06-10", "enddate": "2024-09-30"}
+        ],
+        "status": 0
+    },
+    {
+        "person_id": 5,
+        "person_name": "Emily",
+        "surname": "Davis",
+        "competencies": [
+            {
+                "competence_name": "Swift",
+                "years_of_experience": 4
+            },
+            {
+                "competence_name": "Kotlin",
+                "years_of_experience": 3
+            }
+        ],
+        "availability": [
+            {"startdate": "2024-07-01", "enddate": "2024-11-30"}
+        ],
+        "status": 1
+    },
+    {
+        "person_id": 3,
+        "person_name": "Alice",
+        "surname": "Johnson",
+        "competencies": [
+            {
+                "competence_name": "C++",
+                "years_of_experience": 6
+            },
+            {
+                "competence_name": "Go",
+                "years_of_experience": 2
+            }
+        ],
+        "availability": [
+            {"startdate": "2024-05-01", "enddate": "2024-09-01"}
+        ],
+        "status": 2
+    },
+    {
+        "person_id": 4,
+        "person_name": "Michael",
+        "surname": "Brown",
+        "competencies": [
+            {
+                "competence_name": "Ruby",
+                "years_of_experience": 8
+            },
+            {
+                "competence_name": "PHP",
+                "years_of_experience": 5
+            }
+        ],
+        "availability": [
+            {"startdate": "2024-06-10", "enddate": "2024-09-30"}
+        ],
+        "status": 0
+    },
+    {
+        "person_id": 3,
+        "person_name": "Alice",
+        "surname": "Johnson",
+        "competencies": [
+            {
+                "competence_name": "C++",
+                "years_of_experience": 6
+            },
+            {
+                "competence_name": "Go",
+                "years_of_experience": 2
+            }
+        ],
+        "availability": [
+            {"startdate": "2024-05-01", "enddate": "2024-09-01"}
+        ],
+        "status": 2
+    },
+    {
+        "person_id": 4,
+        "person_name": "Michael",
+        "surname": "Brown",
+        "competencies": [
+            {
+                "competence_name": "Ruby",
+                "years_of_experience": 8
+            },
+            {
+                "competence_name": "PHP",
+                "years_of_experience": 5
+            }
+        ],
+        "availability": [
+            {"startdate": "2024-06-10", "enddate": "2024-09-30"}
+        ],
+        "status": 0
+    },
+    {
+        "person_id": 3,
+        "person_name": "Alice",
+        "surname": "Johnson",
+        "competencies": [
+            {
+                "competence_name": "C++",
+                "years_of_experience": 6
+            },
+            {
+                "competence_name": "Go",
+                "years_of_experience": 2
+            }
+        ],
+        "availability": [
+            {"startdate": "2024-05-01", "enddate": "2024-09-01"}
+        ],
+        "status": 2
+    },
+    {
+        "person_id": 4,
+        "person_name": "Michael",
+        "surname": "Brown",
+        "competencies": [
+            {
+                "competence_name": "Ruby",
+                "years_of_experience": 8
+            },
+            {
+                "competence_name": "PHP",
+                "years_of_experience": 5
+            }
+        ],
+        "availability": [
+            {"startdate": "2024-06-10", "enddate": "2024-09-30"}
+        ],
+        "status": 0
+    }
+]

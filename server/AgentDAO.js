@@ -25,6 +25,14 @@ const Person = database.define('person', {
     timestamps: false     // Disable automatic createdAt/updatedAt columns if not needed
 });
 
+const Competence = database.define('competence', {
+    competence_id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    name: { type: DataTypes.STRING, allowNull: true }
+},{
+    tableName: 'competence',
+    timestamps: false     // Disable automatic createdAt/updatedAt columns if not needed
+});
+
 (async () => {
     await database.sync({ force: false }); // Adjust as needed
 })();
@@ -40,7 +48,7 @@ class AgentDAO {
         return await Person.create({ 
             name: firstName, 
             surname: lastName, 
-            pnr: personNumber, 
+            pnr: personNumber,   
             username, 
             email, 
             password: password, 
@@ -71,9 +79,11 @@ class AgentDAO {
     }
     */
     
-async getApplicantProfile() {
-    const applicant = await database.query(
-        `SELECT p.person_id, 
+    async getApplicantProfile() {
+        const applicant = await database.query(
+            `
+            SELECT 
+                p.person_id, 
                 p.name AS person_name, 
                 p.surname, 
                 JSON_AGG(
@@ -81,15 +91,33 @@ async getApplicantProfile() {
                         'competence_name', c.name, 
                         'years_of_experience', cp.years_of_experience
                     )
-                ) AS competencies
-        FROM competence_profile cp
-        JOIN person p ON cp.person_id = p.person_id
-        JOIN competence c ON cp.competence_id = c.competence_id
-        GROUP BY p.person_id, p.name, p.surname;`,
-        { type: database.QueryTypes.SELECT }
-    );   
-    return applicant;
-}
+                ) AS competencies,
+                avail.from_date,
+                avail.to_date,
+                appStatus.status,
+                appStatus.beingHandled,
+                appStatus.timeout
+            FROM competence_profile cp
+            JOIN person p ON cp.person_id = p.person_id
+            JOIN competence c ON cp.competence_id = c.competence_id
+            LEFT JOIN (
+                SELECT 
+                    person_id,
+                    MIN(from_date) AS from_date,
+                    MAX(to_date) AS to_date
+                FROM availability
+                GROUP BY person_id
+            ) avail ON p.person_id = avail.person_id
+            LEFT JOIN applicationStatus appStatus ON p.person_id = appStatus.person_id
+            GROUP BY p.person_id, p.name, p.surname, avail.from_date, avail.to_date, appStatus.status, appStatus.beingHandled, appStatus.timeout;
+            `,  
+            { type: database.QueryTypes.SELECT }
+        );   
+        return applicant;
+    }
+    
+    
+    
 
 }
 
