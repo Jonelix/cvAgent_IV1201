@@ -40,6 +40,9 @@ const RecruiterView = ({ model, applicantsModel }) => {
         }
     };
 
+    //Preliminary data
+    getApplicants();
+
     const searchForApplicants = () => {
         if (searchTerm.trim() === "") {
             setInputError(false);
