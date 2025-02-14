@@ -4,7 +4,7 @@ import RecruiterPresenter from "./RecruiterPresenter.jsx";
 import ApplicantPresenter from "./ApplicantPresenter.jsx";
 
 const DashboardPresenter = observer(({ model, applicantsModel }) => {
-    return (!model.isLoggedIn ? <RecruiterPresenter model={model} applicantsModel={applicantsModel}/> : <ApplicantPresenter model={model}/> );
+    return (model.role_id == 2 ? <RecruiterPresenter model={model} applicantsModel={applicantsModel}/> : <ApplicantPresenter model={model}/> );
 });
 
 export default DashboardPresenter;

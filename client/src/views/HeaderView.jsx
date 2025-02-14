@@ -22,7 +22,11 @@ const HeaderView = ({ model, isLoggedIn }) => {
 
     const goToDashboard = () => {
         // Change this to your actual dashboard route
-        window.location.href = "#/dashboard";
+        if (isLoggedIn == true) {
+            window.location.href = "#/dashboard";
+        } else {
+            window.location.href = "#/auth";
+        }
     };
 
     return (
