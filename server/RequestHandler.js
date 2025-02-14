@@ -30,7 +30,7 @@ class RequestHandler {
 
 
 
-        app.get('/api/applicantProfile', async (req, res) => {
+        app.get('/api/applicantProfiles', async (req, res) => {
             try {
                 const applicantProfile = await this.controller.applicantProfile();
                 if (!applicantProfile) {

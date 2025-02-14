@@ -6,7 +6,7 @@ import AuthentificationPresenter from "./AuthentificationPresenter.jsx";
 import RegisterPresenter from "../views/RegisterView.jsx";
 import DashboardPresenter from "./DashboardPresenter.jsx";
 
-const MainPresenter = observer(({ model }) => {
+const MainPresenter = observer(({ model, applicantsModel }) => {
     return (
         <div className="flex flex-grow items-center justify-center">
             <Routes>
@@ -14,7 +14,7 @@ const MainPresenter = observer(({ model }) => {
                 <Route path="/profile" element={<ProfilePresenter model={model}/>} />
                 <Route path="/auth" element={<AuthentificationPresenter model={model}/>} />
                 <Route path="/registration" element={<RegisterPresenter model={model}/>} />
-                <Route path="/dashboard" element={<DashboardPresenter model={model}/>} />
+                <Route path="/dashboard" element={<DashboardPresenter model={model} applicantsModel={applicantsModel}/>} />
             </Routes>
         </div>
     );
