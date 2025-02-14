@@ -15,10 +15,11 @@ const statusText = {
 
 const RecruiterView = ({ model, applicantsModel }) => {
     const [applicants, setApplicants] = useState(applicantsModel || []);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [inputError, setInputError] = useState(false);
+    const [expanded, setExpanded] = useState(null);
     const [editingStatus, setEditingStatus] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [inputError, setInputError] = useState(false);
 
     const getApplicants = async () => {
         try {
@@ -38,12 +39,6 @@ const RecruiterView = ({ model, applicantsModel }) => {
             console.error("Error:", error.message);
         }
     };
-
-    getApplicants();
-
-    //Get specific applicant
-
-    //
 
     const searchForApplicants = () => {
         if (searchTerm.trim() === "") {
@@ -84,25 +79,74 @@ const RecruiterView = ({ model, applicantsModel }) => {
 
             {inputError && <p className="text-red-500 text-sm mt-1">Invalid input. Please enter a valid number.</p>}
 
-            {/* Applicants Table */}
-            <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
-                    <thead className="bg-gray-800 text-white">
-                        <tr>
-                            <th className="py-2 px-4 text-left">Name</th>
-                            <th className="py-2 px-4 text-left">Competencies</th>
-                            <th className="py-2 px-4 text-left">Availability</th>
-                            <th className="py-2 px-4 text-left">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {applicants.map((applicant) => (
-                            <tr key={applicant.person_id} className="border-b hover:bg-gray-100">
-                                {/* Name */}
-                                <td className="py-2 px-4 font-semibold">{`${applicant.person_name} ${applicant.surname}`}</td>
+            {/* Applicants List */}
+            <div className="space-y-2">
+                {applicants.map((applicant) => (
+                    <div
+                        key={applicant.person_id}
+                        className={`border border-gray-300 rounded-lg shadow-md p-4 cursor-pointer transition-all ${
+                            expanded === applicant.person_id ? "bg-gray-100" : "bg-white"
+                        }`}
+                        onClick={() => setExpanded(expanded === applicant.person_id ? null : applicant.person_id)}
+                    >
+                        {/* Name & Status Row */}
+                        <div className="flex justify-between items-center">
+                            <p className="text-lg font-semibold">{`${applicant.person_name} ${applicant.surname}`}</p>
 
-                                {/* Competencies */}
-                                <td className="py-2 px-4">
+                            {/* Status Change Flow */}
+                            <div className="flex items-center gap-2">
+                                {editingStatus === applicant.person_id ? (
+                                    <>
+                                        <select
+                                            className="p-1 border rounded shadow-md"
+                                            value={selectedStatus ?? applicant.status}
+                                            onChange={(e) => setSelectedStatus(parseInt(e.target.value))}
+                                            onClick={(e) => e.stopPropagation()} // Prevent row toggle when clicking dropdown
+                                        >
+                                            {Object.entries(statusText).map(([key, text]) => (
+                                                <option key={key} value={key}>
+                                                    {text}
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                        <button
+                                            className="bg-green-500 hover:bg-green-400 text-white px-3 py-1 rounded-lg shadow"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent row toggle
+                                                console.log(`Confirmed status change: ${selectedStatus}`);
+                                                setEditingStatus(null);
+                                                setSelectedStatus(null);
+                                                // Handle API update here
+                                            }}
+                                        >
+                                            Confirm
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="mr-2 font-bold">{statusText[applicant.status]}</p>
+                                        <div className={`w-5 h-5 rounded-full ${statusColors[applicant.status]}`}></div>
+                                        <button
+                                            className="ml-2 border border-gray-600 px-2 py-1 rounded-md shadow"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent row toggle
+                                                setEditingStatus(applicant.person_id);
+                                            }}
+                                        >
+                                            Change
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Expanded Details */}
+                        {expanded === applicant.person_id && (
+                            <div className="mt-4 grid grid-cols-2 gap-4">
+                                {/* Competencies (Left Side) */}
+                                <div className="bg-white shadow-md rounded-lg p-4">
+                                    <h2 className="font-semibold text-lg mb-2">Competencies</h2>
                                     <ul className="list-disc pl-4">
                                         {applicant.competencies.map((comp, index) => (
                                             <li key={index} className="text-sm">
@@ -110,70 +154,25 @@ const RecruiterView = ({ model, applicantsModel }) => {
                                             </li>
                                         ))}
                                     </ul>
-                                </td>
+                                </div>
 
-                                {/* Availability */}
-                                <td className="py-2 px-4">
+                                {/* Availability (Right Side) */}
+                                <div className="bg-white shadow-md rounded-lg p-4">
+                                    <h2 className="font-semibold text-lg mb-2">Availability</h2>
                                     {applicant.availability.length > 0 ? (
-                                        <ul className="list-disc pl-4 text-sm">
+                                        <ul className="list-disc pl-4">
                                             {applicant.availability.map((period, index) => (
-                                                <li key={index}>{`${period[0]} - ${period[1]}`}</li>
+                                                <li key={index} className="text-sm">{`${period[0]} - ${period[1]}`}</li>
                                             ))}
                                         </ul>
                                     ) : (
-                                        <p className="text-gray-500 text-sm">No availability</p>
+                                        <p className="text-gray-500">No availability</p>
                                     )}
-                                </td>
-
-                                {/* Status Change Flow */}
-                                <td className="py-2 px-4">
-                                    {editingStatus === applicant.person_id ? (
-                                        <div className="flex items-center gap-2">
-                                            {/* Dropdown */}
-                                            <select
-                                                className="p-1 border rounded shadow-md"
-                                                value={selectedStatus ?? applicant.status}
-                                                onChange={(e) => setSelectedStatus(parseInt(e.target.value))}
-                                            >
-                                                {Object.entries(statusText).map(([key, text]) => (
-                                                    <option key={key} value={key}>
-                                                        {text}
-                                                    </option>
-                                                ))}
-                                            </select>
-
-                                            {/* Confirm Button */}
-                                            <button
-                                                className="bg-green-500 hover:bg-green-400 text-white px-3 py-1 rounded-lg shadow"
-                                                onClick={() => {
-                                                    console.log(`Confirmed status change: ${selectedStatus}`);
-                                                    setEditingStatus(null);
-                                                    setSelectedStatus(null);
-                                                    // Handle API update here
-                                                }}
-                                            >
-                                                Confirm
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-center gap-2">
-                                            <p className="mr-2 font-bold">{statusText[applicant.status]}</p>
-                                            <div className={`w-5 h-5 rounded-full ${statusColors[applicant.status]}`}></div>
-
-                                            {/* Change Button */}
-                                            <button
-                                                className="ml-2 border border-gray-600 px-2 py-1 rounded-md shadow"
-                                                onClick={() => setEditingStatus(applicant.person_id)}
-                                            >
-                                                Change
-                                            </button>
-                                        </div>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
     );
