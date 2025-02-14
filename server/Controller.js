@@ -43,6 +43,16 @@ class Controller {
         const applicant = await this.agentDAO.getApplicantProfile(applicant_id);
         return applicant;
     }
+
+    async handleApplicantStatus(rec_id, app_id, timestamp) {
+        const applicant = await this.agentDAO.handleApplicantStatus(rec_id, app_id);
+        return applicant;
+    }
+
+    async confirmStatusUpdate (rec_id, app_id, status) {
+        const applicant = await this.agentDAO.confirmStatusUpdate(rec_id, app_id, status);
+        return applicant;
+    }
 }
 
 module.exports = Controller;

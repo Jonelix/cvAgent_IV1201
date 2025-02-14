@@ -175,7 +175,106 @@ class AgentDAO {
         return applicant;
     }
     
+    async handleApplicantStatus(rec_id, app_id) {
+        const application = await database.query(
+            `
+            WITH selected_application AS (
+                SELECT 
+                    person_id, 
+                    beingHandled
+                FROM applicationStatus
+                WHERE person_id = :app_id
+                LIMIT 1
+            )
+            SELECT 
+                CASE 
+                    WHEN sa.beingHandled IS NOT NULL AND sa.beingHandled != :rec_id 
+                    THEN 'This application is being handled by another user'
+                    ELSE NULL
+                END AS message
+            FROM selected_application sa;
+            `,
+            { 
+                replacements: { rec_id, app_id },
+                type: database.QueryTypes.SELECT
+            }
+        );
     
+        if (application.length > 0 && application[0].message) {
+            return application[0].message;
+        }
+    
+        // If beingHandled is NULL, update it with rec_id
+        await database.query(
+            `
+            UPDATE applicationStatus
+            SET beingHandled = :rec_id
+            WHERE person_id = :app_id AND beingHandled IS NULL;
+            `,
+            { 
+                replacements: { rec_id, app_id },
+                type: database.QueryTypes.UPDATE
+            }
+        );
+    
+        return "Application is now being handled by you.";
+    }
+    
+    
+    
+    
+
+    async confirmStatusUpdate(rec_id, app_id, status) {
+        const application = await database.query(
+            `
+            WITH selected_application AS (
+                SELECT 
+                    person_id, 
+                    beingHandled
+                FROM applicationStatus
+                WHERE person_id = :app_id
+                LIMIT 1
+            )
+            SELECT 
+                CASE 
+                    WHEN sa.beingHandled IS NOT NULL AND sa.beingHandled != :rec_id 
+                    THEN 'This application is being handled by another user'
+                    ELSE NULL
+                END AS message
+            FROM selected_application sa;
+            `,
+            { 
+                replacements: { rec_id, app_id },
+                type: database.QueryTypes.SELECT
+            }
+        );
+    
+        if (application.length > 0 && application[0].message) {
+            return application[0].message;
+        }
+    
+        // If beingHandled matches rec_id, update the status and set beingHandled to NULL
+        const result = await database.query(
+            `
+            UPDATE applicationStatus
+            SET status = :status, beingHandled = NULL
+            WHERE person_id = :app_id AND beingHandled = :rec_id;
+            `,
+            { 
+                replacements: { rec_id, app_id, status },
+                type: database.QueryTypes.UPDATE
+            }
+        );
+    
+        if (result[1] === 0) {
+            return "Failed to update status. Either the application was not assigned to you or it was already released.";
+        }
+    
+        return "Application status updated successfully.";
+    }
+    
+ 
+
     
     
     

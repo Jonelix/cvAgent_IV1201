@@ -95,6 +95,41 @@ class RequestHandler {
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
         });
+
+        app.post('/api/handleApplicantStatus', async (req, res) => {
+            const { rec_id, app_id, timestamp } = req.body;
+            console.log("Rec_id: ", rec_id, "App_id: ", app_id, "Timestamp: ", timestamp);
+            try {
+                if (!rec_id || !app_id || !timestamp) {
+                    return res.status(400).json({ message: 'All fields are required' });
+                }
+
+                const user = await this.controller.handleApplicantStatus(rec_id, app_id, timestamp);
+                res.status(201).json({ message: 'User status handling has been initiated', user });
+            } catch (error) {
+                if (error.name === 'SequelizeUniqueConstraintError') {
+                    return res.status(400).json({ message: 'Username or email already exists' });
+                }
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
+        app.post('/api/confirmStatusUpdate', async (req, res) => {
+            const { rec_id, app_id, status } = req.body;
+            try {
+                if (rec_id == null || app_id == null || status == null) {
+                    return res.status(400).json({ message: 'All fields are required' });
+                }
+
+                const user = await this.controller.confirmStatusUpdate(rec_id, app_id, status);
+                res.status(201).json({ message: 'User status handling has been initiated', user });
+            } catch (error) {
+                if (error.name === 'SequelizeUniqueConstraintError') {
+                    return res.status(400).json({ message: 'Username or email already exists' });
+                }
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
     }
 }
 

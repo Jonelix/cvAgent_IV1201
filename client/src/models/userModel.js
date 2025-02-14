@@ -16,6 +16,7 @@ class UserModel {
     }
 
     setUserData(userData) {
+        this.user_id = userData.person_id;
         this.email = userData.email;
         this.name = userData.name;
         this.password = userData.password;

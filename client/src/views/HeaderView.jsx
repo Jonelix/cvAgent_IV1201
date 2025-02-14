@@ -13,6 +13,7 @@ const HeaderView = ({ model, isLoggedIn }) => {
     }
 
     function goToProfile() {
+        console.log(model)
         window.location.href = "#/profile";
     }
 

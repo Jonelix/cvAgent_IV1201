@@ -1,5 +1,5 @@
-import { useState } from "react";
-import applicantsData from './applicants.json';
+import { set } from "mobx";
+import { useState, useEffect } from "react";
 
 const statusColors = {
     0: "bg-yellow-400", // Unhandled
@@ -14,12 +14,23 @@ const statusText = {
 };
 
 const RecruiterView = ({ model, applicantsModel }) => {
-    const [applicants, setApplicants] = useState(applicantsModel || []);
+    const [applicants, setApplicants] = useState(applicantsModel.applicants || []);
     const [expanded, setExpanded] = useState(null);
     const [editingStatus, setEditingStatus] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [inputError, setInputError] = useState(false);
+    const currentRecruiter = model.model.person_id || null;
+
+    useEffect(() => {
+        if (editingStatus !== null) {
+            postHandleApplicantStatus();
+        }
+    }, [editingStatus]);
+
+    useEffect(() => {
+        setApplicants(applicantsModel.applicants || []);
+    }, [applicantsModel.applicants]);
 
     const getApplicants = async () => {
         try {
@@ -42,9 +53,7 @@ const RecruiterView = ({ model, applicantsModel }) => {
 
     //Get applicant by ID
     const postGetApplicant = async (applicant_id) => {
-        try {
-            console.log("Fetching applicant by ID:", applicant_id);
-    
+        try {    
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/applicantProfile", {
                 method: "POST",
                 headers: {
@@ -69,9 +78,73 @@ const RecruiterView = ({ model, applicantsModel }) => {
         }
     };
 
+
+
     //Start applicant change status
+    const postHandleApplicantStatus = async () => {
+        try {
+    
+            // Generate timestamp = current time + 15 minutes
+            const timestamp = new Date();
+            timestamp.setMinutes(timestamp.getMinutes() + 15);
+            const formattedTimestamp = timestamp.toISOString().slice(0, 19).replace("T", " ");
+    
+            const response = await fetch("http://localhost:5005/api/handleApplicantStatus", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ 
+                    rec_id: currentRecruiter,  
+                    app_id: editingStatus, 
+                    timestamp: formattedTimestamp 
+                }),
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            }
+    
+            console.log("Handling Status Response:", data);
+            return data;
+        } catch (error) {
+            console.error("Error:", error.message);
+            return { error: error.message };
+        }
+    };
 
     //End applicant change status
+    const postConfirmStatusUpdate = async (currentRecruiter, editingStatus, selectedStatus) => {
+        try {
+    
+            const response = await fetch("http://localhost:5005/api/confirmStatusUpdate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    rec_id: currentRecruiter,  
+                    app_id: editingStatus, 
+                    status: selectedStatus
+                }),
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            }
+    
+            console.log("Status Update Response:", data);
+            if (searchTerm != ""){postGetApplicant(searchTerm)}else{getApplicants()};
+            return data;
+        } catch (error) {
+            console.error("Error:", error.message);
+            return { error: error.message };
+        }
+    };
 
     //Reload applications
 
@@ -81,7 +154,6 @@ const RecruiterView = ({ model, applicantsModel }) => {
             getApplicants();
         } else if (!isNaN(searchTerm) && Number.isInteger(Number(searchTerm))) {
             setInputError(false);
-            console.log(`Fetching data for ID: ${searchTerm}`);
             postGetApplicant(searchTerm);
         } else {
             setInputError(true);
@@ -150,9 +222,10 @@ const RecruiterView = ({ model, applicantsModel }) => {
                                             className="bg-green-500 hover:bg-green-400 text-white px-3 py-1 rounded-lg shadow"
                                             onClick={(e) => {
                                                 e.stopPropagation(); // Prevent row toggle
-                                                console.log(`Confirmed status change: ${selectedStatus}`);
+                                                postConfirmStatusUpdate(currentRecruiter, editingStatus, selectedStatus);
                                                 setEditingStatus(null);
                                                 setSelectedStatus(null);
+                                                setExpanded(null);
                                                 // Handle API update here
                                             }}
                                         >
@@ -170,6 +243,7 @@ const RecruiterView = ({ model, applicantsModel }) => {
                                                 onClick={(e) => {
                                                     e.stopPropagation(); // Prevent row toggle
                                                     setEditingStatus(applicant.person_id);
+                                                    setSelectedStatus(applicant.status); // Set the dropdown to current status
                                                 }}
                                             >
                                                 Change

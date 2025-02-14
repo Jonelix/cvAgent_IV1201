@@ -1,9 +1,9 @@
 import RegisterView from '../views/RegisterView';
 import { observer } from 'mobx-react-lite';
 
-const RegisterPresenter = observer((model, applicantsModel) => {
+const RegisterPresenter = observer((model) => {
     return (
-        <RegisterView model={model} applicantsModel={applicantsModel}/>
+        <RegisterView model={model}/>
     );
 });
 
