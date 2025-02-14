@@ -39,6 +39,8 @@ const RecruiterView = ({ model, applicantsModel }) => {
         }
     };
 
+    getApplicants();
+
     //Get specific applicant
 
     //
