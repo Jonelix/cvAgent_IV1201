@@ -40,8 +40,40 @@ const RecruiterView = ({ model, applicantsModel }) => {
         }
     };
 
-    //Preliminary data
-    getApplicants();
+    //Get applicant by ID
+    const postGetApplicant = async (applicant_id) => {
+        try {
+            console.log("Fetching applicant by ID:", applicant_id);
+    
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/applicantProfile", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ applicant_id }),
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            }
+    
+            // Ensure data is stored as an array, matching the GET request format
+            console.log("Response:", data.data);
+            setApplicants(data.data); // No need for [data.data] since backend now returns an array
+            return data;
+        } catch (error) {
+            console.error("Error:", error.message);
+            return { error: error.message };
+        }
+    };
+
+    //Start applicant change status
+
+    //End applicant change status
+
+    //Reload applications
 
     const searchForApplicants = () => {
         if (searchTerm.trim() === "") {
@@ -50,6 +82,7 @@ const RecruiterView = ({ model, applicantsModel }) => {
         } else if (!isNaN(searchTerm) && Number.isInteger(Number(searchTerm))) {
             setInputError(false);
             console.log(`Fetching data for ID: ${searchTerm}`);
+            postGetApplicant(searchTerm);
         } else {
             setInputError(true);
         }
@@ -72,7 +105,7 @@ const RecruiterView = ({ model, applicantsModel }) => {
                         }}
                     />
                     <button
-                        className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg"
+                        className="bg-slate-600 hover:bg-slate-500 text-white font-semibold py-2 px-4 rounded-lg"
                         onClick={searchForApplicants}
                     >
                         Search
@@ -130,15 +163,18 @@ const RecruiterView = ({ model, applicantsModel }) => {
                                     <>
                                         <p className="mr-2 font-bold">{statusText[applicant.status]}</p>
                                         <div className={`w-5 h-5 rounded-full ${statusColors[applicant.status]}`}></div>
-                                        <button
-                                            className="ml-2 border border-gray-600 px-2 py-1 rounded-md shadow"
-                                            onClick={(e) => {
-                                                e.stopPropagation(); // Prevent row toggle
-                                                setEditingStatus(applicant.person_id);
-                                            }}
-                                        >
-                                            Change
-                                        </button>
+                                        {/* Show "Change" button only when expanded */}
+                                        {expanded === applicant.person_id && (
+                                            <button
+                                                className="ml-2 border border-gray-600 px-2 py-1 rounded-md shadow"
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // Prevent row toggle
+                                                    setEditingStatus(applicant.person_id);
+                                                }}
+                                            >
+                                                Change
+                                            </button>
+                                        )}
                                     </>
                                 )}
                             </div>

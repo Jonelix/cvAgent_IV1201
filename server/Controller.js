@@ -34,8 +34,13 @@ class Controller {
         return competencies;
     }
 
-    async applicantProfile() {
-        const applicant = await this.agentDAO.getApplicantProfile();
+    async applicantProfiles() {
+        const applicant = await this.agentDAO.getApplicantProfiles();
+        return applicant;
+    }
+
+    async getApplicantProfile(applicant_id) {
+        const applicant = await this.agentDAO.getApplicantProfile(applicant_id);
         return applicant;
     }
 }

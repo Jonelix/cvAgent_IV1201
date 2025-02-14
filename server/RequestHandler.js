@@ -32,16 +32,37 @@ class RequestHandler {
 
         app.get('/api/applicantProfiles', async (req, res) => {
             try {
-                const applicantProfile = await this.controller.applicantProfile();
-                if (!applicantProfile) {
+                const applicantProfiles = await this.controller.applicantProfiles();
+                if (!applicantProfiles) {
                     res.status(404).json({ message: 'No applicant profile found' });
                 }else{
-                    res.status(200).json(applicantProfile);
+                    res.status(200).json(applicantProfiles);
                 }
             } catch (error) {
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
         });
+
+        app.post('/api/applicantProfile', async (req, res) => {
+            try {
+                const { applicant_id } = req.body;
+        
+                if (!applicant_id) {
+                    return res.status(400).json({ message: 'Missing applicant_id' });
+                }
+        
+                const applicant = await this.controller.getApplicantProfile(applicant_id);
+        
+                if (!applicant || applicant.length === 0) {
+                    return res.status(404).json({ message: 'Applicant not found' });
+                }
+        
+                res.status(200).json({ data: applicant }); // Ensure it's returned inside an array
+            } catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+        
 
         app.post('/api/login', async (req, res) => {
             const { username, password } = req.body;
