@@ -63,6 +63,16 @@ class Controller {
         const person = await this.agentDAO.fetchPerson(firstName, lastName);
         return person;
     }
+
+    async userCompetencies(person_id){
+        const userCompetencies = await this.agentDAO.getUserCompetencies(person_id);
+        return userCompetencies;
+    }
+
+    async userAvailability(person_id){
+        const userAvailability = await this.agentDAO.getUserAvailability(person_id);
+        return userAvailability;
+    }
 }
 
 module.exports = Controller;

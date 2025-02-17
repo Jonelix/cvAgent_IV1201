@@ -304,7 +304,50 @@ class AgentDAO {
         }
     }
     
+    async getUserCompetencies(person_id) {
+        const query = `
+            SELECT 
+                c.name AS competence_name, 
+                cp.years_of_experience
+            FROM competence_profile cp
+            JOIN competence c ON cp.competence_id = c.competence_id
+            WHERE cp.person_id = :person_id;
+        `;
+    
+        try {
+            const result = await database.query(query, {
+                replacements: { person_id },
+                type: database.QueryTypes.SELECT
+            });
+            
+            return result;
+        } catch (error) {
+            console.error('Error fetching user competencies:', error);
+            throw error;
+        }
+    }
 
+    async getUserAvailability(person_id) {
+        const query = `
+            SELECT 
+                from_date, 
+                to_date
+            FROM availability
+            WHERE person_id = :person_id;
+        `;
+    
+        try {
+            const result = await database.query(query, {
+                replacements: { person_id },
+                type: database.QueryTypes.SELECT
+            });
+            
+            return result;
+        } catch (error) {
+            console.error('Error fetching user availability:', error);
+            throw error;
+        }
+    }
 
     
  

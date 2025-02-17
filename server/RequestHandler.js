@@ -24,6 +24,42 @@ class RequestHandler {
             }
         });
 
+        app.post('/api/userCompetencies', async (req, res) => {
+            try {
+                const { person_id } = req.body;
+                if (!person_id) {
+                    return res.status(400).json({ message: 'Missing person_id' });
+                }
+
+                const userCompetencies = await this.controller.userCompetencies(person_id);
+                if (!userCompetencies) {
+                    res.status(404).json({ message: 'No user competencies found' });
+                }else{
+                    res.status(200).json(userCompetencies);
+                }
+            } catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
+        app.post('/api/userAvailability', async (req, res) => {
+            try {
+                const { person_id } = req.body;
+                if (!person_id) {
+                    return res.status(400).json({ message: 'Missing person_id' });
+                }
+
+                const userAvailability = await this.controller.userAvailability(person_id);
+                if (!userAvailability) {
+                    res.status(404).json({ message: 'No user availability found' });
+                }else{
+                    res.status(200).json(userAvailability);
+                }
+            } catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
         app.post('/api/fetchPerson', async (req, res) => {
             try {
                 const {firstName, lastName } = req.body;
