@@ -272,6 +272,40 @@ class AgentDAO {
     
         return "Application status updated successfully.";
     }
+
+
+    async createApplication(person_id, competence_id, years_of_experience, from_date, to_date) {
+        return await database.query(
+            `
+            INSERT INTO competence_profile (person_id, competence_id, years_of_experience)
+            VALUES (:person_id, :competence_id, :years_of_experience);
+            INSERT INTO availability (person_id, from_date, to_date)
+            VALUES (:person_id, :from_date, :to_date);
+            `,
+            { 
+                replacements: { person_id, competence_id, years_of_experience, from_date, to_date },
+                type: database.QueryTypes.INSERT
+            }
+        );
+    }
+    async fetchPerson(firstName, lastName) {
+        const query = `SELECT * FROM person WHERE name = :firstName AND surname = :lastName`;
+    
+        try {
+            const result = await database.query(query, {
+                replacements: { firstName, lastName },
+                type: database.QueryTypes.SELECT
+            });
+            
+            return result;
+        } catch (error) {
+            console.error('Error fetching person:', error);
+            throw error;
+        }
+    }
+    
+
+
     
  
 

@@ -29,7 +29,55 @@ const ApplicantView = () => {
             console.error("Error:", error.message);
             return { error: error.message };
         }
-    }
+    };
+
+    
+    const fetchPerson = async (e) => {
+        try {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/fetchPerson", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                // Return the detailed error message from the server response
+                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            }
+
+            console.log("Response:", data);
+            return data; // Return user data if successfuls
+        }catch (error) {
+            console.error("Error:", error.message);
+            return { error: error.message }; // Return error message instead of throwing
+        }
+    };
+
+    const registerApplication = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/application", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                // body: JSON.stringify({ }),
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            alert("User registered successfully");
+            console.log("Response:", data);
+            goToLogin();
+            return data;
+        } catch (error) {
+            console.error("Error:", error.message);
+            return { error: error.message };
+        }
+    };
+
+
+
 
     return (
         <div className="flex flex-col w-full h-full p-6">
@@ -56,6 +104,18 @@ const ApplicantView = () => {
                         </button>
                     </div>
                     <p className="text-gray-600">(Competence details will be displayed here)</p>
+
+
+                    <div>
+                        <h2 className="text-xl font-semibold mt-4">Person</h2>
+
+                        <button 
+                            onClick={fetchPerson} 
+                            className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">
+                            Fetch Data
+                        </button>
+                        <p className="text-gray-600">(Person details will be displayed here)</p>
+                    </div>
                 </div>
                 
                 {/* Availability Section */}

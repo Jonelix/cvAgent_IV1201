@@ -24,6 +24,30 @@ class RequestHandler {
             }
         });
 
+        app.get('/api/fetchPerson', async (req, res) => {
+            try {
+                // const {firstName, lastName } = req.body;
+
+               /* if (!firstName || !lastName) {
+                    return res.status(400).json({ message: 'Missing first name or last name' });
+                }
+                    */
+
+                let firstName = "Joelle";
+                let lastName = "Wilkinson";
+
+
+                const person = await this.controller.fetchPerson(firstName, lastName);
+                if (!person) {
+                    res.status(404).json({ message: 'No person found' });
+                } else {
+                    res.status(200).json(person);
+                }
+            } catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
 
 
 
@@ -127,6 +151,25 @@ class RequestHandler {
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
         });
+
+
+        app.post('/api/createApplication', async (req, res) => {
+            const { person_id, competence_id, years_of_experience, from_date, to_date } = req.body;
+            try {
+                if (!person_id || !competence_id || !years_of_experience || !from_date || !to_date) {
+                    return res.status(400).json({ message: 'All fields are required' });
+                }
+
+                const application = await this.controller.application(person_id, competence_id, years_of_experience, from_date, to_date);
+                res.status(201).json({ message: 'Application created successfully', application });
+            } catch (error) {
+                if (error.name === 'SequelizeUniqueConstraintError') {
+                    return res.status(400).json({ message: 'Username or email already exists' });
+                }
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
     }
 }
 

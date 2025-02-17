@@ -53,6 +53,16 @@ class Controller {
         const applicant = await this.agentDAO.confirmStatusUpdate(rec_id, app_id, status);
         return applicant;
     }
+
+    async application(){
+        const application = await this.agentDAO.createApplication();
+        return application;
+    }
+
+    async fetchPerson(firstName, lastName){
+        const person = await this.agentDAO.fetchPerson(firstName, lastName);
+        return person;
+    }
 }
 
 module.exports = Controller;
