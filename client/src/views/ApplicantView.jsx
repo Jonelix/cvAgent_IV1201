@@ -135,18 +135,20 @@ const ApplicantView = () => {
                             Fetch Data
                         </button>
                         {/* Display fetched person data */}
-                        {personData ? (
+                        {person.length > 0 ? (
                             <div className="mt-4">
-                                <pre>{JSON.stringify(personData, null, 2)}</pre> {/* Display raw JSON data */}
-                                {/* Alternatively, render specific fields */}
-                                {/* <p>Name: {personData.name}</p>
-                                <p>Surname: {personData.surname}</p> */}
+                                <ul>
+                                    {person.map((person, index) => (
+                                        <li key={index} className="mb-2">
+                                            <p>{person.name}</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                                
                             </div>
                         ) : (
                             <p className="text-gray-600">(Person details will be displayed here)</p>
                         )}
-
-
                     </div>
                 </div>
                 
