@@ -1,8 +1,10 @@
 
 import React, { useState } from "react"; 
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom"; 
 
-const ApplicantView = () => {
+
+const ApplicantView = ({ model }) => {
     const navigate = useNavigate();
     const [competencies, setCompetencies] = useState([]);
     const [person, setPerson] = useState([]);
@@ -150,6 +152,21 @@ const ApplicantView = () => {
                             className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">
                             Fetch Data
                         </button>
+
+
+                        {/* Display User Data */}
+                        <div className="mb-6">
+                            <h2 className="text-xl font-bold">User Profile</h2>
+                            <div className="space-y-2">
+                            <p><strong>Name:</strong> {model?.name}</p>
+                            <p><strong>Surname:</strong> {model?.surname}</p>
+                            <p><strong>Email:</strong> {model?.email}</p>
+                            <p><strong>Username:</strong> {model?.username}</p>
+                            {console.log(model)}
+
+                        </div>
+                        </div>
+
                         {/* Display fetched person data */}
                         {person.length > 0 ? (
                             <div className="mt-4">

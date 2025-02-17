@@ -1,5 +1,6 @@
 import AuthentificationView from "../views/AuthentificationView.jsx";
 import { observer } from "mobx-react-lite";
+import React from "react";
 
 const AuthentificationPresenter = observer(({ model }) => {
     const handleLoginSuccess = (userData) => {
