@@ -24,7 +24,7 @@ class RequestHandler {
             }
         });
 
-        app.POST('/api/fetchPerson', async (req, res) => {
+        app.post('/api/fetchPerson', async (req, res) => {
             try {
                 const {firstName, lastName } = req.body;
 

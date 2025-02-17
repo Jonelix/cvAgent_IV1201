@@ -41,11 +41,10 @@ const ApplicantView = () => {
     const fetchPerson = async (e) => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/fetchPerson", {
-                method: "POST",
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ firstName, lastName }),
             });
             const data = await response.json();
             if (!response.ok) {
