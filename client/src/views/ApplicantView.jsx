@@ -99,28 +99,29 @@ const ApplicantView = ({ model }) => {
                 <div className="grid grid-rows-3 gap-6 w-full">
                     {/* Person Section */}
                     <div className="p-4 border rounded-lg shadow-md bg-white w-1/3">
-                        <h2 className="text-xl font-semibold text-gray-800">Person</h2>
-                        <button 
-                            onClick={fetchPerson} 
-                            className="mt-2 px-3 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
-                            Fetch Data
-                        </button>
-                        {person.length > 0 ? (
-                            <ul className="mt-4 text-gray-700">
-                                {person.map((p, index) => (
-                                    <li key={index} className="mb-2 p-2 bg-gray-100 rounded-lg shadow-sm">{p.name}</li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="text-gray-500 mt-2">(Person details will be displayed here)</p>
-                        )}
+                        <h2 className="text-xl font-bold">User Profile</h2>
+                    
+                    {/* Display User Data */}
+
+                    {model?.name != null ? (
+                        <div className="mb-6">
+                        <div className="space-y-2">
+                        <p><strong>Name:</strong> {model?.name}</p>
+                        <p><strong>Surname:</strong> {model?.surname}</p>
+                        <p><strong>Email:</strong> {model?.email}</p>
+                        <p><strong>Username:</strong> {model?.username}</p>
+                        {console.log(model)}
+
+                        </div>
+                    </div>) :(<p className="text-gray-500 mt-2">(Person details will be displayed here)</p>)
+                }
                     </div>
                     
                     {/* Competence & Availability Section */}
                     <div className="grid grid-cols-2 gap-6 w-full">
                         {/* Competence Section */}
                         <div className="p-4 border rounded-lg shadow-md bg-white">
-                            <h2 className="text-xl font-semibold text-gray-800">Competence</h2>
+                            <h2 className="text-xl font-bold">Competence</h2>
                             <button 
                                 onClick={fetchCompetencies} 
                                 className="mt-2 px-3 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
@@ -139,7 +140,7 @@ const ApplicantView = ({ model }) => {
                         
                         {/* Availability Section */}
                         <div className="p-4 border rounded-lg shadow-md bg-white">
-                            <h2 className="text-xl font-semibold text-gray-800">Availability</h2>
+                            <h2 className="text-xl font-bold">Availability</h2>
                             <p className="text-gray-500 mt-2">(Availability details will be displayed here)</p>
                         </div>
                     </div>
