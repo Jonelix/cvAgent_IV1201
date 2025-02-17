@@ -56,6 +56,10 @@ const RegisterView = observer(() => {
         return Object.keys(newErrors).length === 0;
     };
 
+    function goToLogin() {
+        window.location.href = "#/auth";
+    }
+
     const registerUser = async (e) => {
         e.preventDefault();
         if (!validateFields()) return;
@@ -69,8 +73,9 @@ const RegisterView = observer(() => {
     
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
-            
+            alert("User registered successfully");
             console.log("Response:", data);
+            goToLogin();
             return data;
         } catch (error) {
             console.error("Error:", error.message);

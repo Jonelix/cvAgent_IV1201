@@ -9,10 +9,27 @@ const ApplicantView = () => {
         navigate("/applicant", { state: { newApplication: true } });
     };
 
-    const handleFetchCompetence = () => {
-        console.log("Fetching competence data...");
-        // Placeholder for fetching logic
-    };
+    const fetchCompetencies = async (e) => {
+        e.preventDefault();
+        try{
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                // Return the detailed error message from the server response
+                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            }
+            console.log("Response:", data);
+            return data;
+        }catch(error){
+            console.error("Error:", error.message);
+            return { error: error.message };
+        }
+    }
 
     return (
         <div className="flex flex-col w-full h-full p-6">
@@ -33,7 +50,7 @@ const ApplicantView = () => {
                     <div className="flex justify-between items-center mb-2">
                         <h2 className="text-xl font-semibold">Competence</h2>
                         <button 
-                            onClick={handleFetchCompetence} 
+                            onClick={fetchCompetencies} 
                             className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">
                             Fetch Data
                         </button>

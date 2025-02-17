@@ -2,6 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
 
 const ProfileView = ({ model }) => {
+
+    function backToLogin() {
+        window.location.href = "#/auth";
+    }
+
+
     return (
         <div className="w-full flex justify-center items-center min-h-screen bg-gray-100">
             <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
@@ -43,6 +49,13 @@ const ProfileView = ({ model }) => {
                         <span className="text-gray-800">{model.role_id}</span>
                     </div>
                 </div>
+
+                <div>
+                        <button onClick={backToLogin} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
+                            Back to Login Page
+                        </button>
+                </div>
+
             </div>
         </div>
     );

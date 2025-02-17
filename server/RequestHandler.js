@@ -6,10 +6,7 @@ class RequestHandler {
     }
 
     initializeRoutes(app) {
-        //Get competencies (get)
-
-        //Load previous application (get)
-
+        
         //Create application (post)
 
         app.get('/api/competencies', async (req, res) => {
