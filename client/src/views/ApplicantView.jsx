@@ -112,7 +112,7 @@ const ApplicantView = ({ model }) => {
                         <p><strong>Surname:</strong> {model?.surname}</p>
                         <p><strong>Email:</strong> {model?.email}</p>
                         <p><strong>Username:</strong> {model?.username}</p>
-                        {console.log(model)}
+                        {/*console.log(model)*/}
 
                         </div>
                     </div>) :(<p className="text-gray-500 mt-2">(Person details will be displayed here)</p>)
@@ -129,11 +129,11 @@ const ApplicantView = ({ model }) => {
                                 className="mt-2 px-3 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
                                 Fetch user cometencies
                             </button>
-                            {/*console.log("HERE: " , competencies)*/}
+                            {/*console.log("HERE: " , userCompetencies)*/}
 
                             {userCompetencies.length > 0 ? (
                                 userCompetencies.map((competence, index) => (
-                                <p key={index} className="mt-2 p-2 bg-gray-100 rounded-lg shadow-sm">{competence?.competence_name}</p>
+                                <p key={index} className="mt-2 p-2 bg-gray-100 rounded-lg shadow-sm">{competence?.competence_name} : {competence?.years_of_experience} year(s)</p>
                                 ))) : ( <p className="text-gray-500 mt-2">(No competencies found in the database)</p>)
                             }
                         </div>
@@ -148,7 +148,7 @@ const ApplicantView = ({ model }) => {
                     Fetch user availability
                 </button>
 
-                <div>{console.log("vavavavavava: ", userAvailability)}</div>
+                <div>{/*console.log("ava: ", userAvailability)*/}</div>
 
                 {userAvailability.length > 0 ? (
                     userAvailability.map((availability, index) => (

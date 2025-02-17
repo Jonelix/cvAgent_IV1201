@@ -172,6 +172,13 @@ const RegisterView = observer(() => {
                         <button onClick={registerUser} className="w-full mt-7 bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
                             Register
                         </button>
+
+                        <button 
+                            onClick={goToLogin} 
+                            className="text-blue-500 hover:underline flex justify-center items-center">
+                            Already have an account? Login
+                        </button>
+
                     </div>
                 </form>
             </div>

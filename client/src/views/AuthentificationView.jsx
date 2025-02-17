@@ -144,16 +144,6 @@ const AuthentificationView = ({ onLoginSuccess }) => {
                         </p>
                     </div>
 
-                    <div className="text-center">
-                        <p onClick={fetchCompetencies} className="text-blue-500 hover:underline">
-                            Fetch Competencies                        </p>
-                    </div>
-
-                    <div className="text-center">
-                        <p onClick={fetchProfile} className="text-blue-500 hover:underline">
-                            Check earlier applcant compentencies                        </p>
-                    </div>
-
 
                 </form>
             </div>
