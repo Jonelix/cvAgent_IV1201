@@ -6,6 +6,8 @@ const ApplicantView = () => {
     const navigate = useNavigate();
     const [competencies, setCompetencies] = useState([]);
     const [person, setPerson] = useState([]);
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
 
     const handleCreateNewApplication = () => {
         // Logic to reset application state
@@ -39,10 +41,11 @@ const ApplicantView = () => {
     const fetchPerson = async (e) => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/fetchPerson", {
-                method: "GET",
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
+                body: JSON.stringify({ firstName, lastName }),
             });
             const data = await response.json();
             if (!response.ok) {
@@ -128,6 +131,19 @@ const ApplicantView = () => {
 
                     <div>
                         <h2 className="text-xl font-semibold mt-4">Person</h2>
+
+                        <input 
+                            type="text" 
+                            placeholder="First Name" 
+                            style={{ border: "1px solid black", padding: "5px", borderRadius: "4px" }} 
+                            onChange={(e) => setFirstName(e.target.value)}
+                        />
+                        <input 
+                            type="text" 
+                            placeholder="Last Name" 
+                            style={{ border: "1px solid black", padding: "5px", borderRadius: "4px" }} 
+                            onChange={(e) => setLastName(e.target.value)}
+                        />
 
                         <button 
                             onClick={fetchPerson} 

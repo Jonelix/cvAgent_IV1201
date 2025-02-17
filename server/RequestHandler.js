@@ -24,18 +24,13 @@ class RequestHandler {
             }
         });
 
-        app.get('/api/fetchPerson', async (req, res) => {
+        app.POST('/api/fetchPerson', async (req, res) => {
             try {
-                // const {firstName, lastName } = req.body;
+                const {firstName, lastName } = req.body;
 
-               /* if (!firstName || !lastName) {
+                if (!firstName || !lastName) {
                     return res.status(400).json({ message: 'Missing first name or last name' });
                 }
-                    */
-
-                let firstName = "Joelle";
-                let lastName = "Wilkinson";
-
 
                 const person = await this.controller.fetchPerson(firstName, lastName);
                 if (!person) {
