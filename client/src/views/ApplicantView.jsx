@@ -1,8 +1,11 @@
-import React from "react";
+
+import React, { useState } from "react"; 
 import { useNavigate } from "react-router-dom";
 
 const ApplicantView = () => {
     const navigate = useNavigate();
+    const [competencies, setCompetencies] = useState([]);
+    const [person, setPerson] = useState([]);
 
     const handleCreateNewApplication = () => {
         // Logic to reset application state
@@ -24,6 +27,7 @@ const ApplicantView = () => {
                 throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             }
             console.log("Response:", data);
+            setCompetencies(data);
             return data;
         }catch(error){
             console.error("Error:", error.message);
@@ -47,6 +51,7 @@ const ApplicantView = () => {
             }
 
             console.log("Response:", data);
+            setPerson(data);
             return data; // Return user data if successfuls
         }catch (error) {
             console.error("Error:", error.message);
@@ -102,6 +107,21 @@ const ApplicantView = () => {
                             className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">
                             Fetch Data
                         </button>
+                        {/* Display fetched competence data */}
+                        {competencies.length > 0 ? (
+                            <div className="mt-4">
+                                <ul>
+                                    {competencies.map((competence, index) => (
+                                        <li key={index} className="mb-2">
+                                            <p>{competence.name}</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                                
+                            </div>
+                        ) : (
+                            <p className="text-gray-600">(Person details will be displayed here)</p>
+                        )}
                     </div>
                     <p className="text-gray-600">(Competence details will be displayed here)</p>
 
@@ -114,7 +134,19 @@ const ApplicantView = () => {
                             className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">
                             Fetch Data
                         </button>
-                        <p className="text-gray-600">(Person details will be displayed here)</p>
+                        {/* Display fetched person data */}
+                        {personData ? (
+                            <div className="mt-4">
+                                <pre>{JSON.stringify(personData, null, 2)}</pre> {/* Display raw JSON data */}
+                                {/* Alternatively, render specific fields */}
+                                {/* <p>Name: {personData.name}</p>
+                                <p>Surname: {personData.surname}</p> */}
+                            </div>
+                        ) : (
+                            <p className="text-gray-600">(Person details will be displayed here)</p>
+                        )}
+
+
                     </div>
                 </div>
                 
