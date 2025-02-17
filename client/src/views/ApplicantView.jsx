@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 const ApplicantView = ({ model }) => {
     const navigate = useNavigate();
+    const [competencies, setCompetencies] = useState([]);
     const [userCompetencies, setUserCompetencies] = useState([]);
     const [person, setPerson] = useState([]);
     const [firstName, setFirstName] = useState("");
@@ -16,6 +17,19 @@ const ApplicantView = ({ model }) => {
 
     const handleCreateNewApplication = () => {
         setStage("competence"); // Move to the competence stage
+    };
+
+
+    const fetchCompetencies = async (e) => {
+        e.preventDefault();
+        try{
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies");
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            setCompetencies(data);
+        }catch (error) {
+            console.error("Error:", error.message);
+        }
     };
 
     const fetchUserCompetencies = async (e) => {
@@ -168,6 +182,12 @@ const ApplicantView = ({ model }) => {
             {/* Competence Stage */}
             {stage === "competence" && (
                 <div className="p-4 border rounded-lg shadow-md bg-white w-1/2 mx-auto">
+                    <button 
+                    onClick={fetchCompetencies} 
+                    className="mt-2 px-3 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
+                        Refresh competencies    
+                    </button>
+
                     <h2 className="text-xl font-semibold text-gray-800">Set Competence</h2>
                     <select
                         value={selectedCompetence}
@@ -176,7 +196,7 @@ const ApplicantView = ({ model }) => {
                     >
                         <option value="">Select Competence</option>
                         {competencies.map((competence, index) => (
-                            <option key={index} value={competence.name}>{competence.name}</option>
+                            <option key={index} value={competence?.name}>{competence?.name}</option>
                         ))}
                     </select>
                     <div className="flex justify-between mt-4">
