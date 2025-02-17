@@ -79,7 +79,7 @@ class RequestHandler {
         });
 
         app.post('/api/register', async (req, res) => {
-            const { firstName, lastName, personNumber, username, email, password, confirmPassword, role_id = 1 } = req.body;
+            const { firstName, lastName, personNumber, username, email, password, confirmPassword, role_id = 2 } = req.body;
 
             try {
                 if (!firstName || !lastName || !personNumber || !username || !email || !password || !confirmPassword || !role_id) {

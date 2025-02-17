@@ -7,7 +7,7 @@ const DashboardPresenter = observer(({ model, applicantsModel }) => {
     if (!model.isLoggedIn) {
         window.location.href = "#/auth";
     }
-    return (model.role_id == 2 ? <RecruiterPresenter model={model} applicantsModel={applicantsModel}/> : <ApplicantPresenter model={model}/> );
+    return (model.role_id == 1 ? <RecruiterPresenter model={model} applicantsModel={applicantsModel}/> : <ApplicantPresenter model={model}/> );
 });
 
 export default DashboardPresenter;
