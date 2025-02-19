@@ -349,27 +349,283 @@ class AgentDAO {
         }
     }
 
-    async createApplication(person_id, from_date, to_date) {
-        const query = `
-            INSERT INTO availability (person_id, from_date, to_date)
-            VALUES (:person_id, :from_date, :to_date)
-            RETURNING availability_id;
-        `;
+    async fetchCompetenceId(competence) {
+        const query = `SELECT competence_id FROM competence WHERE name = :competence`;
     
         try {
             const result = await database.query(query, {
-                replacements: { person_id, from_date, to_date },
-                type: database.QueryTypes.INSERT
+                replacements: { competence },
+                type: database.QueryTypes.SELECT
             });
+            if (!result.length) {
+                throw new Error(`Competence "${competence}" not found`);
+            }
+            return result[0].competence_id;  
+        }catch (error) {
+        console.error('Error fetching competence id:', error);
+        throw error;
+    }
+}
+
+async createApplication(person_id, competence, years_of_experience, from_date, to_date) {
+    const transaction = await database.transaction();
+
+    try {
+        // Fetch competence ID
+        const competence_id = await this.fetchCompetenceId(competence);
+        if (!competence_id) {
+            throw new Error(`Competence "${competence}" not found in DB.`);
+        }
+
+        // Check if competence exists
+        const competenceCheckQuery = `
+            SELECT competence_id FROM competence_profile 
+            WHERE person_id = :person_id AND competence_id = :competence_id;
+        `;
+
+        const competenceExists = await database.query(competenceCheckQuery, {
+            replacements: { person_id, competence_id },
+            type: database.QueryTypes.SELECT,
+            transaction
+        });
+
+        if (competenceExists.length > 0) {
+            const updateCompetenceQuery = `
+                UPDATE competence_profile 
+                SET years_of_experience = :years_of_experience 
+                WHERE person_id = :person_id AND competence_id = :competence_id;
+            `;
+
+            await database.query(updateCompetenceQuery, {
+                replacements: { person_id, competence_id, years_of_experience },
+                type: database.QueryTypes.UPDATE,
+                transaction
+            });
+        } else {
+            const competenceInsertQuery = `
+                INSERT INTO competence_profile (person_id, competence_id, years_of_experience)
+                VALUES (:person_id, :competence_id, :years_of_experience);
+            `;
+
+            await database.query(competenceInsertQuery, {
+                replacements: { person_id, competence_id, years_of_experience },
+                type: database.QueryTypes.INSERT,
+                transaction
+            });
+        }
+
+        // Check existing availability
+        const availabilityCheckQuery = `
+            SELECT availability_id, from_date, to_date FROM availability
+            WHERE person_id = :person_id;
+        `;
+
+        const availabilityExists = await database.query(availabilityCheckQuery, {
+            replacements: { person_id },
+            type: database.QueryTypes.SELECT,
+            transaction
+        });
+
+        let availabilityUpdated = false;
+
+        for (let availability of availabilityExists) {
+            // Scenario 3: If both from_date and to_date are exactly the same
+            if (new Date(availability.from_date).toISOString() === new Date(from_date).toISOString() && 
+                new Date(availability.to_date).toISOString() === new Date(to_date).toISOString()) {
+                await transaction.rollback();
+                return { message: 'Availability already created, it is the same thing!' };
+            }
+        
+            // Scenario 2: If from_date or to_date matches, update the existing row
+            if (new Date(availability.from_date).toISOString() === new Date(from_date).toISOString() || 
+                new Date(availability.to_date).toISOString() === new Date(to_date).toISOString()) {
+                const updateAvailabilityQuery = `
+                    UPDATE availability
+                    SET from_date = :from_date, to_date = :to_date
+                    WHERE person_id = :person_id AND availability_id = :availability_id;
+                `;
+        
+                await database.query(updateAvailabilityQuery, {
+                    replacements: {
+                        person_id,
+                        from_date,
+                        to_date,
+                        availability_id: availability.availability_id
+                    },
+                    type: database.QueryTypes.UPDATE,
+                    transaction
+                });
+        
+                availabilityUpdated = true;
+                break;
+            }
+        }
+
+        // Scenario 1: If neither from_date nor to_date exist, insert a new row
+        if (!availabilityUpdated) {
+            const availabilityInsert = `
+                INSERT INTO availability (person_id, from_date, to_date)
+                VALUES (:person_id, :from_date, :to_date);
+            `;
+
+            await database.query(availabilityInsert, {
+                replacements: { person_id, from_date, to_date },
+                type: database.QueryTypes.INSERT,
+                transaction
+            });
+        }
+
+        await transaction.commit();
+        return { message: 'Application successfully processed!' };
+    } catch (error) {
+        await transaction.rollback();
+        console.error('Error creating application:', error);
+        throw error;
+    }
+}
+
+
+/*
+async createApplication(person_id, competence, years_of_experience, from_date, to_date) {
+    const transaction = await database.transaction();
+
+    try {
+        // Fetch competence ID
+        const competence_id = await this.fetchCompetenceId(competence);
+        if (!competence_id) {
+            throw new Error(`Competence "${competence}" not found in DB.`);
+        }
+
+        // Check if competence exists
+        const competenceCheckQuery = `
+            SELECT competence_id FROM competence_profile 
+            WHERE person_id = :person_id AND competence_id = :competence_id;
+        `;
+
+        const competenceExists = await database.query(competenceCheckQuery, {
+            replacements: { person_id, competence_id },
+            type: database.QueryTypes.SELECT,
+            transaction
+        });
+
+        if (competenceExists.length > 0) {
+            const updateCompetenceQuery = `
+                UPDATE competence_profile 
+                SET years_of_experience = :years_of_experience 
+                WHERE person_id = :person_id AND competence_id = :competence_id;
+            `;
+
+            await database.query(updateCompetenceQuery, {
+                replacements: { person_id, competence_id, years_of_experience },
+                type: database.QueryTypes.UPDATE,
+                transaction
+            });
+        } else {
+            const competenceInsertQuery = `
+                INSERT INTO competence_profile (person_id, competence_id, years_of_experience)
+                VALUES (:person_id, :competence_id, :years_of_experience);
+            `;
+
+            await database.query(competenceInsertQuery, {
+                replacements: { person_id, competence_id, years_of_experience },
+                type: database.QueryTypes.INSERT,
+                transaction
+            });
+        }
+
+         // Check existing availability (any match on from_date OR to_date)
+         const availabilityCheckQuery = `
+         SELECT availability_id, from_date, to_date FROM availability
+         WHERE person_id = :person_id;
+        
+         `;
+
+        const availabilityExists = await database.query(availabilityCheckQuery, {
+            replacements: { person_id },
+            type: database.QueryTypes.SELECT,
+            transaction
+        });
+
+        /* let availabilityUpdated = false;
+
+        for (let availability of availabilityExists) {
+            if (availability.from_date === from_date && availability.to_date === to_date) {
+                await transaction.rollback();
+                console.log('Availability already exists');
+                return { message: 'Availability already exists!' };
+            }
+
+            if (availability.from_date === from_date || availability.to_date === to_date) {
+                const updateAvailabilityQuery = `
+                    UPDATE availability
+                    SET from_date = :from_date, to_date = :to_date
+                    WHERE person_id = :person_id AND availability_id = :availability_id;
+                `;
+
+                await database.query(updateAvailabilityQuery, {
+                    replacements: {
+                        person_id,
+                        from_date,
+                        to_date,
+                        availability_id: availability.availability_id
+                    },
+                    type: database.QueryTypes.UPDATE,
+                    transaction
+                });
+
+                console.log('Availability updated');
+                availabilityUpdated = true;
+                break;
+            }
+        }
+
+        if (!availabilityUpdated) {
+            const availabilityInsert = `
+                INSERT INTO availability (person_id, from_date, to_date)
+                VALUES (:person_id, :from_date, :to_date);
+            `;
+
+            await database.query(availabilityInsert, {
+                replacements: { person_id, from_date, to_date },
+                type: database.QueryTypes.INSERT,
+                transaction
+            });
+
+            console.log('Availability created');
+        }
             
+
+        await transaction.commit();
+        return { message: 'Application successfully processed!' };
+    } catch (error) {
+        await transaction.rollback();
+        console.error('Error creating application:', error);
+        throw error;
+    }
+}*/
+
+        
+        
+    async deleteCompetence(person_id) {
+        const query = `
+            DELETE FROM competence_profile
+            WHERE person_id = :person_id;
+        `;
+
+        try{
+            const result = await
+            database.query(query, {
+                replacements: { person_id },
+                type: database.QueryTypes.DELETE
+            });
             return result;
-        } catch (error) {
-            console.error('Error creating application:', error);
+        }catch(error){
+            console.error('Error deleting competence:', error);
             throw error;
         }
     }
 
-    async deleteApplication(person_id) {
+    async deleteAvailability(person_id) {
         const query = `
             DELETE FROM availability
             WHERE person_id = :person_id;
@@ -382,7 +638,7 @@ class AgentDAO {
             });
             return result;
         }catch(error){
-            console.error('Error deleting application:', error);
+            console.error('Error deleting availability:', error);
             throw error;
         }
     }
