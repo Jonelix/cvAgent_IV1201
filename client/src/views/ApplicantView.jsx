@@ -181,39 +181,85 @@ const ApplicantView = ({ model }) => {
 
             {/* Competence Stage */}
             {stage === "competence" && (
-                <div className="p-4 border rounded-lg shadow-md bg-white w-1/2 mx-auto">
+    <div className="p-4 border rounded-lg shadow-md bg-white w-1/2 mx-auto">
+        <button 
+            onClick={fetchCompetencies} 
+            className="mt-2 px-3 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
+            Refresh competencies    
+        </button>
+
+        <h2 className="text-xl font-semibold text-gray-800">Set Competence</h2>
+
+        {/* Competence Selection */}
+        <div className="mt-4">
+            <select
+                value={selectedCompetence}
+                onChange={(e) => setSelectedCompetence(e.target.value)}
+                className="w-full p-2 border rounded-lg shadow-sm"
+            >
+                <option value="">Select Competence</option>
+                {competencies.map((competence, index) => (
+                    <option key={index} value={competence?.name}>{competence?.name}</option>
+                ))}
+            </select>
+        </div>
+
+        {/* Add Competence Button */}
+        <button 
+            onClick={() => {
+                if (selectedCompetence) {
+                    setUserCompetencies([...userCompetencies, { competence: selectedCompetence, yearsOfExperience: 0 }]);
+                    setSelectedCompetence(""); // Reset selection
+                }
+            }}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
+            Add Competence
+        </button>
+
+        {/* List of Selected Competencies with Years of Experience */}
+        <div className="mt-6">
+            {userCompetencies.map((competence, index) => (
+                <div key={index} className="flex items-center justify-between mt-2 p-2 bg-gray-100 rounded-lg shadow-sm">
+                    <span className="text-gray-700">{competence.competence}</span>
+                    <input
+                        type="number"
+                        min="0"
+                        value={competence.yearsOfExperience}
+                        onChange={(e) => {
+                            const updatedCompetencies = [...userCompetencies];
+                            updatedCompetencies[index].yearsOfExperience = e.target.value;
+                            setUserCompetencies(updatedCompetencies);
+                        }}
+                        className="w-20 p-1 border rounded-lg shadow-sm"
+                        placeholder="Years"
+                    />
                     <button 
-                    onClick={fetchCompetencies} 
-                    className="mt-2 px-3 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
-                        Refresh competencies    
+                        onClick={() => {
+                            const updatedCompetencies = userCompetencies.filter((_, i) => i !== index);
+                            setUserCompetencies(updatedCompetencies);
+                        }}
+                        className="px-2 py-1 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition">
+                        Remove
                     </button>
-
-                    <h2 className="text-xl font-semibold text-gray-800">Set Competence</h2>
-                    <select
-                        value={selectedCompetence}
-                        onChange={(e) => setSelectedCompetence(e.target.value)}
-                        className="mt-2 w-full p-2 border rounded-lg shadow-sm"
-                    >
-                        <option value="">Select Competence</option>
-                        {competencies.map((competence, index) => (
-                            <option key={index} value={competence?.name}>{competence?.name}</option>
-                        ))}
-                    </select>
-                    <div className="flex justify-between mt-4">
-                        <button 
-                            onClick={handleBack} 
-                            className="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-800 transition">
-                            Back
-                        </button>
-                        <button 
-                            onClick={handleNext} 
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
-                            Next
-                        </button>
-                    </div>
                 </div>
-            )}
+            ))}
+        </div>
 
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-6">
+            <button 
+                onClick={handleBack} 
+                className="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-800 transition">
+                Back
+            </button>
+            <button 
+                onClick={handleNext} 
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
+                Next
+            </button>
+        </div>
+    </div>
+)}
             {/* Availability Stage */}
             {stage === "availability" && (
     <div className="p-4 border rounded-lg shadow-md bg-white w-1/2 mx-auto">
@@ -249,6 +295,12 @@ const ApplicantView = ({ model }) => {
             />
         </div>
 
+        {/* Error Message */}
+        {selectedAvailability.fromDate && selectedAvailability.toDate && 
+        new Date(selectedAvailability.fromDate) > new Date(selectedAvailability.toDate) && (
+            <p className="text-red-500 mt-2">Error: "From Date" cannot be later than "To Date".</p>
+        )}
+
         {/* Buttons */}
         <div className="flex justify-between mt-6">
             <button 
@@ -257,7 +309,13 @@ const ApplicantView = ({ model }) => {
                 Back
             </button>
             <button 
-                onClick={handleNext} 
+                onClick={() => {
+                    if (new Date(selectedAvailability.fromDate) > new Date(selectedAvailability.toDate)) {
+                        alert("Error: 'From Date' cannot be later than 'To Date'.");
+                    } else {
+                        handleNext();
+                    }
+                }} 
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
                 Next
             </button>
@@ -287,8 +345,12 @@ const ApplicantView = ({ model }) => {
             {/* Competence Section */}
             <div className="p-4 border rounded-lg shadow-md bg-white">
                 <h2 className="text-xl font-semibold text-gray-800">Competence</h2>
-                {selectedCompetence ? (
-                    <p className="mt-4 text-gray-700 p-2 bg-gray-100 rounded-lg shadow-sm">{selectedCompetence}</p>
+                {userCompetencies.length > 0 ? (
+                    userCompetencies.map((competence, index) => (
+                        <p key={index} className="mt-4 text-gray-700 p-2 bg-gray-100 rounded-lg shadow-sm">
+                            {competence.competence}: {competence.yearsOfExperience} year(s)
+                        </p>
+                    ))
                 ) : (
                     <p className="text-gray-500 mt-2">(No competence selected)</p>
                 )}
