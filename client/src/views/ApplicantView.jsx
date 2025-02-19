@@ -74,7 +74,7 @@ const ApplicantView = ({ model }) => {
     const updateUserProfile = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:5005/api/createApplication", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
@@ -106,7 +106,7 @@ const ApplicantView = ({ model }) => {
     const removeUserCompetence = async (e) => {
         e.preventDefault();
         try{
-            const response = await fetch("http://localhost:5005/api/deleteCompetence", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteCompetence", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id}),
@@ -128,7 +128,7 @@ const ApplicantView = ({ model }) => {
     const removeUserAvailability = async (e) => {
         e.preventDefault();
         try{
-            const response = await fetch("http://localhost:5005/api/deleteAvailability", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteAvailability", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }),
