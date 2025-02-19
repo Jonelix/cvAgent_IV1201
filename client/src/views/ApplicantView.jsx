@@ -67,25 +67,25 @@ const ApplicantView = ({ model }) => {
 
     const handleNext = () => {
         if (stage === "competence") {
-            setStage("availability"); // Move to the availability stage
+            setStage("availability"); 
         } else if (stage === "availability") {
-            setStage("summary"); // Move to the summary stage
+            setStage("summary"); 
         }
     };
 
     const handleBack = () => {
         if (stage === "competence") {
-            setStage("main"); // Go back to the main stage
+            setStage("main"); 
         } else if (stage === "availability") {
-            setStage("competence"); // Go back to the competence stage
+            setStage("competence"); 
         } else if (stage === "summary") {
-            setStage("availability"); // Go back to the availability stage
+            setStage("availability"); 
         }
     };
 
     const handleFinish = () => {
-        alert("Application submitted!"); // Show submission message
-        setStage("main"); // Reset to the main stage
+        alert("Application submitted!"); 
+        setStage("main"); 
     };
 
     return (
@@ -216,85 +216,112 @@ const ApplicantView = ({ model }) => {
 
             {/* Availability Stage */}
             {stage === "availability" && (
-                <div className="p-4 border rounded-lg shadow-md bg-white w-1/2 mx-auto">
-                    <h2 className="text-xl font-semibold text-gray-800">Set Availability</h2>
-                    <input
-                        type="text"
-                        value={selectedAvailability}
-                        onChange={(e) => setSelectedAvailability(e.target.value)}
-                        placeholder="Enter availability"
-                        className="mt-2 w-full p-2 border rounded-lg shadow-sm"
-                    />
-                    <div className="flex justify-between mt-4">
-                        <button 
-                            onClick={handleBack} 
-                            className="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-800 transition">
-                            Back
-                        </button>
-                        <button 
-                            onClick={handleNext} 
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
-                            Next
-                        </button>
-                    </div>
-                </div>
-            )}
+    <div className="p-4 border rounded-lg shadow-md bg-white w-1/2 mx-auto">
+        <h2 className="text-xl font-semibold text-gray-800">Set Availability</h2>
+
+        {/* From Date Input */}
+        <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">From Date</label>
+            <input
+                type="date"
+                value={selectedAvailability.fromDate || ""}
+                onChange={(e) => setSelectedAvailability({
+                    ...selectedAvailability,
+                    fromDate: e.target.value
+                })}
+                className="mt-1 w-full p-2 border rounded-lg shadow-sm"
+                required
+            />
+        </div>
+
+        {/* To Date Input */}
+        <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">To Date</label>
+            <input
+                type="date"
+                value={selectedAvailability.toDate || ""}
+                onChange={(e) => setSelectedAvailability({
+                    ...selectedAvailability,
+                    toDate: e.target.value
+                })}
+                className="mt-1 w-full p-2 border rounded-lg shadow-sm"
+                required
+            />
+        </div>
+
+        {/* Buttons */}
+        <div className="flex justify-between mt-6">
+            <button 
+                onClick={handleBack} 
+                className="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-800 transition">
+                Back
+            </button>
+            <button 
+                onClick={handleNext} 
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
+                Next
+            </button>
+        </div>
+    </div>
+)}
 
             {/* Summary Stage */}
             {stage === "summary" && (
-                <div className="grid grid-rows-3 gap-6 w-full">
-                    {/* Person Section */}
-                    <div className="p-4 border rounded-lg shadow-md bg-white w-1/3">
-                        <h2 className="text-xl font-semibold text-gray-800">Person</h2>
-                        {person.length > 0 ? (
-                            <ul className="mt-4 text-gray-700">
-                                {person.map((p, index) => (
-                                    <li key={index} className="mb-2 p-2 bg-gray-100 rounded-lg shadow-sm">{p.name}</li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="text-gray-500 mt-2">(Person details will be displayed here)</p>
-                        )}
-                    </div>
-                    
-                    {/* Competence & Availability Section */}
-                    <div className="grid grid-cols-2 gap-6 w-full">
-                        {/* Competence Section */}
-                        <div className="p-4 border rounded-lg shadow-md bg-white">
-                            <h2 className="text-xl font-semibold text-gray-800">Competence</h2>
-                            {selectedCompetence ? (
-                                <p className="mt-4 text-gray-700 p-2 bg-gray-100 rounded-lg shadow-sm">{selectedCompetence}</p>
-                            ) : (
-                                <p className="text-gray-500 mt-2">(No competence selected)</p>
-                            )}
-                        </div>
-                        
-                        {/* Availability Section */}
-                        <div className="p-4 border rounded-lg shadow-md bg-white">
-                            <h2 className="text-xl font-semibold text-gray-800">Availability</h2>
-                            {selectedAvailability ? (
-                                <p className="mt-4 text-gray-700 p-2 bg-gray-100 rounded-lg shadow-sm">{selectedAvailability}</p>
-                            ) : (
-                                <p className="text-gray-500 mt-2">(No availability entered)</p>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Buttons for Summary Stage */}
-                    <div className="flex justify-between mt-6">
-                        <button 
-                            onClick={handleBack} 
-                            className="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-800 transition">
-                            Back
-                        </button>
-                        <button 
-                            onClick={handleFinish} 
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
-                            Finish
-                        </button>
-                    </div>
-                </div>
+    <div className="grid grid-rows-3 gap-6 w-full">
+        {/* Person Section */}
+        <div className="p-4 border rounded-lg shadow-md bg-white w-1/3">
+            <h2 className="text-xl font-semibold text-gray-800">Person</h2>
+            {person.length > 0 ? (
+                <ul className="mt-4 text-gray-700">
+                    {person.map((p, index) => (
+                        <li key={index} className="mb-2 p-2 bg-gray-100 rounded-lg shadow-sm">{p.name}</li>
+                    ))}
+                </ul>
+            ) : (
+                <p className="text-gray-500 mt-2">(Person details will be displayed here)</p>
             )}
+        </div>
+        
+        {/* Competence & Availability Section */}
+        <div className="grid grid-cols-2 gap-6 w-full">
+            {/* Competence Section */}
+            <div className="p-4 border rounded-lg shadow-md bg-white">
+                <h2 className="text-xl font-semibold text-gray-800">Competence</h2>
+                {selectedCompetence ? (
+                    <p className="mt-4 text-gray-700 p-2 bg-gray-100 rounded-lg shadow-sm">{selectedCompetence}</p>
+                ) : (
+                    <p className="text-gray-500 mt-2">(No competence selected)</p>
+                )}
+            </div>
+            
+            {/* Availability Section */}
+            <div className="p-4 border rounded-lg shadow-md bg-white">
+                <h2 className="text-xl font-semibold text-gray-800">Availability</h2>
+                {selectedAvailability.fromDate && selectedAvailability.toDate ? (
+                    <p className="mt-4 text-gray-700 p-2 bg-gray-100 rounded-lg shadow-sm">
+                        {selectedAvailability.fromDate} to {selectedAvailability.toDate}
+                    </p>
+                ) : (
+                    <p className="text-gray-500 mt-2">(No availability entered)</p>
+                )}
+            </div>
+        </div>
+
+        {/* Buttons for Summary Stage */}
+        <div className="flex justify-between mt-6">
+            <button 
+                onClick={handleBack} 
+                className="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-800 transition">
+                Back
+            </button>
+            <button 
+                onClick={handleFinish} 
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
+                Finish
+            </button>
+        </div>
+    </div>
+)}
         </div>
     );
 };
