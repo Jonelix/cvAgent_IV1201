@@ -185,16 +185,21 @@ class RequestHandler {
 
 
         app.post('/api/createApplication', async (req, res) => {
-            const {person_id, userCom, userYear,from_date, to_date} = req.body;
-            try{
-                if(!person_id || !from_date || !to_date || !userCom || !userYear){
-                    console.log(person_id, from_date, to_date, userCom, userYear);
+            const { person_id, competencies, availability } = req.body;
+            try {
+                if(!person_id || !availability?.from_date || !availability?.to_date || !competencies?.length) {
                     return res.status(400).json({ message: 'All fields are required' });
                 }
-                const application = await this.controller.createApplication(person_id, userCom, userYear, from_date, to_date);
-                res.status(201).json({application});
-            }catch (error) {
-                console.log("here i am")
+                
+                const application = await this.controller.createApplication(
+                    person_id, 
+                    competencies, 
+                    availability.from_date, 
+                    availability.to_date
+                );
+                
+                res.status(201).json(application);
+            } catch (error) {
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
         });

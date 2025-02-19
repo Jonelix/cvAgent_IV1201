@@ -73,24 +73,33 @@ const ApplicantView = ({ model }) => {
 
     const updateUserProfile = async (e) => {
         e.preventDefault();
-            console.log("Person_id: ", model?.person_id, "User Competencies: ", userCompetencies, "year: ", userCompetencies,"From_date: ", selectedAvailability.fromDate, "To_date: ", selectedAvailability.toDate);
-            //TODO Fetch compentence and year_of experience
         try {
             const response = await fetch("http://localhost:5005/api/createApplication", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
-                    person_id: model?.person_id, userCom: userCompetencies[0]?.competence, userYear: userCompetencies[0]?.yearsOfExperience, 
-                    from_date: selectedAvailability.fromDate, 
-                    to_date: selectedAvailability.toDate 
+                    person_id: model?.person_id, 
+                    competencies: userCompetencies,  // Send all competencies
+                    availability: {
+                        from_date: selectedAvailability.fromDate,
+                        to_date: selectedAvailability.toDate
+                    }
                 }),
             });
-
+    
             const data = await response.json();
-            console.log(data.application);
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
-        }catch (error) {
+            
+            if(data.message) {
+                alert(data.message);
+                await fetchUserCompetencies(e);
+                await fetchUserAvailability(e);
+                setIsApplicationUpdated(true);
+                setStage("main");
+            }
+        } catch (error) {
             console.error("Error:", error.message);
+            alert(error.message);
         }
     };
 
@@ -107,10 +116,10 @@ const ApplicantView = ({ model }) => {
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
 
             await fetchUserCompetencies(e);
-            await fetchUserAvailability(e);
 
             setIsApplicationUpdated(true);
             setStage("main");
+            alert("Competence deleted successfully");
         } catch (error) {
             console.error("Error:", error.message);
         }
@@ -127,7 +136,12 @@ const ApplicantView = ({ model }) => {
 
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
-            setUserAvailability(data);
+
+            await fetchUserAvailability(e);
+            
+            setIsApplicationUpdated(true);
+            setStage("main");
+            alert("Availability deleted successfully");
         } catch (error) {
             console.error("Error:", error.message);
         }
@@ -153,7 +167,7 @@ const ApplicantView = ({ model }) => {
 
     useEffect(() => {
         if (isApplicationUpdated) {
-            alert("Application updated successfully!");
+            // alert("Application updated successfully!");
             setIsApplicationUpdated(false); // Reset the state
         }
     }, [isApplicationUpdated]);
