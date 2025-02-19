@@ -15,9 +15,7 @@ const ApplicantView = ({ model }) => {
     const [stage, setStage] = useState("main"); // Track current stage: "main", "competence", "availability", "summary"
     const [selectedCompetence, setSelectedCompetence] = useState(""); // Store selected competence
     const [selectedAvailability, setSelectedAvailability] = useState({ fromDate: "", toDate: "" }); // Store selected availability
-    const [selectedAvailability, setSelectedAvailability] = useState({ fromDate: "", toDate: "" }); // Store selected availability
     const [userAvailability, setUserAvailability] = useState([]);
-    const [isApplicationUpdated, setIsApplicationUpdated] = useState(false); // Track if application is updated
     const [isApplicationUpdated, setIsApplicationUpdated] = useState(false); // Track if application is updated
 
     const handleCreateNewApplication = () => {
@@ -38,15 +36,13 @@ const ApplicantView = ({ model }) => {
     }, [stage]); // Trigger when `stage` changes
 
 
-    const fetchCompetencies = async () => {
-        try {
+
     const fetchCompetencies = async () => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies");
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             setCompetencies(data);
-        } catch (error) {
         } catch (error) {
             console.error("Error:", error.message);
         }
@@ -71,7 +67,6 @@ const ApplicantView = ({ model }) => {
     const fetchUserAvailability = async (e) => {
         e.preventDefault();
         try {
-        try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -80,7 +75,6 @@ const ApplicantView = ({ model }) => {
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             setUserAvailability(data);
-        } catch (error) {
         } catch (error) {
             console.error("Error:", error.message);
         }
@@ -110,7 +104,6 @@ const ApplicantView = ({ model }) => {
 
             setIsApplicationUpdated(true);
             setStage("main");
-        } catch (error) {
         }catch (error) {
             console.error("Error:", error.message);
         }
@@ -118,8 +111,6 @@ const ApplicantView = ({ model }) => {
 
     const removeUserCompetence = async (e) => {
         e.preventDefault();
-        try{
-            const response = await fetch("http://localhost:5005/api/deleteCompetence", {
         try {
             const response = await fetch("http://localhost:5005/api/deleteApplication", {
                 method: "POST",
