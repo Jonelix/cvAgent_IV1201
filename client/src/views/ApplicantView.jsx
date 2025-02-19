@@ -67,27 +67,44 @@ const ApplicantView = ({ model }) => {
     const updateUserProfile = async (e) => {
         e.preventDefault();
         try{
-            console.log("Person_id: ", model?.person_id, "Competence_id: ", 1, "From_date: ", selectedAvailability.fromDate, "To_date: ", selectedAvailability.toDate);
+            console.log("Person_id: ", model?.person_id, "User Competencies: ", userCompetencies, "year: ", userCompetencies,"From_date: ", selectedAvailability.fromDate, "To_date: ", selectedAvailability.toDate);
 
             //TODO Fetch compentence and year_of experience
             const response = await fetch("http://localhost:5005/api/createApplication", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ person_id: model?.person_id, from_date: selectedAvailability.fromDate, to_date: selectedAvailability.toDate }),
+                body: JSON.stringify({ person_id: model?.person_id, userCom: userCompetencies[0]?.competence, userYear: userCompetencies[0]?.yearsOfExperience, from_date: selectedAvailability.fromDate, to_date: selectedAvailability.toDate }),
             });
 
             const data = await response.json();
+            console.log(data.application);
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
-            setUserAvailability(data);
         }catch (error) {
             console.error("Error:", error.message);
         }
     };
 
+    const removeUserCompetence = async (e) => {
+        e.preventDefault();
+        try{
+            const response = await fetch("http://localhost:5005/api/deleteCompetence", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ person_id: model?.person_id}),
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            setUserCompetencies(data);
+        }catch (error) {
+            console.error("Error:", error.message);
+        }
+    };  
+
     const removeUserAvailability = async (e) => {
         e.preventDefault();
         try{
-            const response = await fetch("http://localhost:5005/api/deleteApplication", {
+            const response = await fetch("http://localhost:5005/api/deleteAvailability", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id}),
@@ -178,6 +195,12 @@ const ApplicantView = ({ model }) => {
                                 onClick={fetchUserCompetencies} 
                                 className="mt-2 px-3 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
                                 Fetch user cometencies
+                            </button>
+                            
+                            <button 
+                                onClick={removeUserCompetence} 
+                                className="mt-2 px-3 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
+                                Delete
                             </button>
 
                             {/*console.log("HERE: " , userCompetencies)*/}

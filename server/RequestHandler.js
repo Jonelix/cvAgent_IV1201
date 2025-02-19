@@ -185,27 +185,40 @@ class RequestHandler {
 
 
         app.post('/api/createApplication', async (req, res) => {
-            const { person_id, from_date, to_date } = req.body;
+            const {person_id, userCom, userYear,from_date, to_date} = req.body;
             try{
-                if(!person_id || !from_date || !to_date){
-                    console.log("Person_id: ", person_id, "From_date: ", from_date, "To_date: ", to_date);
+                if(!person_id || !from_date || !to_date || !userCom || !userYear){
+                    console.log(person_id, from_date, to_date, userCom, userYear);
                     return res.status(400).json({ message: 'All fields are required' });
                 }
-                const application = await this.controller.createApplication(person_id, from_date, to_date);
-                res.status(201).json({ message: 'Application created successfully', application });
+                const application = await this.controller.createApplication(person_id, userCom, userYear, from_date, to_date);
+                res.status(201).json({application});
             }catch (error) {
                 console.log("here i am")
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
         });
 
-        app.post('/api/deleteApplication', async (req, res) => {
+        app.post('/api/deleteCompetence', async (req, res) => {
+            const {person_id} = req.body;
+            try{
+                if(!person_id){
+                    return res.status(400).json({ message: 'Person ID' });
+                }
+                const application = await this.controller.deleteCompetence(person_id);
+                res.status(201).json({ message: 'Competence deleted successfully', application });
+            }catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
+        app.post('/api/deleteAvailability', async (req, res) => {
             const {person_id} = req.body;
             try{
                 if(!person_id){
                     return res.status(400).json({ message: 'Person ID are required' });
                 }
-                const application = await this.controller.deleteApplication(person_id);
+                const application = await this.controller.deleteAvailability(person_id);
                 res.status(201).json({ message: 'Application deleted successfully', application });
             }catch (error) {
                 res.status(500).json({ message: 'Server error', error: error.message });

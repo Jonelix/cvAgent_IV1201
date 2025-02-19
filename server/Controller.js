@@ -74,13 +74,18 @@ class Controller {
         return userAvailability;
     }
 
-    async createApplication(person_id, from_date, to_date){
-        const application = await this.agentDAO.createApplication(person_id, from_date, to_date);
+    async createApplication(person_id, userCom, userYear, from_date, to_date){
+        const application = await this.agentDAO.createApplication(person_id, userCom, userYear, from_date, to_date);
         return application;
     }
 
-    async deleteApplication(person_id){
-        const application = await this.agentDAO.deleteApplication(person_id);
+    async deleteAvailability(person_id){
+        const application = await this.agentDAO.deleteAvailability(person_id);
+        return application;
+    }
+
+    async deleteCompetence(person_id){
+        const application = await this.agentDAO.deleteCompetence(person_id);
         return application;
     }
 }
