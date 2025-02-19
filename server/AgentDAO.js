@@ -430,21 +430,21 @@ async createApplication(person_id, competence, years_of_experience, from_date, t
 
         for (let availability of availabilityExists) {
             // Scenario 3: If both from_date and to_date are exactly the same
-            if (availability.from_date.toISOString() === from_date.toISOString() && 
-                availability.to_date.toISOString() === to_date.toISOString()) {
+            if (new Date(availability.from_date).toISOString() === new Date(from_date).toISOString() && 
+                new Date(availability.to_date).toISOString() === new Date(to_date).toISOString()) {
                 await transaction.rollback();
                 return { message: 'Availability already created, it is the same thing!' };
             }
-
+        
             // Scenario 2: If from_date or to_date matches, update the existing row
-            if (availability.from_date.toISOString() === from_date.toISOString() || 
-                availability.to_date.toISOString() === to_date.toISOString()) {
+            if (new Date(availability.from_date).toISOString() === new Date(from_date).toISOString() || 
+                new Date(availability.to_date).toISOString() === new Date(to_date).toISOString()) {
                 const updateAvailabilityQuery = `
                     UPDATE availability
                     SET from_date = :from_date, to_date = :to_date
                     WHERE person_id = :person_id AND availability_id = :availability_id;
                 `;
-
+        
                 await database.query(updateAvailabilityQuery, {
                     replacements: {
                         person_id,
@@ -455,7 +455,7 @@ async createApplication(person_id, competence, years_of_experience, from_date, t
                     type: database.QueryTypes.UPDATE,
                     transaction
                 });
-
+        
                 availabilityUpdated = true;
                 break;
             }
