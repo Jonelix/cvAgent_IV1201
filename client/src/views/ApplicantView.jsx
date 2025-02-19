@@ -62,7 +62,22 @@ const ApplicantView = ({ model }) => {
         }catch (error) {
             console.error("Error:", error.message);
         }
+    };
 
+    const updateUserProfile = async (e) => {
+        e.preventDefault();
+        try{
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ person_id: model?.person_id, competencies: userCompetencies, availability: userAvailability }),
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            setUserAvailability(data);
+        }catch (error) {
+            console.error("Error:", error.message);
+        }
     };
 
     const handleNext = () => {

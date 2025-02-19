@@ -191,7 +191,7 @@ class RequestHandler {
                     return res.status(400).json({ message: 'All fields are required' });
                 }
 
-                const application = await this.controller.application(person_id, competence_id, years_of_experience, from_date, to_date);
+                const application = await this.controller.userApplications(person_id, competence_id, years_of_experience, from_date, to_date);
                 res.status(201).json({ message: 'Application created successfully', application });
             } catch (error) {
                 if (error.name === 'SequelizeUniqueConstraintError') {
@@ -200,6 +200,8 @@ class RequestHandler {
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
         });
+
+
 
     }
 }

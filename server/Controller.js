@@ -73,6 +73,11 @@ class Controller {
         const userAvailability = await this.agentDAO.getUserAvailability(person_id);
         return userAvailability;
     }
+
+    async userApplications(person_id, competence_id, years_of_experience, from_date, to_date){
+        const application = await this.agentDAO.createNewUserApplications(person_id, competence_id, years_of_experience, from_date, to_date);
+        return application;
+    }
 }
 
 module.exports = Controller;

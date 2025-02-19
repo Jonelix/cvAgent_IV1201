@@ -351,12 +351,27 @@ class AgentDAO {
 
     
  
+    async createNewUserApplications(person_id, competence_id, years_of_experience, from_date, to_date) {
+        const query = `
+            INSERT INTO competence_profile (person_id, competence_id, years_of_experience)
+            VALUES (:person_id, :competence_id, :years_of_experience);
+            INSERT INTO availability (person_id, from_date, to_date)
+            VALUES (:person_id, :from_date, :to_date);
+        `;
+    
+        try {
+            const result = await database.query(query, {
+                replacements: { person_id, competence_id, years_of_experience, from_date, to_date },
+                type: database.QueryTypes.INSERT
+            });
+            
+            return result;
+        } catch (error) {
+            console.error('Error creating new user applications:', error);
+            throw error;
+        }
 
-    
-    
-    
-    
-
+    }
 }
 
 module.exports = AgentDAO;
