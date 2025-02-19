@@ -67,11 +67,32 @@ const ApplicantView = ({ model }) => {
     const updateUserProfile = async (e) => {
         e.preventDefault();
         try{
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
+            console.log("Person_id: ", model?.person_id, "Competence_id: ", 1, "From_date: ", selectedAvailability.fromDate, "To_date: ", selectedAvailability.toDate);
+
+            //TODO Fetch compentence and year_of experience
+            const response = await fetch("http://localhost:5005/api/createApplication", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ person_id: model?.person_id, competencies: userCompetencies, availability: userAvailability }),
+                body: JSON.stringify({ person_id: model?.person_id, from_date: selectedAvailability.fromDate, to_date: selectedAvailability.toDate }),
             });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            setUserAvailability(data);
+        }catch (error) {
+            console.error("Error:", error.message);
+        }
+    };
+
+    const removeUserAvailability = async (e) => {
+        e.preventDefault();
+        try{
+            const response = await fetch("http://localhost:5005/api/deleteApplication", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ person_id: model?.person_id}),
+            });
+
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             setUserAvailability(data);
@@ -158,6 +179,7 @@ const ApplicantView = ({ model }) => {
                                 className="mt-2 px-3 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
                                 Fetch user cometencies
                             </button>
+
                             {/*console.log("HERE: " , userCompetencies)*/}
 
                             {userCompetencies.length > 0 ? (
@@ -175,6 +197,12 @@ const ApplicantView = ({ model }) => {
                     onClick={fetchUserAvailability} 
                     className="mt-2 px-3 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
                     Fetch user availability
+                </button>
+
+                <button 
+                    onClick={removeUserAvailability} 
+                    className="mt-2 px-3 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
+                    Delete
                 </button>
 
                 <div>{/*console.log("ava: ", userAvailability)*/}</div>
@@ -236,7 +264,7 @@ const ApplicantView = ({ model }) => {
 
         {/* From Date Input */}
         <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700">From Date</label>
+            <lzabel className="block text-sm font-medium text-gray-700">From Date</lzabel>
             <input
                 type="date"
                 value={selectedAvailability.fromDate || ""}
@@ -330,7 +358,7 @@ const ApplicantView = ({ model }) => {
                 Back
             </button>
             <button 
-                onClick={handleFinish} 
+                onClick={updateUserProfile} 
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
                 Finish
             </button>

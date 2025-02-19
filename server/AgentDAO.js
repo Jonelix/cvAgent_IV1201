@@ -349,28 +349,42 @@ class AgentDAO {
         }
     }
 
-    
- 
-    async createNewUserApplications(person_id, competence_id, years_of_experience, from_date, to_date) {
+    async createApplication(person_id, from_date, to_date) {
         const query = `
-            INSERT INTO competence_profile (person_id, competence_id, years_of_experience)
-            VALUES (:person_id, :competence_id, :years_of_experience);
             INSERT INTO availability (person_id, from_date, to_date)
-            VALUES (:person_id, :from_date, :to_date);
+            VALUES (:person_id, :from_date, :to_date)
+            RETURNING availability_id;
         `;
     
         try {
             const result = await database.query(query, {
-                replacements: { person_id, competence_id, years_of_experience, from_date, to_date },
+                replacements: { person_id, from_date, to_date },
                 type: database.QueryTypes.INSERT
             });
             
             return result;
         } catch (error) {
-            console.error('Error creating new user applications:', error);
+            console.error('Error creating application:', error);
             throw error;
         }
+    }
 
+    async deleteApplication(person_id) {
+        const query = `
+            DELETE FROM availability
+            WHERE person_id = :person_id;
+        `;
+
+        try{
+            const result = await database.query(query, {
+                replacements: { person_id },
+                type: database.QueryTypes.DELETE
+            });
+            return result;
+        }catch(error){
+            console.error('Error deleting application:', error);
+            throw error;
+        }
     }
 }
 

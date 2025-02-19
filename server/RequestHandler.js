@@ -185,25 +185,34 @@ class RequestHandler {
 
 
         app.post('/api/createApplication', async (req, res) => {
-            const { person_id, competence_id, years_of_experience, from_date, to_date } = req.body;
-            try {
-                if (!person_id || !competence_id || !years_of_experience || !from_date || !to_date) {
+            const { person_id, from_date, to_date } = req.body;
+            try{
+                if(!person_id || !from_date || !to_date){
+                    console.log("Person_id: ", person_id, "From_date: ", from_date, "To_date: ", to_date);
                     return res.status(400).json({ message: 'All fields are required' });
                 }
-
-                const application = await this.controller.userApplications(person_id, competence_id, years_of_experience, from_date, to_date);
+                const application = await this.controller.createApplication(person_id, from_date, to_date);
                 res.status(201).json({ message: 'Application created successfully', application });
-            } catch (error) {
-                if (error.name === 'SequelizeUniqueConstraintError') {
-                    return res.status(400).json({ message: 'Username or email already exists' });
-                }
+            }catch (error) {
+                console.log("here i am")
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
         });
 
-
-
-    }
+        app.post('/api/deleteApplication', async (req, res) => {
+            const {person_id} = req.body;
+            try{
+                if(!person_id){
+                    return res.status(400).json({ message: 'Person ID are required' });
+                }
+                const application = await this.controller.deleteApplication(person_id);
+                res.status(201).json({ message: 'Application deleted successfully', application });
+            }catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+   
+        }
 }
 
 module.exports = RequestHandler;
