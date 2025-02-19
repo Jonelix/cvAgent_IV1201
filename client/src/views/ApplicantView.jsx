@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import { Link } from "react-router-dom";
 
 const ApplicantView = ({ model }) => {
     const navigate = useNavigate();
@@ -28,13 +26,6 @@ const ApplicantView = ({ model }) => {
             fetchCompetencies();
         }
     }, [stage]); // Trigger when `stage` changes
-    // Fetch competencies automatically when stage changes to "competence"
-    useEffect(() => {
-        if (stage === "competence") {
-            fetchCompetencies();
-        }
-    }, [stage]); // Trigger when `stage` changes
-
 
 
     const fetchCompetencies = async () => {
@@ -98,12 +89,6 @@ const ApplicantView = ({ model }) => {
             const data = await response.json();
             console.log(data.application);
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
-
-            await fetchUserCompetencies(e);
-            await fetchUserAvailability(e);
-
-            setIsApplicationUpdated(true);
-            setStage("main");
         }catch (error) {
             console.error("Error:", error.message);
         }
@@ -111,8 +96,8 @@ const ApplicantView = ({ model }) => {
 
     const removeUserCompetence = async (e) => {
         e.preventDefault();
-        try {
-            const response = await fetch("http://localhost:5005/api/deleteApplication", {
+        try{
+            const response = await fetch("http://localhost:5005/api/deleteCompetence", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id}),
@@ -166,12 +151,6 @@ const ApplicantView = ({ model }) => {
         }
     };
 
-    useEffect(() => {
-        if (isApplicationUpdated) {
-            alert("Application updated successfully!");
-            setIsApplicationUpdated(false); // Reset the state
-        }
-    }, [isApplicationUpdated]);
     useEffect(() => {
         if (isApplicationUpdated) {
             alert("Application updated successfully!");
@@ -241,19 +220,7 @@ const ApplicantView = ({ model }) => {
                                     <p className="text-gray-500">No competencies found.</p>
                                 )}
                             </div>
-                            <div className="mt-4 space-y-2">
-                                {userCompetencies.length > 0 ? (
-                                    userCompetencies.map((competence, index) => (
-                                        <div key={index} className="p-3 bg-gray-100 rounded-lg">
-                                            <p className="text-gray-700">{competence.competence_name}: {competence.years_of_experience} year(s)</p>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="text-gray-500">No competencies found.</p>
-                                )}
-                            </div>
                         </div>
-
 
                         {/* Availability Section */}
                         <div className="p-6 bg-white rounded-xl shadow-sm">
@@ -318,17 +285,12 @@ const ApplicantView = ({ model }) => {
                 }
             }}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-6">
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-6">
             Add Competence
         </button>
 
         {/* List of Selected Competencies */}
         <div className="space-y-4">
-        {/* List of Selected Competencies */}
-        <div className="space-y-4">
             {userCompetencies.map((competence, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
-                    <span className="text-gray-700 text-lg">{competence.competence}</span>
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
                     <span className="text-gray-700 text-lg">{competence.competence}</span>
                     <input
@@ -349,16 +311,10 @@ const ApplicantView = ({ model }) => {
                 placeholder="Years"
 />
                     <button
-                        }}
-                        className="w-20 p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
-                        placeholder="Years"
-                    />
-                    <button
                         onClick={() => {
                             const updatedCompetencies = userCompetencies.filter((_, i) => i !== index);
                             setUserCompetencies(updatedCompetencies);
                         }}
-                        className="px-3 py-1 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
                         className="px-3 py-1 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
                         Remove
                     </button>
@@ -371,32 +327,13 @@ const ApplicantView = ({ model }) => {
             <p className="text-red-500 mt-4">Please provide the years of experience for all competencies or remove them.</p>
         )}
 
-        {/* Error Message for Invalid Years of Experience */}
-        {userCompetencies.some(comp => comp.yearsOfExperience === 0) && (
-            <p className="text-red-500 mt-4">Please provide the years of experience for all competencies or remove them.</p>
-        )}
-
         {/* Navigation Buttons */}
-        <div className="flex justify-between mt-8">
-            <button
-                onClick={handleBack}
-                className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
         <div className="flex justify-between mt-8">
             <button
                 onClick={handleBack}
                 className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
                 Back
             </button>
-            <button
-                onClick={() => {
-                    // Check if any competency has 0 years of experience
-                    if (userCompetencies.some(comp => comp.yearsOfExperience === 0)) {
-                        alert("Please provide the years of experience for all competencies or remove them.");
-                    } else {
-                        handleNext();
-                    }
-                }}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
             <button
                 onClick={() => {
                     // Check if any competency has 0 years of experience
@@ -416,20 +353,7 @@ const ApplicantView = ({ model }) => {
             {stage === "availability" && (
                 <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
                     <h2 className="text-2xl font-semibold text-gray-800 mb-6">Set Availability</h2>
-                <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Set Availability</h2>
 
-                    {/* From Date Input */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
-                        <input
-                            type="date"
-                            value={selectedAvailability.fromDate || ""}
-                            onChange={(e) => setSelectedAvailability({ ...selectedAvailability, fromDate: e.target.value })}
-                            className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-                    </div>
                     {/* From Date Input */}
                     <div className="mb-6">
                         <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
@@ -453,50 +377,13 @@ const ApplicantView = ({ model }) => {
                             required
                         />
                     </div>
-                    {/* To Date Input */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
-                        <input
-                            type="date"
-                            value={selectedAvailability.toDate || ""}
-                            onChange={(e) => setSelectedAvailability({ ...selectedAvailability, toDate: e.target.value })}
-                            className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-                    </div>
 
                     {/* Error Message */}
                     {selectedAvailability.fromDate && selectedAvailability.toDate &&
                         new Date(selectedAvailability.fromDate) > new Date(selectedAvailability.toDate) && (
                             <p className="text-red-500 mb-4">Error: "From Date" cannot be later than "To Date".</p>
                         )}
-                    {/* Error Message */}
-                    {selectedAvailability.fromDate && selectedAvailability.toDate &&
-                        new Date(selectedAvailability.fromDate) > new Date(selectedAvailability.toDate) && (
-                            <p className="text-red-500 mb-4">Error: "From Date" cannot be later than "To Date".</p>
-                        )}
 
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between mt-8">
-                        <button
-                            onClick={handleBack}
-                            className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
-                            Back
-                        </button>
-                        <button
-                            onClick={() => {
-                                if (new Date(selectedAvailability.fromDate) > new Date(selectedAvailability.toDate)) {
-                                    alert("Error: 'From Date' cannot be later than 'To Date'.");
-                                } else {
-                                    handleNext();
-                                }
-                            }}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                            Next
-                        </button>
-                    </div>
-                </div>
-            )}
                     {/* Navigation Buttons */}
                     <div className="flex justify-between mt-8">
                         <button
@@ -560,61 +447,7 @@ const ApplicantView = ({ model }) => {
                             <p className="text-gray-500">No availability entered.</p>
                         )}
                     </div>
-                <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Application Summary</h2>
 
-                    {/* User Profile Summary */}
-                    <div className="mb-8">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-4">User Profile</h3>
-                        <div className="space-y-2">
-                            <p className="text-gray-700"><strong>Name:</strong> {model?.name}</p>
-                            <p className="text-gray-700"><strong>Surname:</strong> {model?.surname}</p>
-                            <p className="text-gray-700"><strong>Email:</strong> {model?.email}</p>
-                            <p className="text-gray-700"><strong>Username:</strong> {model?.username}</p>
-                        </div>
-                    </div>
-
-                    {/* Competence Summary */}
-                    <div className="mb-8">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-4">Competence</h3>
-                        {userCompetencies.length > 0 ? (
-                            userCompetencies.map((competence, index) => (
-                                <div key={index} className="p-3 bg-gray-100 rounded-lg mb-2">
-                                    <p className="text-gray-700">{competence.competence}: {competence.yearsOfExperience} year(s)</p>
-                                </div>
-                            ))
-                        ) : (
-                            <p className="text-gray-500">No competencies selected.</p>
-                        )}
-                    </div>
-
-                    {/* Availability Summary */}
-                    <div className="mb-8">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-4">Availability</h3>
-                        {selectedAvailability.fromDate && selectedAvailability.toDate ? (
-                            <div className="p-3 bg-gray-100 rounded-lg">
-                                <p className="text-gray-700">{selectedAvailability.fromDate} to {selectedAvailability.toDate}</p>
-                            </div>
-                        ) : (
-                            <p className="text-gray-500">No availability entered.</p>
-                        )}
-                    </div>
-
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between mt-8">
-                        <button
-                            onClick={handleBack}
-                            className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
-                            Back
-                        </button>
-                        <button
-                            onClick={updateUserProfile}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                            Finish
-                        </button>
-                    </div>
-                </div>
-            )}
                     {/* Navigation Buttons */}
                     <div className="flex justify-between mt-8">
                         <button
