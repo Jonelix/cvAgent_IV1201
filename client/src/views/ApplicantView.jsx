@@ -91,6 +91,7 @@ const ApplicantView = ({ model }) => {
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             
+            
             if(data.message) {
                 alert(data.message);
                 await fetchUserCompetencies(e);
@@ -296,7 +297,8 @@ const ApplicantView = ({ model }) => {
 
         {/* List of Selected Competencies */}
         <div className="space-y-4">
-            {userCompetencies.map((competence, index) => (
+            {
+            userCompetencies.map((competence, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
                     <span className="text-gray-700 text-lg">{competence.competence}</span>
                     <input
@@ -327,6 +329,7 @@ const ApplicantView = ({ model }) => {
                 </div>
             ))}
         </div>
+
 
         {/* Error Message for Invalid Years of Experience */}
         {userCompetencies.some(comp => comp.yearsOfExperience === 0) && (
