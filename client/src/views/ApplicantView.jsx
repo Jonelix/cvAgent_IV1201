@@ -22,10 +22,13 @@ const ApplicantView = ({ model }) => {
 
     // Fetch competencies automatically when stage changes to "competence"
     useEffect(() => {
-        if (stage === "competence") {
+        if (stage === "main") {
+            fetchUserCompetencies();
+            fetchUserAvailability();
+        } else if (stage === "competence") {
             fetchCompetencies();
         }
-    }, [stage]); // Trigger when `stage` changes
+    }, [stage]);
 
 
     const fetchCompetencies = async () => {
@@ -39,8 +42,7 @@ const ApplicantView = ({ model }) => {
         }
     };
 
-    const fetchUserCompetencies = async (e) => {
-        e.preventDefault();
+    const fetchUserCompetencies = async () => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userCompetencies", {
                 method: "POST",
@@ -54,9 +56,8 @@ const ApplicantView = ({ model }) => {
             console.error("Error:", error.message);
         }
     };
-
-    const fetchUserAvailability = async (e) => {
-        e.preventDefault();
+    
+    const fetchUserAvailability = async () => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
                 method: "POST",
@@ -213,15 +214,11 @@ const ApplicantView = ({ model }) => {
                         {/* Competence Section */}
                         <div className="p-6 bg-white rounded-xl shadow-sm">
                             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Competence</h2>
-                            <button
-                                onClick={fetchUserCompetencies}
-                                className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300">
-                                Fetch Competencies
-                            </button>
+                        
                             <button
                                 onClick={removeUserCompetence}
                                 className="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
-                                Delete Availability
+                                Delete Competencies
                             </button>
                             <div className="mt-4 space-y-2">
                                 {userCompetencies.length > 0 ? (
@@ -239,11 +236,6 @@ const ApplicantView = ({ model }) => {
                         {/* Availability Section */}
                         <div className="p-6 bg-white rounded-xl shadow-sm">
                             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Availability</h2>
-                            <button
-                                onClick={fetchUserAvailability}
-                                className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300">
-                                Fetch Availability
-                            </button>
                             <button
                                 onClick={removeUserAvailability}
                                 className="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
