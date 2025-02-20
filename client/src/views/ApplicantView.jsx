@@ -7,6 +7,8 @@ const ApplicantView = ({ model }) => {
     const navigate = useNavigate();
     const [competencies, setCompetencies] = useState([]);
     const [userCompetencies, setUserCompetencies] = useState([]);
+    const [newCopetence, setNewCompetence] = useState([]);
+    const [newExperience, setNewExperience] = useState([]);
     const [person, setPerson] = useState([]);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -27,6 +29,7 @@ const ApplicantView = ({ model }) => {
             fetchUserAvailability();
         } else if (stage === "competence") {
             fetchCompetencies();
+            fetchUserCompetencies();
         }
     }, [stage]);
 
@@ -187,7 +190,7 @@ const ApplicantView = ({ model }) => {
                     <button
                         onClick={handleCreateNewApplication}
                         className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                        Create New Application
+                        Update Application
                     </button>
                 )}
             </div>
@@ -282,14 +285,28 @@ const ApplicantView = ({ model }) => {
         {/* Add Competence Button */}
         <button
             onClick={() => {
-                if (selectedCompetence) {
-                    setUserCompetencies([...userCompetencies, { 
-                        competence: selectedCompetence, 
-                        yearsOfExperience: 0,  // Store as number
-                        yearsOfExperienceStr: "0"  // Store as string for input
-                    }]);
-                    setSelectedCompetence("");
+
+                if (!selectedCompetence) {
+                    alert("Please select a competence before adding.");
+                    return;
                 }
+
+                // Check if the competence already exists in userCompetencies
+                const isDuplicate = userCompetencies.some(
+                    (competence) => competence.competence_name.toLowerCase() === selectedCompetence.toLowerCase()
+                );
+
+                if (isDuplicate) {
+                    alert("Competence already exists!");
+                    return;
+                }
+
+                setUserCompetencies([...userCompetencies, { 
+                    competence_name: selectedCompetence, 
+                    years_of_experience: 0,  // Store as number
+                    years_of_experienceStr: "0"  // Store as string for input
+                }]);
+                setSelectedCompetence("");
             }}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-6">
             Add Competence
@@ -297,21 +314,21 @@ const ApplicantView = ({ model }) => {
 
         {/* List of Selected Competencies */}
         <div className="space-y-4">
-            {
+            {                      
             userCompetencies.map((competence, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
-                    <span className="text-gray-700 text-lg">{competence.competence}</span>
+                    <span className="text-gray-700 text-lg">{competence.competence_name}</span> 
                     <input
                         type="number"
                         step="0.1" // Allow increments/decrements of 0.1 (one decimal place)
                         min="0"
-                        value={competence.yearsOfExperienceStr ?? ""}
+                        value={competence.years_of_experience ?? ""}
                         onChange={(e) => {
                             const updatedCompetencies = [...userCompetencies];
                             // Store raw string value
-                            updatedCompetencies[index].yearsOfExperienceStr = e.target.value;
+                            updatedCompetencies[index].years_of_experienceStr = e.target.value;
                             // Parse float for validation
-                            updatedCompetencies[index].yearsOfExperience = parseFloat(e.target.value) || 0;
+                            updatedCompetencies[index].years_of_experience = parseFloat(e.target.value) || 0;
                             
                             setUserCompetencies(updatedCompetencies);
                 }}
