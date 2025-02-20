@@ -305,36 +305,39 @@ const ApplicantView = ({ model }) => {
 
         {/* List of Selected Competencies */}
         <div className="space-y-4">
-            {userCompetencies.filter((competence) => competence.competence)
-            .map((competence, index) => (
+            {
+            userCompetencies.map((competence, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
                     <span className="text-gray-700 text-lg">{competence.competence}</span>
                     <input
-                type="number"
-                step="0.1"
-                min="0"
-                value={competence.yearsOfExperienceStr ?? ""}
-                onChange={(e) => {
-                    const value = e.target.value;
-                    const updatedCompetencies = [...userCompetencies];
-                    updatedCompetencies[index].yearsOfExperienceStr = value;
-                    updatedCompetencies[index].yearsOfExperience = !isNaN(parseFloat(value)) ? parseFloat(value) : 0;
-                    setUserCompetencies(updatedCompetencies);
+                        type="number"
+                        step="0.1" // Allow increments/decrements of 0.1 (one decimal place)
+                        min="0"
+                        value={competence.yearsOfExperienceStr ?? ""}
+                        onChange={(e) => {
+                            const updatedCompetencies = [...userCompetencies];
+                            // Store raw string value
+                            updatedCompetencies[index].yearsOfExperienceStr = e.target.value;
+                            // Parse float for validation
+                            updatedCompetencies[index].yearsOfExperience = parseFloat(e.target.value) || 0;
+                            
+                            setUserCompetencies(updatedCompetencies);
                 }}
                 className="w-20 p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
                 placeholder="Years"
-        />
-            <button
-                onClick={() => {
-                    const updatedCompetencies = userCompetencies.filter((_, i) => i !== index);
-                    setUserCompetencies(updatedCompetencies);
-                }}
-                className="px-3 py-1 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
-                Remove
-            </button>
+/>
+                    <button
+                        onClick={() => {
+                            const updatedCompetencies = userCompetencies.filter((_, i) => i !== index);
+                            setUserCompetencies(updatedCompetencies);
+                        }}
+                        className="px-3 py-1 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
+                        Remove
+                    </button>
+                </div>
+            ))}
         </div>
-    ))}
-        </div>
+
 
         {/* Error Message for Invalid Years of Experience */}
         {userCompetencies.some(comp => comp.yearsOfExperience === 0) && (
