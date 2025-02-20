@@ -454,7 +454,7 @@ const ApplicantView = ({ model }) => {
                         {userCompetencies.length > 0 ? (
                             userCompetencies.map((competence, index) => (
                                 <div key={index} className="p-3 bg-gray-100 rounded-lg mb-2">
-                                    <p className="text-gray-700">{competence.competence}: {competence.yearsOfExperience} year(s)</p>
+                                    <p className="text-gray-700">{competence.competence_name}: {competence.years_of_experience} year(s)</p>
                                 </div>
                             ))
                         ) : (

@@ -371,10 +371,10 @@ class AgentDAO {
     try {
         // Process all competencies
         for (const comp of competencies) {
-            const competence_id = await this.fetchCompetenceId(comp.competence);
+            const competence_id = await this.fetchCompetenceId(comp.competence_name);
             if (!competence_id) {
                 await transaction.rollback();
-                throw new Error(`Competence "${comp.competence}" not found in DB.`);
+                throw new Error(`Competence "${comp.competence_name}" not found in DB.`);
             }
 
             // Check if competence exists for this user
@@ -398,7 +398,7 @@ class AgentDAO {
                         replacements: { 
                             person_id, 
                             competence_id, 
-                            years: comp.yearsOfExperience 
+                            years: comp.years_of_experience 
                         },
                         type: database.QueryTypes.UPDATE,
                         transaction
@@ -414,7 +414,7 @@ class AgentDAO {
                         replacements: { 
                             person_id, 
                             competence_id, 
-                            years: comp.yearsOfExperience 
+                            years: comp.years_of_experience 
                         },
                         type: database.QueryTypes.INSERT,
                         transaction
