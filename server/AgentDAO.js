@@ -488,7 +488,7 @@ class AgentDAO {
         
         // Insert application status
         const applicationStatusInsert = `
-            INSERT INTO application_status (person_id, status, timestamp, beinghandled)
+            INSERT INTO applicationstatus (person_id, status, timeout, beinghandled)
             VALUES (:person_id, 0, NULL, NULL);
         `;
 
