@@ -288,6 +288,7 @@ class AgentDAO {
             }
         );
     }
+
     async fetchPerson(firstName, lastName) {
         const query = `SELECT * FROM person WHERE name = :firstName AND surname = :lastName`;
     
@@ -365,7 +366,9 @@ class AgentDAO {
         console.error('Error fetching competence id:', error);
         throw error;
     }
-}async createApplication(person_id, competencies, from_date, to_date) {
+    }
+
+    async createApplication(person_id, competencies, from_date, to_date) {
     const transaction = await database.transaction();
 
     try {
@@ -482,6 +485,18 @@ class AgentDAO {
                 transaction
             });
         }
+        
+        // Insert application status
+        const applicationStatusInsert = `
+            INSERT INTO application_status (person_id, status, timestamp, beinghandled)
+            VALUES (:person_id, 0, NULL, NULL);
+        `;
+
+        await database.query(applicationStatusInsert, {
+            replacements: { person_id },
+            type: database.QueryTypes.INSERT,
+            transaction
+        });
         
         await transaction.commit();
         return { message: 'Application successfully processed!' };
