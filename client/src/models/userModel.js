@@ -7,10 +7,10 @@ class UserModel {
     password = "";
     person_id = null;
     pnr = "";
-    role_id = 1;
+    role_id = null;
     surname = "";
     username = "";
-    isLoggedIn = true;
+    isLoggedIn = false;
     language = "en";
     strings = translations["en"];
 
