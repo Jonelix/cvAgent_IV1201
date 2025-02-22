@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import translations from "../translations";
 
 class UserModel {
     email = "";
@@ -10,9 +11,16 @@ class UserModel {
     surname = "";
     username = "";
     isLoggedIn = false;
+    language = "en";
+    strings = translations["en"];
 
     constructor() {
         makeAutoObservable(this);
+    }
+
+    setLanguage(language) {
+        this.language = language;
+        this.strings = translations[language];
     }
 
     setUserData(userData) {

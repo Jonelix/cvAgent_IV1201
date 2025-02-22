@@ -1,4 +1,5 @@
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePresenter from "./HomePresenter.jsx";
 import ProfilePresenter from "./ProfilePresenter.jsx";
@@ -7,6 +8,7 @@ import RegisterPresenter from "../views/RegisterView.jsx";
 import DashboardPresenter from "./DashboardPresenter.jsx";
 
 const MainPresenter = observer(({ model, applicantsModel }) => {
+
     return (
         <div className="flex flex-grow items-center justify-center">
             <Routes>

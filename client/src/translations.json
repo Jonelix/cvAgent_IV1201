@@ -1,0 +1,41 @@
+{
+    "en": {
+        "dashboard": "Dashboard",
+        "welcome": "Welcome to CV Agent!",
+        "profile": "Profile",
+        "created_by": "Created by Jonathan Amdam, Joar Enekvist, Ratimir Ernman, and Ziang Wang",
+        "login":"Login",
+        "register_an_account": "Register an account",
+        "register":"Register",
+        "already_has_account": "Already have an account? Login",
+        "username": "Username",
+        "password": "Password", 
+        "first_name": "First name",
+        "last_name": "Last name",
+        "id_number": "ID Number",
+        "email": "Email",
+        "confirm_password": "Confirm Password",
+        "error_first_name": "First name is required",
+        "error_last_name": "Last name is required",
+        "error_id_number": "ID number is required",
+        "error_username": "Username is required",
+        "error_email": "Email is required",
+        "error_password": "Password is required",
+        "error_confirm_password": "Confirm password is required"
+
+
+
+
+
+
+    },
+    "es": {
+      "welcome": "¡Bienvenido a nuestro sitio web!",
+      "login": "Iniciar sesión",
+      "register": "Registrarse",
+      "username": "Nombre de usuario",
+      "password": "Contraseña",
+      "email": "Correo electrónico"
+    }
+  }
+  
