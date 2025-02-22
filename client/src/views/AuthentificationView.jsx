@@ -11,7 +11,7 @@ const AuthentificationView = ({ onLoginSuccess }) => {
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const passwordInputRef = useRef(null);
 
-    
+
     const fetchCompetencies = async (e) => {
         e.preventDefault();
         try{
@@ -33,12 +33,13 @@ const AuthentificationView = ({ onLoginSuccess }) => {
             return { error: error.message };
         }
     }
-        
-    
+
+
     const fetchUser = async (e) => {
         e.preventDefault();
+      console.log("sending to api/login");
         try {
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/login", {
+            const response = await fetch("http://localhost:5005/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -81,7 +82,7 @@ const AuthentificationView = ({ onLoginSuccess }) => {
             return { error: error.message }; // Return error message instead of throwing
         }
     };
-    
+
 
     return (
         <div className="flex items-center justify-center w-full h-full bg-gray-100 p-8">
@@ -91,11 +92,11 @@ const AuthentificationView = ({ onLoginSuccess }) => {
                 <form className="flex flex-col gap-6">
                     <div>
                         <label className="block text-gray-600 text-sm font-semibold mb-2">Username</label>
-                        <input 
-                            type="text" 
-                            value={username} 
-                            onChange={(e) => setUsername(e.target.value)} 
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 
@@ -103,8 +104,8 @@ const AuthentificationView = ({ onLoginSuccess }) => {
 
                     <div className="relative">
                         <label className="block text-gray-600 text-sm font-semibold mb-2">Password</label>
-                        <div className="relative flex items-center">                            
-                            <input 
+                        <div className="relative flex items-center">
+                            <input
                                 ref={passwordInputRef}
                                 type={showPassword ? "text" : "password"}
                                 value={password}
@@ -116,7 +117,7 @@ const AuthentificationView = ({ onLoginSuccess }) => {
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-14"
                             />
 
-                            
+
                             {isPasswordFocused && (
                                 <button
                                     type="button"

@@ -1,12 +1,15 @@
 // Controller.js
 const AgentDAO = require('./AgentDAO');
+const Auth = require('./Authentication')
 
 class Controller {
     constructor() {
-        this.agentDAO = new AgentDAO();
+      this.agentDAO = new AgentDAO();
+      this.Auth = new Auth();
     }
 
     async login(username, password) {
+      console.log("hello");
         const user = await this.agentDAO.findUserWithUsername(username);
         if (user && password ==  user.dataValues.password) {
             return user.dataValues;
@@ -20,7 +23,7 @@ class Controller {
             throw new Error("Passwords do not match");
         }
         const user = await this.agentDAO.registerUser(firstName, lastName, personNumber, username, email, password, role_id);
-    
+
         if (user) {
             const { password, ...userData } = user.dataValues;
             console.log(userData)
@@ -76,9 +79,9 @@ class Controller {
 
     async createApplication(person_id, competencies, from_date, to_date) {
         const application = await this.agentDAO.createApplication(
-            person_id, 
-            competencies, 
-            from_date, 
+            person_id,
+            competencies,
+            from_date,
             to_date
         );
         return application;
@@ -92,6 +95,10 @@ class Controller {
     async deleteCompetence(person_id){
         const application = await this.agentDAO.deleteCompetence(person_id);
         return application;
+    }
+
+    async makeCookie(user){
+      return await this.Auth.createCookie(user);
     }
 }
 

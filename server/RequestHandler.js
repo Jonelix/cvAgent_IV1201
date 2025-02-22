@@ -6,7 +6,7 @@ class RequestHandler {
     }
 
     initializeRoutes(app) {
-        
+
         //Create application (post)
 
         app.get('/api/competencies', async (req, res) => {
@@ -98,30 +98,35 @@ class RequestHandler {
         app.post('/api/applicantProfile', async (req, res) => {
             try {
                 const { applicant_id } = req.body;
-        
+
                 if (!applicant_id) {
                     return res.status(400).json({ message: 'Missing applicant_id' });
                 }
-        
+
                 const applicant = await this.controller.getApplicantProfile(applicant_id);
-        
+
                 if (!applicant || applicant.length === 0) {
                     return res.status(404).json({ message: 'Applicant not found' });
                 }
-        
+
                 res.status(200).json({ data: applicant }); // Ensure it's returned inside an array
             } catch (error) {
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
         });
-        
+
 
         app.post('/api/login', async (req, res) => {
             const { username, password } = req.body;
             try {
                 const user = await this.controller.login(username, password);
                 if (user) {
-                    res.status(200).json(user);
+                  const cookie = await this.controller.makeCookie(user);
+                  const resp = {
+                    user: user,
+                    cookie: cookie
+                  };
+                    res.status(200).json(resp);
                 } else {
                     res.status(401).json({ message: 'Invalid credentials' });
                 }
@@ -190,14 +195,14 @@ class RequestHandler {
                 if(!person_id || !availability?.from_date || !availability?.to_date || !competencies?.length) {
                     return res.status(400).json({ message: 'All fields are required' });
                 }
-                
+
                 const application = await this.controller.createApplication(
-                    person_id, 
-                    competencies, 
-                    availability.from_date, 
+                    person_id,
+                    competencies,
+                    availability.from_date,
                     availability.to_date
                 );
-                
+
                 res.status(201).json(application);
             } catch (error) {
                 res.status(500).json({ message: 'Server error', error: error.message });
@@ -229,7 +234,7 @@ class RequestHandler {
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
         });
-   
+
         }
 }
 

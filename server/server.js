@@ -11,9 +11,7 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 
 const requestHandler = new RequestHandler();
 requestHandler.initializeRoutes(app);
-
 const PORT = process.env.PORT || 5005;
 const server = app.listen(PORT, () => {
     console.log(`Server up at http://localhost:${PORT}`);
 });
-
