@@ -5,7 +5,9 @@ const cors = require('cors');
 const RequestHandler = require('./RequestHandler');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: ['https://cvagent-b8c3fb279d06.herokuapp.com/', 'http://localhost:5005']
+  }));
 app.use(express.json()); // Middleware to parse JSON request bodies
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
