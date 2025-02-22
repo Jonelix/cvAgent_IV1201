@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from "mobx-react-lite";
 
-const HeaderView = observer(({ model, isLoggedIn }) => {
+const HeaderView = observer(({ model, isLoggedIn, strings}) => {
 
     function goToHome(){
         window.location.href = "#/";
@@ -48,7 +48,7 @@ const HeaderView = observer(({ model, isLoggedIn }) => {
                 <button 
                     onClick={goToDashboard} 
                     className="bg-slate-600 hover:bg-slate-500 text-white font-semibold py-2 px-4 ml-8 rounded-lg">
-                        Dashboard
+                        {strings.dashboard}
                 </button>
             </div>
 
@@ -66,7 +66,7 @@ const HeaderView = observer(({ model, isLoggedIn }) => {
                     onClick={handleProfileButton} 
                     className="bg-slate-600 hover:bg-slate-400 text-white font-semibold py-2 px-4 rounded-lg"
                 >
-                    Profile
+                    {strings.profile}
                 </button>
             </div>
         </header>

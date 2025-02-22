@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import HomePresenter from "./HomePresenter.jsx";
 import ProfilePresenter from "./ProfilePresenter.jsx";
 import AuthentificationPresenter from "./AuthentificationPresenter.jsx";
-import RegisterPresenter from "../views/RegisterView.jsx";
+import RegisterPresenter from "../presenters/RegisterPresenter.jsx";
 import DashboardPresenter from "./DashboardPresenter.jsx";
 
 const MainPresenter = observer(({ model, applicantsModel }) => {

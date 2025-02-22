@@ -10,7 +10,7 @@ class UserModel {
     role_id = 1;
     surname = "";
     username = "";
-    isLoggedIn = false;
+    isLoggedIn = true;
     language = "en";
     strings = translations["en"];
 

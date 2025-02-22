@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-const AuthentificationView = ({ onLoginSuccess }) => {
+const AuthentificationView = ({ onLoginSuccess, strings }) => {
     function goToRegister() {
         window.location.href = "#/registration";
     }
@@ -86,11 +86,11 @@ const AuthentificationView = ({ onLoginSuccess }) => {
     return (
         <div className="flex items-center justify-center w-full h-full bg-gray-100 p-8">
             <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-6 text-left text-gray-700">Login</h2>
+                <h2 className="text-2xl font-bold mb-6 text-left text-gray-700">{strings.login}</h2>
 
                 <form className="flex flex-col gap-6">
                     <div>
-                        <label className="block text-gray-600 text-sm font-semibold mb-2">Username</label>
+                        <label className="block text-gray-600 text-sm font-semibold mb-2">{strings.username}</label>
                         <input 
                             type="text" 
                             value={username} 
@@ -102,7 +102,7 @@ const AuthentificationView = ({ onLoginSuccess }) => {
                     <input type="text" autoComplete="username" className="hidden" />
 
                     <div className="relative">
-                        <label className="block text-gray-600 text-sm font-semibold mb-2">Password</label>
+                        <label className="block text-gray-600 text-sm font-semibold mb-2">{strings.password}</label>
                         <div className="relative flex items-center">                            
                             <input 
                                 ref={passwordInputRef}
@@ -134,13 +134,13 @@ const AuthentificationView = ({ onLoginSuccess }) => {
 
                     <div>
                         <button onClick={fetchUser} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
-                            Login
+                            {strings.login}
                         </button>
                     </div>
 
                     <div className="text-center">
                         <p onClick={goToRegister} className="text-blue-500 hover:underline">
-                            Register an account
+                            {strings.register_an_account}
                         </p>
                     </div>
 

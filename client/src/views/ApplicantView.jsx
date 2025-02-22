@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 
-const ApplicantView = ({ model }) => {
+const ApplicantView = ({ model, strings }) => {
     const navigate = useNavigate();
     const [competencies, setCompetencies] = useState([]);
     const [userCompetencies, setUserCompetencies] = useState([]);
@@ -182,15 +182,15 @@ const ApplicantView = ({ model }) => {
             {/* Header Section */}
             <div className="flex justify-between items-center w-full mb-8 bg-white p-6 rounded-xl shadow-sm">
                 <h1 className="text-3xl font-bold text-gray-800">
-                    {stage === "main" ? "Current Application" : 
-                     stage === "competence" || stage === "availability" ? "Updating Your Application" : 
-                     "Application Summary"}
+                    {stage === "main" ? strings.current_application : 
+                     stage === "competence" || stage === "availability" ? strings.updating_your_application : 
+                     strings.application_summary}
                 </h1>
                 {stage === "main" && (
                     <button
                         onClick={handleCreateNewApplication}
                         className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                        Update Application
+                        {strings.update_application}
                     </button>
                 )}
             </div>
@@ -200,16 +200,16 @@ const ApplicantView = ({ model }) => {
                 <div className="grid grid-cols-1 gap-8 w-full">
                     {/* User Profile Section */}
                     <div className="p-6 bg-white rounded-xl shadow-sm">
-                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">User Profile</h2>
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">{strings.user_profile}</h2>
                         {model?.name ? (
                             <div className="space-y-4">
-                                <p className="text-gray-700"><strong>Name:</strong> {model.name}</p>
-                                <p className="text-gray-700"><strong>Surname:</strong> {model.surname}</p>
-                                <p className="text-gray-700"><strong>Email:</strong> {model.email}</p>
-                                <p className="text-gray-700"><strong>Username:</strong> {model.username}</p>
+                                <p className="text-gray-700"><strong>{strings.first_name}</strong> {model.name}</p>
+                                <p className="text-gray-700"><strong>{strings.last_name}</strong> {model.surname}</p>
+                                <p className="text-gray-700"><strong>{strings.email}</strong> {model.email}</p>
+                                <p className="text-gray-700"><strong>{strings.username}</strong> {model.username}</p>
                             </div>
                         ) : (
-                            <p className="text-gray-500">No user data available.</p>
+                            <p className="text-gray-500">{strings.no_user_data}</p>
                         )}
                     </div>
 
@@ -217,12 +217,12 @@ const ApplicantView = ({ model }) => {
                     <div className="grid grid-cols-2 gap-8">
                         {/* Competence Section */}
                         <div className="p-6 bg-white rounded-xl shadow-sm">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Competence</h2>
+                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">{strings.competence}</h2>
                         
                             <button
                                 onClick={removeUserCompetence}
                                 className="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
-                                Delete Competencies
+                                {strings.delete_competencies}
                             </button>
                             <div className="mt-4 space-y-2">
                                 {userCompetencies.length > 0 ? (
@@ -232,18 +232,18 @@ const ApplicantView = ({ model }) => {
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="text-gray-500">No competencies found.</p>
+                                    <p className="text-gray-500">{strings.no_competencies}</p>
                                 )}
                             </div>
                         </div>
 
                         {/* Availability Section */}
                         <div className="p-6 bg-white rounded-xl shadow-sm">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Availability</h2>
+                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">{strings.availability}</h2>
                             <button
                                 onClick={removeUserAvailability}
                                 className="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
-                                Delete Availability
+                                {strings.delete_availability}
                             </button>
                             <div className="mt-4 space-y-2">
                                 {userAvailability.length > 0 ? (
@@ -253,7 +253,7 @@ const ApplicantView = ({ model }) => {
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="text-gray-500">No availability found.</p>
+                                    <p className="text-gray-500">{strings.no_availability}</p>
                                 )}
                             </div>
                         </div>
@@ -264,7 +264,7 @@ const ApplicantView = ({ model }) => {
             {/* Competence Stage */}
             {stage === "competence" && (
     <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Set Competence</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">{strings.set_competence}</h2>
 
         {/* Competence Selection Dropdown */}
         <div className="mb-6">
@@ -273,7 +273,7 @@ const ApplicantView = ({ model }) => {
                 onChange={(e) => setSelectedCompetence(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 text-lg"
             >
-                <option value="" disabled>Select Competence</option>
+                <option value="" disabled>{strings.select_competence}</option>
                 {competencies.map((competence, index) => (
                     <option key={index} value={competence.name} className="text-lg">
                         {competence.name}
@@ -309,7 +309,7 @@ const ApplicantView = ({ model }) => {
                 setSelectedCompetence("");
             }}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-6">
-            Add Competence
+            {strings.add_competence}
         </button>
 
         {/* List of Selected Competencies */}
@@ -341,7 +341,7 @@ const ApplicantView = ({ model }) => {
                             setUserCompetencies(updatedCompetencies);
                         }}
                         className="px-3 py-1 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
-                        Remove
+                        {strings.remove}
                     </button>
                 </div>
             ))}
@@ -358,7 +358,7 @@ const ApplicantView = ({ model }) => {
             <button
                 onClick={handleBack}
                 className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
-                Back
+                {strings.back}
             </button>
             <button
                 onClick={() => {
@@ -370,7 +370,7 @@ const ApplicantView = ({ model }) => {
                     }
                 }}
                 className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                Next
+                {strings.next}
             </button>
         </div>
     </div>
@@ -378,11 +378,11 @@ const ApplicantView = ({ model }) => {
             {/* Availability Stage */}
             {stage === "availability" && (
                 <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Set Availability</h2>
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">{strings.set_availability}</h2>
 
                     {/* From Date Input */}
                     <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{strings.from_date}</label>
                         <input
                             type="date"
                             value={selectedAvailability.fromDate || ""}
@@ -394,7 +394,7 @@ const ApplicantView = ({ model }) => {
 
                     {/* To Date Input */}
                     <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{strings.to_date}</label>
                         <input
                             type="date"
                             value={selectedAvailability.toDate || ""}
@@ -415,7 +415,7 @@ const ApplicantView = ({ model }) => {
                         <button
                             onClick={handleBack}
                             className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
-                            Back
+                            {strings.back}
                         </button>
                         <button
                             onClick={() => {
@@ -426,7 +426,7 @@ const ApplicantView = ({ model }) => {
                                 }
                             }}
                             className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                            Next
+                            {strings.next}
                         </button>
                     </div>
                 </div>
@@ -435,22 +435,22 @@ const ApplicantView = ({ model }) => {
             {/* Summary Stage */}
             {stage === "summary" && (
                 <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Application Summary</h2>
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">{strings.application_summary}</h2>
 
                     {/* User Profile Summary */}
                     <div className="mb-8">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-4">User Profile</h3>
+                        <h3 className="text-xl font-semibold text-gray-700 mb-4">{strings.user_profile}</h3>
                         <div className="space-y-2">
-                            <p className="text-gray-700"><strong>Name:</strong> {model?.name}</p>
-                            <p className="text-gray-700"><strong>Surname:</strong> {model?.surname}</p>
-                            <p className="text-gray-700"><strong>Email:</strong> {model?.email}</p>
-                            <p className="text-gray-700"><strong>Username:</strong> {model?.username}</p>
+                            <p className="text-gray-700"><strong>{strings.first_name}</strong> {model?.name}</p>
+                            <p className="text-gray-700"><strong>{strings.last_name}</strong> {model?.surname}</p>
+                            <p className="text-gray-700"><strong>{strings.email}</strong> {model?.email}</p>
+                            <p className="text-gray-700"><strong>{strings.username}</strong> {model?.username}</p>
                         </div>
                     </div>
 
                     {/* Competence Summary */}
                     <div className="mb-8">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-4">Competence</h3>
+                        <h3 className="text-xl font-semibold text-gray-700 mb-4">{strings.competence}</h3>
                         {userCompetencies.length > 0 ? (
                             userCompetencies.map((competence, index) => (
                                 <div key={index} className="p-3 bg-gray-100 rounded-lg mb-2">
@@ -458,19 +458,19 @@ const ApplicantView = ({ model }) => {
                                 </div>
                             ))
                         ) : (
-                            <p className="text-gray-500">No competencies selected.</p>
+                            <p className="text-gray-500">{strings.no_competencies}</p>
                         )}
                     </div>
 
                     {/* Availability Summary */}
                     <div className="mb-8">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-4">Availability</h3>
+                        <h3 className="text-xl font-semibold text-gray-700 mb-4">{strings.availability}</h3>
                         {selectedAvailability.fromDate && selectedAvailability.toDate ? (
                             <div className="p-3 bg-gray-100 rounded-lg">
                                 <p className="text-gray-700">{selectedAvailability.fromDate} to {selectedAvailability.toDate}</p>
                             </div>
                         ) : (
-                            <p className="text-gray-500">No availability entered.</p>
+                            <p className="text-gray-500">{strings.no_availability}</p>
                         )}
                     </div>
 
@@ -479,12 +479,12 @@ const ApplicantView = ({ model }) => {
                         <button
                             onClick={handleBack}
                             className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
-                            Back
+                            {strings.back}
                         </button>
                         <button
                             onClick={updateUserProfile}
                             className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                            Finish
+                            {strings.finish}
                         </button>
                     </div>
                 </div>

@@ -14,7 +14,7 @@ function App() {
             <main className="flex-grow flex pt-[6rem]">
                 <MainPresenter model={userModel} applicantsModel={applicantsModel}/>
             </main>
-            <FooterPresenter />
+            <FooterPresenter model={userModel} />
         </div>
     );
 }

@@ -7,20 +7,25 @@ const statusColors = {
     2: "bg-red-400", // Rejected",
 };
 
-const statusText = {
-    0: "Unhandled",
-    1: "Accepted",
-    2: "Rejected",
-};
 
-const RecruiterView = ({ model, applicantsModel }) => {
+
+const RecruiterView = ({ model, applicantsModel, strings }) => {
+
+    console.log(strings)
+
+    const statusText = {
+        0: strings.unhandled || "Unhandled",
+        1: strings.accepted || "Accepted",
+        2: strings.rejected || "Rejected"
+    };
+
     const [applicants, setApplicants] = useState(applicantsModel.applicants || []);
     const [expanded, setExpanded] = useState(null);
     const [editingStatus, setEditingStatus] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [inputError, setInputError] = useState(false);
-    const currentRecruiter = model.model.person_id || null;
+    const currentRecruiter = model.person_id || null;
 
     useEffect(() => {
         if (editingStatus !== null) {
@@ -118,7 +123,6 @@ const RecruiterView = ({ model, applicantsModel }) => {
     //End applicant change status
     const postConfirmStatusUpdate = async (currentRecruiter, editingStatus, selectedStatus) => {
         try {
-    
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/confirmStatusUpdate", {
                 method: "POST",
                 headers: {
@@ -164,11 +168,11 @@ const RecruiterView = ({ model, applicantsModel }) => {
         <div className="w-full h-full p-4 overflow-auto">
             {/* Search Bar */}
             <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl font-bold">Applicants</h1>
+                <h1 className="text-2xl font-bold">{strings.applicants}</h1>
                 <div className="flex items-center gap-2">
                     <input
                         type="text"
-                        placeholder="Applicant ID"
+                        placeholder={strings.applicant_id}
                         className={`p-2 border ${inputError ? "border-red-500" : "border-gray-400"} rounded-lg shadow-md`}
                         value={searchTerm}
                         onChange={(e) => {
@@ -180,7 +184,7 @@ const RecruiterView = ({ model, applicantsModel }) => {
                         className="bg-slate-600 hover:bg-slate-500 text-white font-semibold py-2 px-4 rounded-lg"
                         onClick={searchForApplicants}
                     >
-                        Search
+                        {strings.search}
                     </button>
                 </div>
             </div>
@@ -229,7 +233,7 @@ const RecruiterView = ({ model, applicantsModel }) => {
                                                 // Handle API update here
                                             }}
                                         >
-                                            Confirm
+                                            {strings.confirm}
                                         </button>
                                     </>
                                 ) : (
@@ -246,7 +250,7 @@ const RecruiterView = ({ model, applicantsModel }) => {
                                                     setSelectedStatus(applicant.status); // Set the dropdown to current status
                                                 }}
                                             >
-                                                Change
+                                                {strings.change}
                                             </button>
                                         )}
                                     </>
@@ -259,7 +263,7 @@ const RecruiterView = ({ model, applicantsModel }) => {
                             <div className="mt-4 grid grid-cols-2 gap-4">
                                 {/* Competencies (Left Side) */}
                                 <div className="bg-white shadow-md rounded-lg p-4">
-                                    <h2 className="font-semibold text-lg mb-2">Competencies</h2>
+                                    <h2 className="font-semibold text-lg mb-2">{strings.competence}</h2>
                                     <ul className="list-disc pl-4">
                                         {applicant.competencies.map((comp, index) => (
                                             <li key={index} className="text-sm">
@@ -271,7 +275,7 @@ const RecruiterView = ({ model, applicantsModel }) => {
 
                                 {/* Availability (Right Side) */}
                                 <div className="bg-white shadow-md rounded-lg p-4">
-                                    <h2 className="font-semibold text-lg mb-2">Availability</h2>
+                                    <h2 className="font-semibold text-lg mb-2">{strings.availability}</h2>
                                     {applicant.availability.length > 0 ? (
                                         <ul className="list-disc pl-4">
                                             {applicant.availability.map((period, index) => (
