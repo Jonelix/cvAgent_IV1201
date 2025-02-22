@@ -1,14 +1,17 @@
 // Controller.js
 const AgentDAO = require('./AgentDAO');
+const Logger = require('./Logger');
 
 class Controller {
     constructor() {
         this.agentDAO = new AgentDAO();
+        this.logger = new Logger();
     }
 
     async login(username, password) {
         const user = await this.agentDAO.findUserWithUsername(username);
         if (user && password ==  user.dataValues.password) {
+            this.logger.log("User logged in: " + JSON.stringify(user.username));
             return user.dataValues;
         }
         return null;
@@ -23,7 +26,8 @@ class Controller {
     
         if (user) {
             const { password, ...userData } = user.dataValues;
-            console.log(userData)
+            console.log(userData);
+            this.logger.log("User created: " + JSON.stringify(userData.username));
             return userData;
         }
         return null;
@@ -46,11 +50,13 @@ class Controller {
 
     async handleApplicantStatus(rec_id, app_id, timestamp) {
         const applicant = await this.agentDAO.handleApplicantStatus(rec_id, app_id);
+        this.logger.log("Recruiter ${rec_id} is handling the status of applicant ${app_id}.");
         return applicant;
     }
 
     async confirmStatusUpdate (rec_id, app_id, status) {
         const applicant = await this.agentDAO.confirmStatusUpdate(rec_id, app_id, status);
+        this.logger.log("Recruiter ${rec_id} is updated the status of applicant ${app_id} to ${status}.");
         return applicant;
     }
 
@@ -81,6 +87,7 @@ class Controller {
             from_date, 
             to_date
         );
+        this.logger.log("Application created for person ${person_id}.");
         return application;
     }
 
