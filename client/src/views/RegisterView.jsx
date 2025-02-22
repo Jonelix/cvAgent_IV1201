@@ -44,9 +44,9 @@ const RegisterView = observer(() => {
             newErrors.email = "Invalid email format.";
         }
 
-        if (!/^[A-Za-z0-9!@$%^&*+#]{6,255}$/.test(password)) {
-            newErrors.password = "Password must be 6-255 characters and may contain alphanumeric characters with (!, @, $, %, ^, &, *, +, #).";
-        }
+        if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*+#])[A-Za-z\d!@$%^&*+#]{6,255}$/.test(password)) {
+            newErrors.password = "Password must be 6-255 characters long, include at least one uppercase letter, one number, and one special character (!, @, $, %, ^, &, *, +, #).";
+        }        
 
         if (confirmPassword !== password) {
             newErrors.confirmPassword = "Passwords do not match.";
@@ -128,7 +128,7 @@ const RegisterView = observer(() => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 onFocus={() => setIsPasswordFocused(true)}
                                 onBlur={() => setIsPasswordFocused(false)}
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16"
+                                className={`w-full p-3 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16`}
                             />
                             {isPasswordFocused && (
                                 <button
@@ -142,6 +142,7 @@ const RegisterView = observer(() => {
                                     {showPassword ? "Hide" : "Show"}
                                 </button>
                             )}
+                            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
                         </div>
 
                         {/* Confirm Password Field with Show/Hide */}
@@ -153,7 +154,7 @@ const RegisterView = observer(() => {
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 onFocus={() => setIsConfirmPasswordFocused(true)}
                                 onBlur={() => setIsConfirmPasswordFocused(false)}
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16"
+                                className={`w-full p-3 border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16`}
                             />
                             {isConfirmPasswordFocused && (
                                 <button
@@ -167,7 +168,9 @@ const RegisterView = observer(() => {
                                     {showConfirmPassword ? "Hide" : "Show"}
                                 </button>
                             )}
+                            {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
                         </div>
+
 
                         <button onClick={registerUser} className="w-full mt-7 bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
                             Register
