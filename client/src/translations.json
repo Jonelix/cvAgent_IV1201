@@ -59,7 +59,8 @@
         "unhandled":"Unhandled",
         "change":"Change",
         "confirm":"Confirm",
-        "add_availability": "Add availability" 
+        "add_availability": "Add availability",
+        "cancel":  "Cancel"
     },
     "es": {
         "dashboard": "Panel",
@@ -121,7 +122,8 @@
         "unhandled": "No gestionado",
         "change": "Cambiar",
         "confirm": "Confirmar",
-        "add_availability": "Agregar disponibilidad"
+        "add_availability": "Agregar disponibilidad",
+        "cancel":  "Cancelar"
     }
   }
   
