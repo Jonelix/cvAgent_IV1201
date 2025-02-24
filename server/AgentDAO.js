@@ -1,5 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 const database = new Sequelize(
     process.env.DB_NAME,
     process.env.DB_USER,
@@ -556,6 +559,8 @@ class AgentDAO {
             throw error;
         }
     }
+
 }
+
 
 module.exports = AgentDAO;
