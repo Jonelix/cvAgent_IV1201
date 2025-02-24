@@ -55,7 +55,7 @@ const ApplicantView = ({ model, strings }) => {
 
     const fetchCompetencies = async () => {
         try {
-            const response = await fetch("http://localhost:5005/api/competencies");
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies");
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             setCompetencies(data);
@@ -66,7 +66,7 @@ const ApplicantView = ({ model, strings }) => {
 
     const fetchUserCompetencies = async () => {
         try {
-            const response = await fetch("http://localhost:5005/api/userCompetencies", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userCompetencies", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }), 
@@ -81,7 +81,7 @@ const ApplicantView = ({ model, strings }) => {
     
     const fetchUserAvailability = async () => {
         try {
-            const response = await fetch("http://localhost:5005/api/userAvailability", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }),
@@ -89,6 +89,7 @@ const ApplicantView = ({ model, strings }) => {
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             setUserAvailability(data);
+            setAvailabilities(data);
         } catch (error) {
             console.error("Error:", error.message);
         }
@@ -99,7 +100,7 @@ const ApplicantView = ({ model, strings }) => {
         try {
             console.log("userAvailability: ", userAvailability);
             console.log("availabilities: ", availabilities);
-            const response = await fetch("http://localhost:5005/api/createApplication", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
@@ -130,7 +131,7 @@ const ApplicantView = ({ model, strings }) => {
     const removeUserCompetence = async (e) => {
         e.preventDefault();
         try{
-            const response = await fetch("http://localhost:5005/api/deleteCompetence", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteCompetence", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id}),
@@ -152,7 +153,7 @@ const ApplicantView = ({ model, strings }) => {
     const removeUserAvailability = async (e) => {
         e.preventDefault();
         try{
-            const response = await fetch("http://localhost:5005/api/deleteAvailability", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteAvailability", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }),
@@ -170,6 +171,18 @@ const ApplicantView = ({ model, strings }) => {
             console.error("Error:", error.message);
         }
     };
+
+    const cancleUserProfile = async (e) => {
+        e.preventDefault();
+        try{
+            setUserAvailability("");
+            setUserCompetencies("");
+            setStage("main");
+
+        } catch (error) {
+            console.error("Error:", error.message);
+        }
+    }
 
     const handleNext = () => {
         if (stage === "competence") {
@@ -541,6 +554,12 @@ const ApplicantView = ({ model, strings }) => {
                             className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
                             {strings.back}
                         </button>
+                        <button
+                            onClick={cancleUserProfile}
+                            className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
+                            {strings.cancel}
+                        </button>
+
                         <button
                             onClick={updateUserProfile}
                             className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
