@@ -1,6 +1,8 @@
 // Controller.js
 const AgentDAO = require('./AgentDAO');
 const Logger = require('./Logger');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 class Controller {
     constructor() {
@@ -10,9 +12,13 @@ class Controller {
 
     async login(username, password) {
         const user = await this.agentDAO.findUserWithUsername(username);
-        if (user && password ==  user.dataValues.password) {
-            this.logger.log("User logged in: " + JSON.stringify(user.username));
-            return user.dataValues;
+        if (user) {
+            // Compare the provided password with the stored hashed password
+            const isMatch = await bcrypt.compare(password, user.dataValues.password);
+            if (isMatch) {
+                this.logger.log("User logged in: " + JSON.stringify(user.username));
+                return user.dataValues;
+            }
         }
         return null;
     }
@@ -21,7 +27,10 @@ class Controller {
         if (password !== confirmPassword) {
             throw new Error("Passwords do not match");
         }
-        const user = await this.agentDAO.registerUser(firstName, lastName, personNumber, username, email, password, role_id);
+        
+        // Hash the password before sending it to the DAO
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const user = await this.agentDAO.registerUser(firstName, lastName, personNumber, username, email, hashedPassword, role_id);
     
         if (user) {
             const { password, ...userData } = user.dataValues;

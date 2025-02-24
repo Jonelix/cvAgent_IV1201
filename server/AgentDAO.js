@@ -1,5 +1,4 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
 
 const database = new Sequelize(
     process.env.DB_NAME,
