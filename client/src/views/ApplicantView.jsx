@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 
-const ApplicantView = ({ model }) => {
+const ApplicantView = ({ model, strings }) => {
     const navigate = useNavigate();
     const [competencies, setCompetencies] = useState([]);
     const [userCompetencies, setUserCompetencies] = useState([]);
@@ -14,12 +14,29 @@ const ApplicantView = ({ model }) => {
     const [lastName, setLastName] = useState("");
     const [stage, setStage] = useState("main"); // Track current stage: "main", "competence", "availability", "summary"
     const [selectedCompetence, setSelectedCompetence] = useState(""); // Store selected competence
-    const [selectedAvailability, setSelectedAvailability] = useState({ fromDate: "", toDate: "" }); // Store selected availability
+    const [availabilities, setAvailabilities] = useState([]); // Array to store multiple availabilities
+    const [newAvailability, setNewAvailability] = useState({ from_date: "", to_date: "" }); // Temporary state for the current inpu
     const [userAvailability, setUserAvailability] = useState([]);
     const [isApplicationUpdated, setIsApplicationUpdated] = useState(false); // Track if application is updated
 
     const handleCreateNewApplication = () => {
         setStage("competence"); // Move to the competence stage
+    };
+
+    const isOverlapping = (newFromDate, newToDate) => {
+        const newFrom = new Date(newFromDate);
+        const newTo = new Date(newToDate);
+    
+        return availabilities.some((availability) => {
+            const existingFrom = new Date(availability.from_date);
+            const existingTo = new Date(availability.to_date);
+    
+            return (
+                (newFrom >= existingFrom && newFrom <= existingTo) || // New start date is within an existing period
+                (newTo >= existingFrom && newTo <= existingTo) || // New end date is within an existing period
+                (newFrom <= existingFrom && newTo >= existingTo) // New period completely overlaps an existing period
+            );
+        });
     };
 
     // Fetch competencies automatically when stage changes to "competence"
@@ -30,6 +47,8 @@ const ApplicantView = ({ model }) => {
         } else if (stage === "competence") {
             fetchCompetencies();
             fetchUserCompetencies();
+        }else if(stage === "availability"){
+            fetchUserAvailability();
         }
     }, [stage]);
 
@@ -70,6 +89,7 @@ const ApplicantView = ({ model }) => {
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             setUserAvailability(data);
+            setAvailabilities(data);
         } catch (error) {
             console.error("Error:", error.message);
         }
@@ -78,20 +98,20 @@ const ApplicantView = ({ model }) => {
     const updateUserProfile = async (e) => {
         e.preventDefault();
         try {
+            console.log("userAvailability: ", userAvailability);
+            console.log("availabilities: ", availabilities);
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                     person_id: model?.person_id, 
                     competencies: userCompetencies,  // Send all competencies
-                    availability: {
-                        from_date: selectedAvailability.fromDate,
-                        to_date: selectedAvailability.toDate
-                    }
+                    availabilities: availabilities,  // Send all availabilities
                 }),
             });
     
             const data = await response.json();
+            console.log("hello")
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             
             
@@ -152,6 +172,18 @@ const ApplicantView = ({ model }) => {
         }
     };
 
+    const cancleUserProfile = async (e) => {
+        e.preventDefault();
+        try{
+            setUserAvailability("");
+            setUserCompetencies("");
+            setStage("main");
+
+        } catch (error) {
+            console.error("Error:", error.message);
+        }
+    }
+
     const handleNext = () => {
         if (stage === "competence") {
             setStage("availability");
@@ -182,15 +214,15 @@ const ApplicantView = ({ model }) => {
             {/* Header Section */}
             <div className="flex justify-between items-center w-full mb-8 bg-white p-6 rounded-xl shadow-sm">
                 <h1 className="text-3xl font-bold text-gray-800">
-                    {stage === "main" ? "Current Application" : 
-                     stage === "competence" || stage === "availability" ? "Updating Your Application" : 
-                     "Application Summary"}
+                    {stage === "main" ? strings.current_application : 
+                     stage === "competence" || stage === "availability" ? strings.updating_your_application : 
+                     strings.application_summary}
                 </h1>
                 {stage === "main" && (
                     <button
                         onClick={handleCreateNewApplication}
                         className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                        Update Application
+                        {strings.update_application}
                     </button>
                 )}
             </div>
@@ -200,16 +232,16 @@ const ApplicantView = ({ model }) => {
                 <div className="grid grid-cols-1 gap-8 w-full">
                     {/* User Profile Section */}
                     <div className="p-6 bg-white rounded-xl shadow-sm">
-                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">User Profile</h2>
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">{strings.user_profile}</h2>
                         {model?.name ? (
                             <div className="space-y-4">
-                                <p className="text-gray-700"><strong>Name:</strong> {model.name}</p>
-                                <p className="text-gray-700"><strong>Surname:</strong> {model.surname}</p>
-                                <p className="text-gray-700"><strong>Email:</strong> {model.email}</p>
-                                <p className="text-gray-700"><strong>Username:</strong> {model.username}</p>
+                                <p className="text-gray-700"><strong>{strings.first_name}</strong> {model.name}</p>
+                                <p className="text-gray-700"><strong>{strings.last_name}</strong> {model.surname}</p>
+                                <p className="text-gray-700"><strong>{strings.email}</strong> {model.email}</p>
+                                <p className="text-gray-700"><strong>{strings.username}</strong> {model.username}</p>
                             </div>
                         ) : (
-                            <p className="text-gray-500">No user data available.</p>
+                            <p className="text-gray-500">{strings.no_user_data}</p>
                         )}
                     </div>
 
@@ -217,12 +249,12 @@ const ApplicantView = ({ model }) => {
                     <div className="grid grid-cols-2 gap-8">
                         {/* Competence Section */}
                         <div className="p-6 bg-white rounded-xl shadow-sm">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Competence</h2>
+                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">{strings.competence}</h2>
                         
                             <button
                                 onClick={removeUserCompetence}
                                 className="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
-                                Delete Competencies
+                                {strings.delete_competencies}
                             </button>
                             <div className="mt-4 space-y-2">
                                 {userCompetencies.length > 0 ? (
@@ -232,18 +264,18 @@ const ApplicantView = ({ model }) => {
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="text-gray-500">No competencies found.</p>
+                                    <p className="text-gray-500">{strings.no_competencies}</p>
                                 )}
                             </div>
                         </div>
 
                         {/* Availability Section */}
                         <div className="p-6 bg-white rounded-xl shadow-sm">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Availability</h2>
+                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">{strings.availability}</h2>
                             <button
                                 onClick={removeUserAvailability}
                                 className="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
-                                Delete Availability
+                                {strings.delete_availability}
                             </button>
                             <div className="mt-4 space-y-2">
                                 {userAvailability.length > 0 ? (
@@ -253,7 +285,7 @@ const ApplicantView = ({ model }) => {
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="text-gray-500">No availability found.</p>
+                                    <p className="text-gray-500">{strings.no_availability}</p>
                                 )}
                             </div>
                         </div>
@@ -264,7 +296,7 @@ const ApplicantView = ({ model }) => {
             {/* Competence Stage */}
             {stage === "competence" && (
     <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Set Competence</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">{strings.set_competence}</h2>
 
         {/* Competence Selection Dropdown */}
         <div className="mb-6">
@@ -273,7 +305,7 @@ const ApplicantView = ({ model }) => {
                 onChange={(e) => setSelectedCompetence(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 text-lg"
             >
-                <option value="" disabled>Select Competence</option>
+                <option value="" disabled>{strings.select_competence}</option>
                 {competencies.map((competence, index) => (
                     <option key={index} value={competence.name} className="text-lg">
                         {competence.name}
@@ -309,7 +341,7 @@ const ApplicantView = ({ model }) => {
                 setSelectedCompetence("");
             }}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-6">
-            Add Competence
+            {strings.add_competence}
         </button>
 
         {/* List of Selected Competencies */}
@@ -341,7 +373,7 @@ const ApplicantView = ({ model }) => {
                             setUserCompetencies(updatedCompetencies);
                         }}
                         className="px-3 py-1 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
-                        Remove
+                        {strings.remove}
                     </button>
                 </div>
             ))}
@@ -358,7 +390,7 @@ const ApplicantView = ({ model }) => {
             <button
                 onClick={handleBack}
                 className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
-                Back
+                {strings.back}
             </button>
             <button
                 onClick={() => {
@@ -370,87 +402,126 @@ const ApplicantView = ({ model }) => {
                     }
                 }}
                 className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                Next
+                {strings.next}
             </button>
         </div>
     </div>
 )}
             {/* Availability Stage */}
             {stage === "availability" && (
-                <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Set Availability</h2>
+    <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">{strings.set_availability}</h2>
 
-                    {/* From Date Input */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
-                        <input
-                            type="date"
-                            value={selectedAvailability.fromDate || ""}
-                            onChange={(e) => setSelectedAvailability({ ...selectedAvailability, fromDate: e.target.value })}
-                            className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-                    </div>
+        {/* Input for New Availability */}
+        <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">{strings.from_date}</label>
+            <input
+                type="date"
+                value={newAvailability.from_date || ""}
+                onChange={(e) => setNewAvailability({ ...newAvailability, from_date: e.target.value })}
+                className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+            />
+        </div>
+        <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">{strings.to_date}</label>
+            <input
+                type="date"
+                value={newAvailability.to_date || ""}
+                onChange={(e) => setNewAvailability({ ...newAvailability, to_date: e.target.value })}
+                className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+            />
+        </div>
 
-                    {/* To Date Input */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
-                        <input
-                            type="date"
-                            value={selectedAvailability.toDate || ""}
-                            onChange={(e) => setSelectedAvailability({ ...selectedAvailability, toDate: e.target.value })}
-                            className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-                    </div>
+        {/* Add Availability Button */}
+        <button
+            onClick={() => {
+                if (!newAvailability.from_date || !newAvailability.to_date) {
+                    alert("Please fill in both 'From Date' and 'To Date'.");
+                    return;
+                }
 
-                    {/* Error Message */}
-                    {selectedAvailability.fromDate && selectedAvailability.toDate &&
-                        new Date(selectedAvailability.fromDate) > new Date(selectedAvailability.toDate) && (
-                            <p className="text-red-500 mb-4">Error: "From Date" cannot be later than "To Date".</p>
-                        )}
+                if (new Date(newAvailability.from_date) > new Date(newAvailability.to_date)) {
+                    alert("Error: 'From Date' cannot be later than 'To Date'.");
+                    return;
+                }
 
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between mt-8">
-                        <button
-                            onClick={handleBack}
-                            className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
-                            Back
-                        </button>
-                        <button
-                            onClick={() => {
-                                if (new Date(selectedAvailability.fromDate) > new Date(selectedAvailability.toDate)) {
-                                    alert("Error: 'From Date' cannot be later than 'To Date'.");
-                                } else {
-                                    handleNext();
-                                }
-                            }}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                            Next
-                        </button>
-                    </div>
+                if (isOverlapping(newAvailability.from_date, newAvailability.to_date)) {
+                    alert("Error: This availability period overlaps with an existing one.");
+                    return;
+                }
+
+                setAvailabilities([...availabilities, newAvailability]); // Add new availability to the list
+                setNewAvailability({ from_date: "", to_date: "" }); // Reset input fields
+            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-6">
+            {strings.add_availability}
+        </button>
+
+        {/* List of Selected Availabilities */}
+        <div className="space-y-4">
+            {availabilities.map((availability, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
+                    <span className="text-gray-700">{availability.from_date} - {availability.to_date}</span>
+                    <button
+                        onClick={() => {
+                            const updatedAvailabilities = availabilities.filter((_, i) => i !== index);
+                            setAvailabilities(updatedAvailabilities);
+                        }}
+                        className="px-3 py-1 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
+                        {strings.remove}
+                    </button>
                 </div>
+            ))}
+        </div>
+
+        {/* Error Message */}
+        {newAvailability.from_date && newAvailability.to_date &&
+            new Date(newAvailability.from_date) > new Date(newAvailability.to_date) && (
+                <p className="text-red-500 mb-4">Error: "From Date" cannot be later than "To Date".</p>
             )}
 
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-8">
+            <button
+                onClick={handleBack}
+                className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
+                {strings.back}
+            </button>
+            <button
+                onClick={() => {
+                    if (availabilities.length === 0) {
+                        alert("Please add at least one availability period.");
+                    } else {
+                        handleNext();
+                    }
+                }}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
+                {strings.next}
+            </button>
+        </div>
+    </div>
+)}
             {/* Summary Stage */}
             {stage === "summary" && (
                 <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Application Summary</h2>
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">{strings.application_summary}</h2>
 
                     {/* User Profile Summary */}
                     <div className="mb-8">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-4">User Profile</h3>
+                        <h3 className="text-xl font-semibold text-gray-700 mb-4">{strings.user_profile}</h3>
                         <div className="space-y-2">
-                            <p className="text-gray-700"><strong>Name:</strong> {model?.name}</p>
-                            <p className="text-gray-700"><strong>Surname:</strong> {model?.surname}</p>
-                            <p className="text-gray-700"><strong>Email:</strong> {model?.email}</p>
-                            <p className="text-gray-700"><strong>Username:</strong> {model?.username}</p>
+                            <p className="text-gray-700"><strong>{strings.first_name}</strong> {model?.name}</p>
+                            <p className="text-gray-700"><strong>{strings.last_name}</strong> {model?.surname}</p>
+                            <p className="text-gray-700"><strong>{strings.email}</strong> {model?.email}</p>
+                            <p className="text-gray-700"><strong>{strings.username}</strong> {model?.username}</p>
                         </div>
                     </div>
 
                     {/* Competence Summary */}
                     <div className="mb-8">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-4">Competence</h3>
+                        <h3 className="text-xl font-semibold text-gray-700 mb-4">{strings.competence}</h3>
                         {userCompetencies.length > 0 ? (
                             userCompetencies.map((competence, index) => (
                                 <div key={index} className="p-3 bg-gray-100 rounded-lg mb-2">
@@ -458,19 +529,21 @@ const ApplicantView = ({ model }) => {
                                 </div>
                             ))
                         ) : (
-                            <p className="text-gray-500">No competencies selected.</p>
+                            <p className="text-gray-500">{strings.no_competencies}</p>
                         )}
                     </div>
 
                     {/* Availability Summary */}
                     <div className="mb-8">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-4">Availability</h3>
-                        {selectedAvailability.fromDate && selectedAvailability.toDate ? (
-                            <div className="p-3 bg-gray-100 rounded-lg">
-                                <p className="text-gray-700">{selectedAvailability.fromDate} to {selectedAvailability.toDate}</p>
-                            </div>
+                        <h3 className="text-xl font-semibold text-gray-700 mb-4">{strings.availability}</h3>
+                        {availabilities.length > 0 ? (
+                            availabilities.map((availability, index) => (
+                                <div key={index} className="p-3 bg-gray-100 rounded-lg mb-2">
+                                    <p className="text-gray-700">{availability.from_date} to {availability.to_date}</p>
+                                </div>
+                            ))
                         ) : (
-                            <p className="text-gray-500">No availability entered.</p>
+                            <p className="text-gray-500">{strings.no_availability}</p>
                         )}
                     </div>
 
@@ -479,12 +552,18 @@ const ApplicantView = ({ model }) => {
                         <button
                             onClick={handleBack}
                             className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
-                            Back
+                            {strings.back}
                         </button>
+                        <button
+                            onClick={cancleUserProfile}
+                            className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
+                            {strings.cancel}
+                        </button>
+
                         <button
                             onClick={updateUserProfile}
                             className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                            Finish
+                            {strings.finish}
                         </button>
                     </div>
                 </div>

@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
 
-const ProfileView = ({ model }) => {
+const ProfileView = ({ model, strings}) => {
+    
 
     function backToLogin() {
         window.location.href = "#/auth";
@@ -17,42 +18,42 @@ const ProfileView = ({ model }) => {
                         to="/dashboard" // Path to the Dashboard
                         className="text-blue-600 font-semibold hover:text-blue-800"
                     >
-                        Dashboard
+                        {strings.dashboard}
                     </Link>
-                    <h2 className="text-2xl font-bold text-gray-700">User Profile</h2>
+                    <h2 className="text-2xl font-bold text-gray-700">{strings.user_profile}</h2>
                 </div>
 
                 {/* Profile Information */}
                 <div className="space-y-4">
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-gray-600 font-semibold">Full Name:</span>
+                        <span className="text-gray-600 font-semibold">{strings.full_name}</span>
                         <span className="text-gray-800">{model.name} {model.surname}</span>
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-gray-600 font-semibold">Username:</span>
+                        <span className="text-gray-600 font-semibold">{strings.username}</span>
                         <span className="text-gray-800">{model.username}</span>
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-gray-600 font-semibold">Email:</span>
+                        <span className="text-gray-600 font-semibold">{strings.email}</span>
                         <span className="text-gray-800">{model.email}</span>
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-gray-600 font-semibold">Person ID:</span>
+                        <span className="text-gray-600 font-semibold">{strings.user_id}</span>
                         <span className="text-gray-800">{model.person_id}</span>
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-gray-600 font-semibold">PNR:</span>
+                        <span className="text-gray-600 font-semibold">{strings.id_number}</span>
                         <span className="text-gray-800">{model.pnr}</span>
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-gray-600 font-semibold">Role ID:</span>
+                        <span className="text-gray-600 font-semibold">{strings.role_id}</span>
                         <span className="text-gray-800">{model.role_id}</span>
                     </div>
                 </div>
 
                 <div>
                         <button onClick={backToLogin} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
-                            Back to Login Page
+                            {strings.back_to_login}
                         </button>
                 </div>
 

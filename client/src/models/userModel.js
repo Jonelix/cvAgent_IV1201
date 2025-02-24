@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import translations from "../translations";
 
 class UserModel {
     email = "";
@@ -6,10 +7,12 @@ class UserModel {
     password = "";
     person_id = null;
     pnr = "";
-    role_id = 1;
+    role_id = null;
     surname = "";
     username = "";
     isLoggedIn = false;
+    language = "en";
+    strings = translations["en"];
 
     /* Saving authentication cookie from server */
     cookie = "";
@@ -23,6 +26,11 @@ class UserModel {
       document.cookie = `authCookie=${cookie}; path=/;`;
       console.log("recived cookie: " + cookie)
     }
+    setLanguage(language) {
+        this.language = language;
+        this.strings = translations[language];
+    }
+
     setUserData(userData) {
         this.user_id = userData.person_id;
         this.email = userData.email;

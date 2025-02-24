@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { observer } from "mobx-react-lite";
 
-const RegisterView = observer(() => {
+const RegisterView = observer(({strings}) => {
+
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [personNumber, setPersonNumber] = useState('');
@@ -22,34 +23,34 @@ const RegisterView = observer(() => {
 
         setFirstName(firstName.trim());
         if (!/^[A-Za-z]{2,255}$/.test(firstName)) {
-            newErrors.firstName = "First name must be alphabetic, 2-255 characters.";
+            newErrors.firstName = strings.error_first_name;
         }
 
         setLastName(lastName.trim());
         if (!/^[A-Za-z]{2,255}$/.test(lastName)) {
-            newErrors.lastName = "Last name must be alphabetic, 2-255 characters.";
+            newErrors.lastName = strings.error_last_name;
         }
 
         const cleanedPersonNumber = personNumber.replace(/-/g, '');
         if (!/^\d{12}$/.test(cleanedPersonNumber)) {
-            newErrors.personNumber = "ID Number must be exactly 12 digits.";
+            newErrors.personNumber = strings.error_id_number;
         }
 
         setUsername(username.trim());
         if (!/^[A-Za-z0-9]{6,255}$/.test(username)) {
-            newErrors.username = "Username must be alphanumeric, 6-255 characters.";
+            newErrors.username = strings.error_username;
         }
 
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            newErrors.email = "Invalid email format.";
+            newErrors.email = strings.error_email;
         }
 
-        if (!/^[A-Za-z0-9!@$%^&*+#]{6,255}$/.test(password)) {
-            newErrors.password = "Password must be 6-255 characters and may contain alphanumeric characters with (!, @, $, %, ^, &, *, +, #).";
-        }
+        if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*+#])[A-Za-z\d!@$%^&*+#]{6,255}$/.test(password)) {
+            newErrors.password = strings.error_password;
+        }        
 
         if (confirmPassword !== password) {
-            newErrors.confirmPassword = "Passwords do not match.";
+            newErrors.confirmPassword = strings.error_confirm_password;
         }
 
         setErrors(newErrors);
@@ -86,13 +87,13 @@ const RegisterView = observer(() => {
     return (
         <div className="flex items-center justify-center w-full h-full bg-gray-100 p-8">
             <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-2xl">
-                <h2 className="text-2xl font-bold mb-6 text-left text-gray-700">Register</h2>
+                <h2 className="text-2xl font-bold mb-6 text-left text-gray-700">{strings.register}</h2>
                 <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex flex-col gap-6">
-                        {[{ label: "First name", state: firstName, setState: setFirstName, name: "firstName" },
-                          { label: "Last Name", state: lastName, setState: setLastName, name: "lastName" },
-                          { label: "ID Number", state: personNumber, setState: setPersonNumber, name: "personNumber" },
-                          { label: "Username", state: username, setState: setUsername, name: "username" }]
+                        {[{ label: strings.first_name, state: firstName, setState: setFirstName, name: "firstName" },
+                          { label: strings.last_name, state: lastName, setState: setLastName, name: "lastName" },
+                          { label: strings.id_number, state: personNumber, setState: setPersonNumber, name: "personNumber" },
+                          { label: strings.username, state: username, setState: setUsername, name: "username" }]
                         .map(({ label, state, setState, name }) => (
                             <div key={name}>
                                 <label className="block text-gray-600 text-sm font-semibold mb-2">{label}</label>
@@ -109,8 +110,8 @@ const RegisterView = observer(() => {
                     <div className="flex flex-col gap-6">
                         {/* Email Field */}
                         <div>
-                            <label className="block text-gray-600 text-sm font-semibold mb-2">Email</label>
-                            <input
+                            <label className="block text-gray-600 text-sm font-semibold mb-2">{strings.email}</label>
+                            <input 
                                 type="text"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -121,14 +122,14 @@ const RegisterView = observer(() => {
 
                         {/* Password Field with Show/Hide */}
                         <div className="relative">
-                            <label className="block text-gray-600 text-sm font-semibold mb-2">Password</label>
+                            <label className="block text-gray-600 text-sm font-semibold mb-2">{strings.password}</label>
                             <input
                                 type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 onFocus={() => setIsPasswordFocused(true)}
                                 onBlur={() => setIsPasswordFocused(false)}
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16"
+                                className={`w-full p-3 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16`}
                             />
                             {isPasswordFocused && (
                                 <button
@@ -142,18 +143,19 @@ const RegisterView = observer(() => {
                                     {showPassword ? "Hide" : "Show"}
                                 </button>
                             )}
+                            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
                         </div>
 
                         {/* Confirm Password Field with Show/Hide */}
                         <div className="relative">
-                            <label className="block text-gray-600 text-sm font-semibold mb-2">Confirm Password</label>
+                            <label className="block text-gray-600 text-sm font-semibold mb-2">{strings.confirm_password}</label>
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 onFocus={() => setIsConfirmPasswordFocused(true)}
                                 onBlur={() => setIsConfirmPasswordFocused(false)}
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16"
+                                className={`w-full p-3 border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16`}
                             />
                             {isConfirmPasswordFocused && (
                                 <button
@@ -167,16 +169,18 @@ const RegisterView = observer(() => {
                                     {showConfirmPassword ? "Hide" : "Show"}
                                 </button>
                             )}
+                            {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
                         </div>
 
+
                         <button onClick={registerUser} className="w-full mt-7 bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
-                            Register
+                            {strings.register}
                         </button>
 
                         <button
                             onClick={goToLogin}
                             className="text-blue-500 hover:underline flex justify-center items-center">
-                            Already have an account? Login
+                            {strings.already_has_account}?
                         </button>
 
                     </div>

@@ -1,7 +1,11 @@
-const HomeView = () => {
+
+
+const HomeView = ({ model, strings }) => {
+    
+
     return (
         <div className="flex items-center justify-center w-full h-full">
-            <p className="italic text-xl">Welcome to CV Agent</p>
+            <p className="italic text-xl">{strings.welcome}</p>
         </div>
     );
 };

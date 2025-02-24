@@ -155,7 +155,6 @@ class RequestHandler {
 
         app.post('/api/handleApplicantStatus', async (req, res) => {
             const { rec_id, app_id, timestamp } = req.body;
-            console.log("Rec_id: ", rec_id, "App_id: ", app_id, "Timestamp: ", timestamp);
             try {
                 if (!rec_id || !app_id || !timestamp) {
                     return res.status(400).json({ message: 'All fields are required' });
@@ -190,17 +189,17 @@ class RequestHandler {
 
 
         app.post('/api/createApplication', async (req, res) => {
-            const { person_id, competencies, availability } = req.body;
-            try {
-                if(!person_id || !availability?.from_date || !availability?.to_date || !competencies?.length) {
+            const { person_id, competencies, availabilities } = req.body;
+            try {                    
+                console.log("Person_id: ", person_id, "Availability: ", availabilities, "Competencies: ", competencies);
+                if(!person_id || !availabilities?.length || !competencies?.length) {
                     return res.status(400).json({ message: 'All fields are required' });
                 }
 
                 const application = await this.controller.createApplication(
-                    person_id,
-                    competencies,
-                    availability.from_date,
-                    availability.to_date
+                    person_id, 
+                    competencies, 
+                    availabilities
                 );
 
                 res.status(201).json(application);
