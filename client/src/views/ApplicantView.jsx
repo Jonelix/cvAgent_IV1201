@@ -15,7 +15,7 @@ const ApplicantView = ({ model, strings }) => {
     const [stage, setStage] = useState("main"); // Track current stage: "main", "competence", "availability", "summary"
     const [selectedCompetence, setSelectedCompetence] = useState(""); // Store selected competence
     const [availabilities, setAvailabilities] = useState([]); // Array to store multiple availabilities
-    const [newAvailability, setNewAvailability] = useState({ fromDate: "", toDate: "" }); // Temporary state for the current inpu
+    const [newAvailability, setNewAvailability] = useState({ from_date: "", to_date: "" }); // Temporary state for the current inpu
     const [userAvailability, setUserAvailability] = useState([]);
     const [isApplicationUpdated, setIsApplicationUpdated] = useState(false); // Track if application is updated
 
@@ -28,8 +28,8 @@ const ApplicantView = ({ model, strings }) => {
         const newTo = new Date(newToDate);
     
         return availabilities.some((availability) => {
-            const existingFrom = new Date(availability.fromDate);
-            const existingTo = new Date(availability.toDate);
+            const existingFrom = new Date(availability.from_date);
+            const existingTo = new Date(availability.to_date);
     
             return (
                 (newFrom >= existingFrom && newFrom <= existingTo) || // New start date is within an existing period
@@ -64,7 +64,7 @@ const ApplicantView = ({ model, strings }) => {
 
     const fetchUserCompetencies = async () => {
         try {
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userCompetencies", {
+            const response = await fetch("http://localhost:5005/api/userCompetencies", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }), 
@@ -79,7 +79,7 @@ const ApplicantView = ({ model, strings }) => {
     
     const fetchUserAvailability = async () => {
         try {
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
+            const response = await fetch("http://localhost:5005/api/userAvailability", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }),
@@ -95,21 +95,20 @@ const ApplicantView = ({ model, strings }) => {
     const updateUserProfile = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
+            console.log("userAvailability: ", userAvailability);
+            console.log("availabilities: ", availabilities);
+            const response = await fetch("http://localhost:5005/api/createApplication", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                     person_id: model?.person_id, 
                     competencies: userCompetencies,  // Send all competencies
-                    availability: userAvailability // Send all availabilities
-                    /* availability: {
-                        from_date: selectedAvailability.fromDate,
-                        to_date: selectedAvailability.toDate
-                    }*/
+                    availabilities: availabilities,  // Send all availabilities
                 }),
             });
     
             const data = await response.json();
+            console.log("hello")
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             
             
@@ -129,7 +128,7 @@ const ApplicantView = ({ model, strings }) => {
     const removeUserCompetence = async (e) => {
         e.preventDefault();
         try{
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteCompetence", {
+            const response = await fetch("http://localhost:5005/api/deleteCompetence", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id}),
@@ -151,7 +150,7 @@ const ApplicantView = ({ model, strings }) => {
     const removeUserAvailability = async (e) => {
         e.preventDefault();
         try{
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteAvailability", {
+            const response = await fetch("http://localhost:5005/api/deleteAvailability", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }),
@@ -403,8 +402,8 @@ const ApplicantView = ({ model, strings }) => {
             <label className="block text-sm font-medium text-gray-700 mb-2">{strings.from_date}</label>
             <input
                 type="date"
-                value={newAvailability.fromDate || ""}
-                onChange={(e) => setNewAvailability({ ...newAvailability, fromDate: e.target.value })}
+                value={newAvailability.from_date || ""}
+                onChange={(e) => setNewAvailability({ ...newAvailability, from_date: e.target.value })}
                 className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
             />
@@ -413,8 +412,8 @@ const ApplicantView = ({ model, strings }) => {
             <label className="block text-sm font-medium text-gray-700 mb-2">{strings.to_date}</label>
             <input
                 type="date"
-                value={newAvailability.toDate || ""}
-                onChange={(e) => setNewAvailability({ ...newAvailability, toDate: e.target.value })}
+                value={newAvailability.to_date || ""}
+                onChange={(e) => setNewAvailability({ ...newAvailability, to_date: e.target.value })}
                 className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
             />
@@ -423,23 +422,23 @@ const ApplicantView = ({ model, strings }) => {
         {/* Add Availability Button */}
         <button
             onClick={() => {
-                if (!newAvailability.fromDate || !newAvailability.toDate) {
+                if (!newAvailability.from_date || !newAvailability.to_date) {
                     alert("Please fill in both 'From Date' and 'To Date'.");
                     return;
                 }
 
-                if (new Date(newAvailability.fromDate) > new Date(newAvailability.toDate)) {
+                if (new Date(newAvailability.from_date) > new Date(newAvailability.to_date)) {
                     alert("Error: 'From Date' cannot be later than 'To Date'.");
                     return;
                 }
 
-                if (isOverlapping(newAvailability.fromDate, newAvailability.toDate)) {
+                if (isOverlapping(newAvailability.from_date, newAvailability.to_date)) {
                     alert("Error: This availability period overlaps with an existing one.");
                     return;
                 }
 
                 setAvailabilities([...availabilities, newAvailability]); // Add new availability to the list
-                setNewAvailability({ fromDate: "", toDate: "" }); // Reset input fields
+                setNewAvailability({ from_date: "", to_date: "" }); // Reset input fields
             }}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-6">
             {strings.add_availability}
@@ -449,7 +448,7 @@ const ApplicantView = ({ model, strings }) => {
         <div className="space-y-4">
             {availabilities.map((availability, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
-                    <span className="text-gray-700">{availability.fromDate} - {availability.toDate}</span>
+                    <span className="text-gray-700">{availability.from_date} - {availability.to_date}</span>
                     <button
                         onClick={() => {
                             const updatedAvailabilities = availabilities.filter((_, i) => i !== index);
@@ -463,8 +462,8 @@ const ApplicantView = ({ model, strings }) => {
         </div>
 
         {/* Error Message */}
-        {newAvailability.fromDate && newAvailability.toDate &&
-            new Date(newAvailability.fromDate) > new Date(newAvailability.toDate) && (
+        {newAvailability.from_date && newAvailability.to_date &&
+            new Date(newAvailability.from_date) > new Date(newAvailability.to_date) && (
                 <p className="text-red-500 mb-4">Error: "From Date" cannot be later than "To Date".</p>
             )}
 
@@ -525,7 +524,7 @@ const ApplicantView = ({ model, strings }) => {
                         {availabilities.length > 0 ? (
                             availabilities.map((availability, index) => (
                                 <div key={index} className="p-3 bg-gray-100 rounded-lg mb-2">
-                                    <p className="text-gray-700">{availability.fromDate} to {availability.toDate}</p>
+                                    <p className="text-gray-700">{availability.from_date} to {availability.to_date}</p>
                                 </div>
                             ))
                         ) : (
