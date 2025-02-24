@@ -145,8 +145,6 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
                             {strings.register_an_account}
                         </p>
                     </div>
-
-
                 </form>
             </div>
         </div>
