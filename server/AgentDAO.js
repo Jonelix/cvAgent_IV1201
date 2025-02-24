@@ -368,7 +368,7 @@ class AgentDAO {
     }
     }
 
-    async createApplication(person_id, competencies, from_date, to_date) {
+    async createApplication(person_id, competencies, availability) {
     const transaction = await database.transaction();
 
     try {
@@ -440,7 +440,24 @@ class AgentDAO {
 
         let availabilityUpdated = false;
 
+        for (let newAvailability of availabilityArray) { // Loop through new availability array
+           
         for (let availability of availabilityExists) { // Loop through existing availability
+            // Scenario 1: If from_date and to_date match, return
+            if (new Date(newAvailability.from_date).toISOString() === new Date(availability.from_date).toISOString() && 
+                new Date(newAvailability.to_date).toISOString() === new Date(availability.to_date).toISOString()) {
+                await transaction.rollback();
+                return { 
+                    message: 'One of the availabilities you entered already exists in our database. Please check for duplicates.',  
+                    conflictAvailability: {
+                        from_date: availability.from_date,
+                        to_date: availability.to_date
+                    }
+                };            
+            }
+        }
+
+           /*
             // Scenario 1: If from_date and to_date match, return
             if (new Date(availability.from_date).toISOString() === new Date(from_date).toISOString() && 
                 new Date(availability.to_date).toISOString() === new Date(to_date).toISOString()) {
@@ -470,6 +487,7 @@ class AgentDAO {
                 availabilityUpdated = true;
                 break;
             }
+                */
         }
 
         // Scenario 3: If no match was found, insert a new row

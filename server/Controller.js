@@ -80,12 +80,11 @@ class Controller {
         return userAvailability;
     }
 
-    async createApplication(person_id, competencies, from_date, to_date) {
+    async createApplication(person_id, competencies, availability) {
         const application = await this.agentDAO.createApplication(
             person_id, 
             competencies, 
-            from_date, 
-            to_date
+            availability
         );
         this.logger.log("Application created for person ${person_id}.");
         return application;

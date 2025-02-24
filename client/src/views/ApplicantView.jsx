@@ -84,10 +84,11 @@ const ApplicantView = ({ model, strings }) => {
                 body: JSON.stringify({ 
                     person_id: model?.person_id, 
                     competencies: userCompetencies,  // Send all competencies
-                    availability: {
+                    availability: userAvailability // Send all availabilities
+                    /* availability: {
                         from_date: selectedAvailability.fromDate,
                         to_date: selectedAvailability.toDate
-                    }
+                    }*/
                 }),
             });
     
@@ -389,7 +390,7 @@ const ApplicantView = ({ model, strings }) => {
                             onChange={(e) => setSelectedAvailability({ ...selectedAvailability, fromDate: e.target.value })}
                             className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             required
-                        />
+                        /> 
                     </div>
 
                     {/* To Date Input */}
