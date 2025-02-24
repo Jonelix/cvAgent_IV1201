@@ -89,6 +89,7 @@ const ApplicantView = ({ model, strings }) => {
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             setUserAvailability(data);
+            setAvailabilities(data);
         } catch (error) {
             console.error("Error:", error.message);
         }
