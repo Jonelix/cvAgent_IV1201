@@ -11,8 +11,6 @@ const statusColors = {
 
 const RecruiterView = ({ model, applicantsModel, strings }) => {
 
-    console.log(strings)
-
     const statusText = {
         0: strings.unhandled || "Unhandled",
         1: strings.accepted || "Accepted",
