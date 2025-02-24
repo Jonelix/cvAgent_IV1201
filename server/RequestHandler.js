@@ -150,7 +150,6 @@ class RequestHandler {
 
         app.post('/api/handleApplicantStatus', async (req, res) => {
             const { rec_id, app_id, timestamp } = req.body;
-            console.log("Rec_id: ", rec_id, "App_id: ", app_id, "Timestamp: ", timestamp);
             try {
                 if (!rec_id || !app_id || !timestamp) {
                     return res.status(400).json({ message: 'All fields are required' });
