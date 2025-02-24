@@ -14,12 +14,29 @@ const ApplicantView = ({ model, strings }) => {
     const [lastName, setLastName] = useState("");
     const [stage, setStage] = useState("main"); // Track current stage: "main", "competence", "availability", "summary"
     const [selectedCompetence, setSelectedCompetence] = useState(""); // Store selected competence
-    const [selectedAvailability, setSelectedAvailability] = useState({ fromDate: "", toDate: "" }); // Store selected availability
+    const [availabilities, setAvailabilities] = useState([]); // Array to store multiple availabilities
+    const [newAvailability, setNewAvailability] = useState({ fromDate: "", toDate: "" }); // Temporary state for the current inpu
     const [userAvailability, setUserAvailability] = useState([]);
     const [isApplicationUpdated, setIsApplicationUpdated] = useState(false); // Track if application is updated
 
     const handleCreateNewApplication = () => {
         setStage("competence"); // Move to the competence stage
+    };
+
+    const isOverlapping = (newFromDate, newToDate) => {
+        const newFrom = new Date(newFromDate);
+        const newTo = new Date(newToDate);
+    
+        return availabilities.some((availability) => {
+            const existingFrom = new Date(availability.fromDate);
+            const existingTo = new Date(availability.toDate);
+    
+            return (
+                (newFrom >= existingFrom && newFrom <= existingTo) || // New start date is within an existing period
+                (newTo >= existingFrom && newTo <= existingTo) || // New end date is within an existing period
+                (newFrom <= existingFrom && newTo >= existingTo) // New period completely overlaps an existing period
+            );
+        });
     };
 
     // Fetch competencies automatically when stage changes to "competence"
@@ -36,7 +53,7 @@ const ApplicantView = ({ model, strings }) => {
 
     const fetchCompetencies = async () => {
         try {
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies");
+            const response = await fetch("http://localhost:5005/api/competencies");
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             setCompetencies(data);
@@ -84,10 +101,10 @@ const ApplicantView = ({ model, strings }) => {
                 body: JSON.stringify({ 
                     person_id: model?.person_id, 
                     competencies: userCompetencies,  // Send all competencies
-                    availability: {
-                        from_date: selectedAvailability.fromDate,
-                        to_date: selectedAvailability.toDate
-                    }
+                    availability: availabilities.map(avail => ({
+                        from_date: avail.fromDate,
+                        to_date: avail.toDate
+                    }))
                 }),
             });
     
@@ -377,61 +394,100 @@ const ApplicantView = ({ model, strings }) => {
 )}
             {/* Availability Stage */}
             {stage === "availability" && (
-                <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">{strings.set_availability}</h2>
+    <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">{strings.set_availability}</h2>
 
-                    {/* From Date Input */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">{strings.from_date}</label>
-                        <input
-                            type="date"
-                            value={selectedAvailability.fromDate || ""}
-                            onChange={(e) => setSelectedAvailability({ ...selectedAvailability, fromDate: e.target.value })}
-                            className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-                    </div>
+        {/* Input for New Availability */}
+        <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">{strings.from_date}</label>
+            <input
+                type="date"
+                value={newAvailability.fromDate || ""}
+                onChange={(e) => setNewAvailability({ ...newAvailability, fromDate: e.target.value })}
+                className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+            />
+        </div>
+        <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">{strings.to_date}</label>
+            <input
+                type="date"
+                value={newAvailability.toDate || ""}
+                onChange={(e) => setNewAvailability({ ...newAvailability, toDate: e.target.value })}
+                className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+            />
+        </div>
 
-                    {/* To Date Input */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">{strings.to_date}</label>
-                        <input
-                            type="date"
-                            value={selectedAvailability.toDate || ""}
-                            onChange={(e) => setSelectedAvailability({ ...selectedAvailability, toDate: e.target.value })}
-                            className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-                    </div>
+        {/* Add Availability Button */}
+        <button
+            onClick={() => {
+                if (!newAvailability.fromDate || !newAvailability.toDate) {
+                    alert("Please fill in both 'From Date' and 'To Date'.");
+                    return;
+                }
 
-                    {/* Error Message */}
-                    {selectedAvailability.fromDate && selectedAvailability.toDate &&
-                        new Date(selectedAvailability.fromDate) > new Date(selectedAvailability.toDate) && (
-                            <p className="text-red-500 mb-4">Error: "From Date" cannot be later than "To Date".</p>
-                        )}
+                if (new Date(newAvailability.fromDate) > new Date(newAvailability.toDate)) {
+                    alert("Error: 'From Date' cannot be later than 'To Date'.");
+                    return;
+                }
 
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between mt-8">
-                        <button
-                            onClick={handleBack}
-                            className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
-                            {strings.back}
-                        </button>
-                        <button
-                            onClick={() => {
-                                if (new Date(selectedAvailability.fromDate) > new Date(selectedAvailability.toDate)) {
-                                    alert("Error: 'From Date' cannot be later than 'To Date'.");
-                                } else {
-                                    handleNext();
-                                }
-                            }}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                            {strings.next}
-                        </button>
-                    </div>
+                if (isOverlapping(newAvailability.fromDate, newAvailability.toDate)) {
+                    alert("Error: This availability period overlaps with an existing one.");
+                    return;
+                }
+
+                setAvailabilities([...availabilities, newAvailability]); // Add new availability to the list
+                setNewAvailability({ fromDate: "", toDate: "" }); // Reset input fields
+            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-6">
+            {strings.add_availability}
+        </button>
+
+        {/* List of Selected Availabilities */}
+        <div className="space-y-4">
+            {availabilities.map((availability, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
+                    <span className="text-gray-700">{availability.fromDate} - {availability.toDate}</span>
+                    <button
+                        onClick={() => {
+                            const updatedAvailabilities = availabilities.filter((_, i) => i !== index);
+                            setAvailabilities(updatedAvailabilities);
+                        }}
+                        className="px-3 py-1 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
+                        {strings.remove}
+                    </button>
                 </div>
+            ))}
+        </div>
+
+        {/* Error Message */}
+        {newAvailability.fromDate && newAvailability.toDate &&
+            new Date(newAvailability.fromDate) > new Date(newAvailability.toDate) && (
+                <p className="text-red-500 mb-4">Error: "From Date" cannot be later than "To Date".</p>
             )}
 
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-8">
+            <button
+                onClick={handleBack}
+                className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
+                {strings.back}
+            </button>
+            <button
+                onClick={() => {
+                    if (availabilities.length === 0) {
+                        alert("Please add at least one availability period.");
+                    } else {
+                        handleNext();
+                    }
+                }}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
+                {strings.next}
+            </button>
+        </div>
+    </div>
+)}
             {/* Summary Stage */}
             {stage === "summary" && (
                 <div className="p-6 bg-white rounded-xl shadow-sm w-2/3 mx-auto">
@@ -465,10 +521,12 @@ const ApplicantView = ({ model, strings }) => {
                     {/* Availability Summary */}
                     <div className="mb-8">
                         <h3 className="text-xl font-semibold text-gray-700 mb-4">{strings.availability}</h3>
-                        {selectedAvailability.fromDate && selectedAvailability.toDate ? (
-                            <div className="p-3 bg-gray-100 rounded-lg">
-                                <p className="text-gray-700">{selectedAvailability.fromDate} to {selectedAvailability.toDate}</p>
-                            </div>
+                        {availabilities.length > 0 ? (
+                            availabilities.map((availability, index) => (
+                                <div key={index} className="p-3 bg-gray-100 rounded-lg mb-2">
+                                    <p className="text-gray-700">{availability.fromDate} to {availability.toDate}</p>
+                                </div>
+                            ))
                         ) : (
                             <p className="text-gray-500">{strings.no_availability}</p>
                         )}
