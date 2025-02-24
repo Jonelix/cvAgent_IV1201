@@ -47,6 +47,8 @@ const ApplicantView = ({ model, strings }) => {
         } else if (stage === "competence") {
             fetchCompetencies();
             fetchUserCompetencies();
+        }else if(stage === "availability"){
+            fetchUserAvailability();
         }
     }, [stage]);
 
