@@ -271,22 +271,6 @@ class AgentDAO {
         return "Application status updated successfully.";
     }
 
-
-    async createApplication(person_id, competence_id, years_of_experience, from_date, to_date) {
-        return await database.query(
-            `
-            INSERT INTO competence_profile (person_id, competence_id, years_of_experience)
-            VALUES (:person_id, :competence_id, :years_of_experience);
-            INSERT INTO availability (person_id, from_date, to_date)
-            VALUES (:person_id, :from_date, :to_date);
-            `,
-            { 
-                replacements: { person_id, competence_id, years_of_experience, from_date, to_date },
-                type: database.QueryTypes.INSERT
-            }
-        );
-    }
-
     async fetchPerson(firstName, lastName) {
         const query = `SELECT * FROM person WHERE name = :firstName AND surname = :lastName`;
     
@@ -366,7 +350,25 @@ class AgentDAO {
     }
     }
 
-    async createApplication(person_id, competencies, from_date, to_date) {
+
+    /*
+    async createApplication(person_id, competence_id, years_of_experience, from_date, to_date) {
+        return await database.query(
+            `
+            INSERT INTO competence_profile (person_id, competence_id, years_of_experience)
+            VALUES (:person_id, :competence_id, :years_of_experience);
+            INSERT INTO availability (person_id, from_date, to_date)
+            VALUES (:person_id, :from_date, :to_date);
+            `,
+            { 
+                replacements: { person_id, competence_id, years_of_experience, from_date, to_date },
+                type: database.QueryTypes.INSERT
+            }
+        );
+    }
+        */
+
+    async createApplication(person_id, competencies, availabilityList) {
     const transaction = await database.transaction();
 
     try {
@@ -438,51 +440,62 @@ class AgentDAO {
 
         let availabilityUpdated = false;
 
-        for (let availability of availabilityExists) { // Loop through existing availability
-            // Scenario 1: If from_date and to_date match, return
-            if (new Date(availability.from_date).toISOString() === new Date(from_date).toISOString() && 
-                new Date(availability.to_date).toISOString() === new Date(to_date).toISOString()) {
-                await transaction.rollback();
-                return { message: 'Availability already created, it is the same thing!' };
+        for (let newAvailability of availabilityList) { // Loop through new availability array
+            for (let availability of availabilityExists) { // Loop through existing availability
+                // Scenario 1: If from_date and to_date match, return
+                if (new Date(newAvailability.from_date).toISOString() === new Date(availability.from_date).toISOString() && 
+                    new Date(newAvailability.to_date).toISOString() === new Date(availability.to_date).toISOString()) {
+                    await transaction.rollback();
+                    return { 
+                        message: 'One of the availabilities you entered already exists in our database. Please check for duplicates.',  
+                        conflictAvailability: {
+                            from_date: availability.from_date,
+                            to_date: availability.to_date
+                        }
+                    };            
+                }
+
+                // Scenario 2: If either from_date or to_date match, update the row
+                if(new Date(newAvailability.from_date).toISOString() === new Date(availability.from_date).toISOString() || 
+                    new Date(newAvailability.to_date).toISOString() === new Date(availability.to_date).toISOString()) {
+                    const updateAvailabilityQuery = `
+                        UPDATE availability
+                        SET from_date = :from_date, to_date = :to_date
+                        WHERE person_id = :person_id AND availability_id = :availability_id;
+                    `;
+
+                    await database.query(updateAvailabilityQuery, {
+                        replacements: {
+                            person_id,
+                            from_date: newAvailability.from_date,
+                            to_date: newAvailability.to_date,
+                            availability_id: availability.availability_id
+                        },
+                        type: database.QueryTypes.UPDATE,
+                        transaction
+                    });
+
+                    // Set flag to true and break the loop
+                    availabilityUpdated = true;
+                    break;
+                }
+
             }
-            // Scenario 2: If either from_date or to_date match, update the row
-            if (new Date(availability.from_date).toISOString() === new Date(from_date).toISOString() || 
-                new Date(availability.to_date).toISOString() === new Date(to_date).toISOString()) {
-                const updateAvailabilityQuery = `
-                    UPDATE availability
-                    SET from_date = :from_date, to_date = :to_date
-                    WHERE person_id = :person_id AND availability_id = :availability_id;
-                `;
-        
-                await database.query(updateAvailabilityQuery, {
-                    replacements: {
-                        person_id,
-                        from_date,
-                        to_date,
-                        availability_id: availability.availability_id
-                    },
-                    type: database.QueryTypes.UPDATE,
-                    transaction
-                });
-                // Set flag to true and break the loop
-                availabilityUpdated = true;
-                break;
-            }
-        }
 
         // Scenario 3: If no match was found, insert a new row
         if (!availabilityUpdated) {
             const availabilityInsert = `
-                INSERT INTO availability (person_id, from_date, to_date)
-                VALUES (:person_id, :from_date, :to_date);
+            INSERT INTO availability (person_id, from_date, to_date)
+            VALUES (:person_id, :from_date, :to_date);
             `;
 
             await database.query(availabilityInsert, {
-                replacements: { person_id, from_date, to_date },
+                replacements: { person_id, from_date: newAvailability.from_date, to_date: newAvailability.to_date},
                 type: database.QueryTypes.INSERT,
                 transaction
             });
         }
+    }
         
         // Insert application status
         const applicationStatusInsert = `

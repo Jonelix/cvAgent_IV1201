@@ -58,7 +58,8 @@
         "rejected":"Rejected",
         "unhandled":"Unhandled",
         "change":"Change",
-        "confirm":"Confirm"
+        "confirm":"Confirm",
+        "add_availability": "Add availability" 
     },
     "es": {
         "dashboard": "Panel",
@@ -119,7 +120,8 @@
         "rejected": "Rechazado",
         "unhandled": "No gestionado",
         "change": "Cambiar",
-        "confirm": "Confirmar"
+        "confirm": "Confirmar",
+        "add_availability": "Agregar disponibilidad"
     }
   }
   
