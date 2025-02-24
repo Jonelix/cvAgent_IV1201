@@ -39,8 +39,8 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
         e.preventDefault();
         try {
             
-            //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/login"
-            const response = await fetch("http://localhost:5005/api/login", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/login", {
+            //const response = await fetch("http://localhost:5005/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

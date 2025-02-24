@@ -18,7 +18,6 @@ class Controller {
     }
 
     async register(firstName, lastName, personNumber, username, email, password, confirmPassword, role_id) {
-        console.log("Creating user in contr...")
         if (password !== confirmPassword) {
             throw new Error("Passwords do not match");
         }
@@ -50,13 +49,13 @@ class Controller {
 
     async handleApplicantStatus(rec_id, app_id, timestamp) {
         const applicant = await this.agentDAO.handleApplicantStatus(rec_id, app_id);
-        this.logger.log("Recruiter ${rec_id} is handling the status of applicant ${app_id}.");
+        this.logger.log(`Recruiter ${rec_id} is handling the status of applicant ${app_id}.`);
         return applicant;
     }
 
     async confirmStatusUpdate (rec_id, app_id, status) {
         const applicant = await this.agentDAO.confirmStatusUpdate(rec_id, app_id, status);
-        this.logger.log("Recruiter ${rec_id} is updated the status of applicant ${app_id} to ${status}.");
+        this.logger.log(`Recruiter ${rec_id} is updated the status of applicant ${app_id} to ${status}.`);
         return applicant;
     }
 
@@ -86,7 +85,7 @@ class Controller {
             competencies, 
             availabilities
         );
-        this.logger.log("Application created for person ${person_id}.");
+        this.logger.log(`Application created for person ${person_id}.`);
         return application;
     }
 
