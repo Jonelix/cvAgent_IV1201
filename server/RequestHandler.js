@@ -117,10 +117,18 @@ class RequestHandler {
 
 
         app.post('/api/login', async (req, res) => {
-            const { username, password } = req.body;
+          let user;
+            if(req.headers.cookie != null){
+              user = await this.controller.authenticateCookie(req.headers.cookie)
+            } else {
+              console.log("no cookie");
+              const { username, password } = req.body;
+              console.log("cookie username: " + username + " cookie password: " + password);
+                user = await this.controller.login(username, password);
+            }
             try {
-                const user = await this.controller.login(username, password);
                 if (user) {
+                  console.log("League of legends");
                   const cookie = await this.controller.makeCookie(user);
                   const resp = {
                     user: user,
@@ -190,15 +198,15 @@ class RequestHandler {
 
         app.post('/api/createApplication', async (req, res) => {
             const { person_id, competencies, availabilities } = req.body;
-            try {                    
+            try {
                 console.log("Person_id: ", person_id, "Availability: ", availabilities, "Competencies: ", competencies);
                 if(!person_id || !availabilities?.length || !competencies?.length) {
                     return res.status(400).json({ message: 'All fields are required' });
                 }
 
                 const application = await this.controller.createApplication(
-                    person_id, 
-                    competencies, 
+                    person_id,
+                    competencies,
                     availabilities
                 );
 

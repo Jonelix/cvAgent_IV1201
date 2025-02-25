@@ -13,7 +13,6 @@ class Controller {
     }
 
     async login(username, password) {
-      console.log("hello");
         const user = await this.agentDAO.findUserWithUsername(username);
         if (user) {
             // Compare the provided password with the stored hashed password
@@ -26,15 +25,28 @@ class Controller {
         return null;
     }
 
+    async authenticateCookie(cookie){
+      const { username, password } = await this.Auth.authenticateCookie(cookie)
+      const user = await this.agentDAO.findUserWithUsername(username);
+
+      if (user) {
+        if(password == user.dataValues.password){
+          this.logger.log("User logged in: " + JSON.stringify(user.username));
+          return user.dataValues;
+        }
+      }
+      return null;
+    }
+
     async register(firstName, lastName, personNumber, username, email, password, confirmPassword, role_id) {
         if (password !== confirmPassword) {
             throw new Error("Passwords do not match");
         }
-        
+
         // Hash the password before sending it to the DAO
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const user = await this.agentDAO.registerUser(firstName, lastName, personNumber, username, email, hashedPassword, role_id);
-    
+
         if (user) {
             const { password, ...userData } = user.dataValues;
             console.log(userData);
@@ -93,8 +105,8 @@ class Controller {
 
     async createApplication(person_id, competencies, availabilities) {
         const application = await this.agentDAO.createApplication(
-            person_id, 
-            competencies, 
+            person_id,
+            competencies,
             availabilities
         );
         this.logger.log(`Application created for person ${person_id}.`);

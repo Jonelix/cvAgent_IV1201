@@ -19,6 +19,8 @@ class UserModel {
 
     constructor() {
         makeAutoObservable(this);
+        console.log("checking cookie");
+        this.checkCookieOnLoad();
     }
 
     setCookie(cookie){
@@ -43,6 +45,44 @@ class UserModel {
         this.username = userData.username;
         this.isLoggedIn = true;
     }
+
+    checkCookieOnLoad(){
+      if(document.cookie != null){
+        console.log("cookie found on load: " + document.cookie);
+        this.autoLogin(document.cookie);
+      }
+
+    }
+
+    async autoLogin(cookie){
+      //MAKE CALL TO LOGIN COOKIE API
+      console.log("sending to api/login");
+        try {
+            const response = await fetch("http://localhost:5005/api/login", {
+            //const response = await fetch("http://localhost:5005/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: 'include', // This is necessary to send cookies
+                body: JSON.stringify({ cookie }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            }
+
+            console.log("Response:", data);
+            this.setUserData(data);
+            return data;
+        } catch (error) {
+            console.error("Error:", error.message);
+            return { error: error.message };
+        }
+    }
 }
+
+
 
 export default UserModel;

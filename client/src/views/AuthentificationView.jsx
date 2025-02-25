@@ -39,9 +39,9 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
         e.preventDefault();
       console.log("sending to api/login");
         try {
-            
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/login", {
-            //const response = await fetch("http://localhost:5005/api/login", {
+
+            //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/login", {
+            const response = await fetch("http://localhost:5005/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -54,7 +54,7 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
                 throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             }
 
-            console.log("Response:", data);
+            //console.log("Response:", data);
             onLoginSuccess(data);
             return data;
         } catch (error) {
@@ -94,11 +94,11 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
                 <form className="flex flex-col gap-6">
                     <div>
                         <label className="block text-gray-600 text-sm font-semibold mb-2">{strings.username}</label>
-                        <input 
-                            type="text" 
-                            value={username} 
-                            onChange={(e) => setUsername(e.target.value)} 
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 
@@ -106,8 +106,8 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
 
                     <div className="relative">
                         <label className="block text-gray-600 text-sm font-semibold mb-2">{strings.password}</label>
-                        <div className="relative flex items-center">                            
-                            <input 
+                        <div className="relative flex items-center">
+                            <input
                                 ref={passwordInputRef}
                                 type={showPassword ? "text" : "password"}
                                 value={password}
