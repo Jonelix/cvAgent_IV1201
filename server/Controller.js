@@ -143,6 +143,12 @@ class Controller {
         return migratingUser;
     }
 
+    async updateRecruiter(person_id, email, pnr){
+        const recruiter = await this.agentDAO.updateRecruiter(person_id, email, pnr);
+        this.logger.log(`Recruiter ${person_id} updated their details.`);
+        return recruiter;
+    }
+
 
 }
 

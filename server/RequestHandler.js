@@ -267,6 +267,19 @@ class RequestHandler {
             }
         });
 
+        app.post('/api/updateRecruiter', async (req, res) => {
+            const {person_id, email, pnr} = req.body;
+            try{
+                if(!person_id || !email || !pnr){
+                    return res.status(400).json({ message: 'All fields are required' });
+                }
+                const application = await this.controller.updateRecruiter(person_id, email, pnr);
+                res.status(201).json({ message: 'Recruiter was updated', application });
+            }catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
 
     }
 }

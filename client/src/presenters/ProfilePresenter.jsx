@@ -8,7 +8,12 @@ const ProfilePresenter = observer(({ model }) => {
         useEffect(() => {
             setStrings(model.strings);
         }, [model.strings]);
-    return <ProfileView model={model} strings={strings} />;
+
+        const handleLoginSuccess = (userData) => {
+            model.setUserData(userData);
+            window.location.href = "#/profile";
+        };
+    return <ProfileView model={model} strings={strings} onLoginSuccess={handleLoginSuccess} />;
 });
 
 export default ProfilePresenter;

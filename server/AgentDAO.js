@@ -624,6 +624,29 @@ class AgentDAO {
         }
     }
 
+    async updateRecruiter(person_id, email, pnr) {
+        try {
+            // Find the recruiter by person_id
+            const recruiter = await Person.findOne({ where: { person_id } });
+    
+            if (!recruiter) {
+                console.error(`Recruiter with person_id ${person_id} not found.`);
+                return null; // or throw an error depending on your logic
+            }
+    
+            // Update the recruiter's email and pnr
+            recruiter.email = email;
+            recruiter.pnr = pnr;
+            await recruiter.save();
+    
+            console.log(`Recruiter ${person_id} updated with email and pnr`);
+            return recruiter; // return updated recruiter if needed
+        } catch (error) {
+            console.error('Error updating email and pnr:', error);
+            throw error;
+        }
+    }
+
 }
 
 

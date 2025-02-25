@@ -63,6 +63,7 @@
         "migration": "Migration",
         "recovery_code": "Recovery code",
         "continue": "Continue",
+        "missing_info":  "Fill in missing information",
         "cancel":  "Cancel"
     },
     "es": {
@@ -129,6 +130,7 @@
         "migration": "Migración",
         "recovery_code": "Código de recuperación",
         "continue": "Continuar",
+        "missing_info":  "Rellena información faltante",
         "cancel":  "Cancelar"
     }
   }
