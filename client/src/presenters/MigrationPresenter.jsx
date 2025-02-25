@@ -8,10 +8,15 @@ const MigrationPresenter = observer(({ model }) => {
     useEffect(() => {
         setStrings(model.strings);
     }, [model.strings]);
+
+    const handleLoginSuccess = (userData) => {
+        model.setUserData(userData);
+        window.location.href = "#/profile";
+    };
     
 
     return (
-        <MigrationView model={model} strings={strings}/>
+        <MigrationView model={model} strings={strings} onLoginSuccess={handleLoginSuccess}/>
     );
 });
 

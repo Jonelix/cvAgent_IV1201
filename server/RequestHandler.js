@@ -223,13 +223,52 @@ class RequestHandler {
                     return res.status(400).json({ message: 'Person ID are required' });
                 }
                 const application = await this.controller.deleteAvailability(person_id);
-                res.status(201).json({ message: 'Application deleted successfully', application });
+                res.status(201).json({ message: 'Application deleted successfully', application});
             }catch (error) {
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
         });
-   
-        }
+
+        app.post('/api/requestPasscode', async (req, res) => {
+            const {email} = req.body;
+            try{
+                if(!email){
+                    return res.status(400).json({ message: 'Email field missing' });
+                }
+                const application = await this.controller.requestPasscode(email);
+                res.status(201).json({ message: 'Security code was created', application });
+            }catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
+        app.post('/api/confirmPasscode', async (req, res) => {
+            const {email, passcode} = req.body;
+            try{
+                if(!email || !passcode){
+                    return res.status(400).json({ message: 'Email or passcode field missing' });
+                }
+                const application = await this.controller.confirmPasscode(email, passcode);
+                res.status(201).json({ message: 'Security code was confirmed', application });
+            }catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+        }});
+
+        app.post('/api/updateMigratingApplicant', async (req, res) => {
+            const {email, passcode, username, password, confirmPassword} = req.body;
+            try{
+                if(!email || !passcode || !username || !password || !confirmPassword){
+                    return res.status(400).json({ message: 'All fields are required' });
+                }
+                const application = await this.controller.updateMigratingApplicant(email, passcode, username, password, confirmPassword);
+                res.status(201).json({ message: 'Applicant was updated', application });
+            }catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
+
+    }
 }
 
 module.exports = RequestHandler;

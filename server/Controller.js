@@ -107,6 +107,43 @@ class Controller {
         const application = await this.agentDAO.deleteCompetence(person_id);
         return application;
     }
+
+    async requestPasscode(email) {
+        const passcode = Math.random().toString(36).slice(2, 10).toUpperCase();
+        const migratingUser = await this.agentDAO.requestPasscode(email, passcode);
+    
+        // Ensure migratingUser exists before destructuring
+        if (!migratingUser) return null;
+    
+        // Return only the required fields
+        return {
+            email: migratingUser.email,
+            recovery_token: migratingUser.recovery_token,
+        };
+    }
+
+    async confirmPasscode(email, passcode){
+        const migratingUser = await this.agentDAO.confirmPasscode(email, passcode);
+        // Ensure migratingUser exists before destructuring
+        if (!migratingUser) return null;
+    
+        // Return only the required fields
+        return {
+            email: migratingUser.email,
+        };
+    }
+
+    async updateMigratingApplicant(email, passcode, username, password, confirmPassword){
+        if (password !== confirmPassword) {
+            throw new Error("Passwords do not match");
+        }
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const migratingUser = await this.agentDAO.updateMigratingApplicant(email, passcode, username, hashedPassword);
+        this.logger.log(`User ${email} reset account details.`);
+        return migratingUser;
+    }
+
+
 }
 
 module.exports = Controller;

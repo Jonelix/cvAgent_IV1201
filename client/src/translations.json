@@ -61,6 +61,8 @@
         "confirm":"Confirm",
         "add_availability": "Add availability", 
         "migration": "Migration",
+        "recovery_code": "Recovery code",
+        "continue": "Continue",
         "cancel":  "Cancel"
     },
     "es": {
@@ -125,6 +127,8 @@
         "confirm": "Confirmar",
         "add_availability": "Agregar disponibilidad",
         "migration": "Migración",
+        "recovery_code": "Código de recuperación",
+        "continue": "Continuar",
         "cancel":  "Cancelar"
     }
   }
