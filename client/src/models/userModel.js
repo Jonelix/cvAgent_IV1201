@@ -48,10 +48,33 @@ class UserModel {
 
     checkCookieOnLoad(){
       if(document.cookie != null){
-        console.log("cookie found on load: " + document.cookie);
+        const jwt = document.cookie.split('authCookie=')[1];
+        const isExpired = this.isJWTExpired(jwt)
+        if(isExpired){
+          console.log("cookie is expired");
+          document.cookie = "authCookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          return;
+        }
+        console.log("cookie found on load: " + jwt);
         this.autoLogin(document.cookie);
       }
+      console.log("no coolie found");
+    }
 
+     isJWTExpired(token) {
+      try {
+        // Split the JWT into its parts (header, payload, signature)
+        const payloadBase64 = token.split('.')[1];
+        // Decode the base64 payload
+        const payload = JSON.parse(atob(payloadBase64));
+        // Get the current time in seconds
+        const currentTime = Math.floor(Date.now() / 1000);
+        // Check if the token has expired
+        return payload.exp < currentTime;
+      } catch (e) {
+        console.error("Error decoding JWT:", e);
+        return true; // Assume the token is invalid/expired if there's an error
+      }
     }
 
     async autoLogin(cookie){
@@ -64,23 +87,27 @@ class UserModel {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                credentials: 'include', // This is necessary to send cookies
+                credentials: 'include',
                 body: JSON.stringify({ cookie }),
             });
 
             const data = await response.json();
+
             if (!response.ok) {
                 throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             }
 
             console.log("Response:", data);
-            this.setUserData(data);
+            this.setUserData(data.user);
+          console.log(this);
             return data;
         } catch (error) {
             console.error("Error:", error.message);
             return { error: error.message };
         }
     }
+
+
 }
 
 
