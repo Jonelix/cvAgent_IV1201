@@ -1,4 +1,5 @@
 const Controller = require('./Controller');
+import Validation from './Validation';
 
 class RequestHandler {
     constructor() {
@@ -134,8 +135,8 @@ class RequestHandler {
             const { firstName, lastName, personNumber, username, email, password, confirmPassword, role_id = 2 } = req.body;
 
             try {
-                if (!firstName || !lastName || !personNumber || !username || !email || !password || !confirmPassword || !role_id) {
-                    return res.status(400).json({ message: 'All fields are required' });
+                if (!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || !Validation.validateEmail(confirmPassword) || !role_id) {
+                    return res.status(400).json({ message: 'All fields were not entered with valid information.' });
                 }
 
                 const user = await this.controller.register(firstName, lastName, personNumber, username, email, password, confirmPassword, role_id);
