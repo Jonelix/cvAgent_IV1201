@@ -26,6 +26,7 @@ async authenticateCookie(cookie){
   //console.log(JSON.stringify(decoded))
 }
 
+
 }
 
 module.exports = Authentication

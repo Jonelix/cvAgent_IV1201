@@ -25,6 +25,11 @@ class Controller {
         return null;
     }
 
+    /*
+   param: cookie
+
+
+    */
     async authenticateCookie(cookie){
       const { username, password } = await this.Auth.authenticateCookie(cookie)
       const user = await this.agentDAO.findUserWithUsername(username);
@@ -126,6 +131,18 @@ class Controller {
     async makeCookie(user){
       return await this.Auth.createCookie(user);
     }
+
+    async checkUser(cookie){
+      const user = await this.authenticateCookie(cookie);
+      console.log("user in checkuser:");
+      console.log(user);
+      if(user != null){ //CECK ERROR
+        return user;
+      }
+      return -1;
+      }
+
+
 }
 
 module.exports = Controller;

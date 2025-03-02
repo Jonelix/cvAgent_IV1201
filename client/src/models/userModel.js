@@ -40,7 +40,7 @@ class UserModel {
         this.password = userData.password;
         this.person_id = userData.person_id;
         this.pnr = userData.pnr;
-        this.role_id = 1; //userData.role_id;
+        this.role_id = userData.role_id;
         this.surname = userData.surname;
         this.username = userData.username;
         this.isLoggedIn = true;
@@ -99,7 +99,7 @@ class UserModel {
 
             console.log("Response:", data);
             this.setUserData(data.user);
-          console.log(this);
+            console.log(this);
             return data;
         } catch (error) {
             console.error("Error:", error.message);

@@ -80,19 +80,45 @@ class RequestHandler {
         });
 
 
+        app.get('/api/testAuth', async (req, res) => {
+          try {
+            //AUTH
+            if (req.headers.cookie == null) {
+              res.status(401).json({ message: 'Not logged in' });
+            }
 
+
+            const role_id = await this.controller.userRoleCheck(req.headers.cookie)
+
+            res.status(200).json(role_id);
+
+          } catch (error) {
+            res.status(500).json({ message: 'Server error', error: error.message });
+          }
+
+
+        });
 
         app.get('/api/applicantProfiles', async (req, res) => {
+          let user = await this.cookieCheck(req, res);
+          if(user == -1){
+            return;
+          }
+          console.log(user);
+          if (user.role_id == 1) {
             try {
-                const applicantProfiles = await this.controller.applicantProfiles();
-                if (!applicantProfiles) {
-                    res.status(404).json({ message: 'No applicant profile found' });
-                }else{
-                    res.status(200).json(applicantProfiles);
-                }
+              const applicantProfiles = await this.controller.applicantProfiles();
+              if (!applicantProfiles) {
+                res.status(404).json({ message: 'No applicant profile found' });
+              } else {
+                res.status(200).json(applicantProfiles);
+              }
             } catch (error) {
-                res.status(500).json({ message: 'Server error', error: error.message });
+              res.status(500).json({ message: 'Server error', error: error.message });
             }
+          } else {
+            res.status(403).json({message: 'Permission Denied'})
+          }
         });
 
         app.post('/api/applicantProfile', async (req, res) => {
@@ -128,7 +154,6 @@ class RequestHandler {
             }
             try {
                 if (user) {
-                  console.log("League of legends");
                   const cookie = await this.controller.makeCookie(user);
                   const resp = {
                     user: user,
@@ -204,6 +229,7 @@ class RequestHandler {
                     return res.status(400).json({ message: 'All fields are required' });
                 }
 
+
                 const application = await this.controller.createApplication(
                     person_id,
                     competencies,
@@ -217,6 +243,7 @@ class RequestHandler {
         });
 
         app.post('/api/deleteCompetence', async (req, res) => {
+
             const {person_id} = req.body;
             try{
                 if(!person_id){
@@ -243,6 +270,30 @@ class RequestHandler {
         });
 
         }
+
+
+        async cookieCheck(req, res){
+          try {
+            //AUTH
+            if (req.headers.cookie == null) {
+              res.status(401).json({ message: 'Not logged in' });
+              return -1;
+            }
+
+            const user = await this.controller.checkUser(req.headers.cookie)
+
+            if(user == -1){
+              res.status(401).json({ message: 'No such user' });
+              return -1;
+            }
+
+            return user;
+
+          } catch (error){
+            console.log("cookieCheck failed");
+          }
+        }
+
 }
 
 module.exports = RequestHandler;
