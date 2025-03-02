@@ -19,6 +19,9 @@ class Controller {
             const isMatch = await bcrypt.compare(password, user.dataValues.password);
             if (isMatch) {
                 this.logger.log("User logged in: " + JSON.stringify(user.username));
+                console.log("data values are:")
+                console.log(user.dataValues);
+                delete user.dataValues.password;
                 return user.dataValues;
             }
         }
@@ -37,6 +40,9 @@ class Controller {
       if (user) {
         if(password == user.dataValues.password){
           this.logger.log("User logged in: " + JSON.stringify(user.username));
+          console.log("user data values:");
+          delete user.dataValues.password;
+          console.log(user.dataValues);
           return user.dataValues;
         }
       }
@@ -56,6 +62,7 @@ class Controller {
             const { password, ...userData } = user.dataValues;
             console.log(userData);
             this.logger.log("User created: " + JSON.stringify(userData.username));
+            delete user.dataValues.password;
             return userData;
         }
         return null;
