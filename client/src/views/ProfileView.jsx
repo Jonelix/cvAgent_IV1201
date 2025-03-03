@@ -8,7 +8,7 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
 
     function backToLogin() {
         window.location.href = "#/auth";
-        //model.setCookie(null);
+        model.logOut();
 
     }
 
@@ -23,7 +23,7 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
     const updateRecruiterDetails = async (e) => {
         e.preventDefault();
         try {
-            
+
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/updateRecruiter", {
             //const response = await fetch("http://localhost:5005/api/updateRecruiter", {
                 method: "POST",
@@ -121,8 +121,8 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
                 )}
 
                 {model.role_id === 1 && (model.email == null || model.pnr == null || model.email == "" || model.pnr == "") && !isEditing && (
-                    <button 
-                        onClick={handleUpdateInfo} 
+                    <button
+                        onClick={handleUpdateInfo}
                         className="w-full bg-yellow-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition-all mt-4">
                         {strings.missing_info}
                     </button>

@@ -109,6 +109,21 @@ class UserModel {
         }
     }
 
+    async logOut(){
+      this.user_id = null;
+      this.email = "";
+      this.name = "";
+      this.password = "";
+      this.person_id = "";
+      this.pnr = "";
+      this.role_id = null;
+      this.surname = "";
+      this.username = "";
+      this.isLoggedIn = false;
+      this.cookie = ""
+      document.cookie = "authCookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    }
 
 }
 
