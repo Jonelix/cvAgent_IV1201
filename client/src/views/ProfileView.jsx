@@ -20,12 +20,16 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
         setIsEditing(false);
     }
 
+    function fetchModel(){
+        console.log(model);
+    }
+
     const updateRecruiterDetails = async (e) => {
         e.preventDefault();
         try {
-
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/updateRecruiter", {
-            //const response = await fetch("http://localhost:5005/api/updateRecruiter", {
+            
+            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/updateRecruiter", {
+            const response = await fetch("http://localhost:5005/api/updateRecruiter", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -93,29 +97,30 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
                     </div>
                 ) : (
                     <div className="space-y-4">
+                        <button onClick={fetchModel}> button </button>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.full_name}</span>
-                            <span className="text-gray-800">{model.name} {model.surname}</span>
+                            <span className="text-gray-800">{model?.name} {model?.surname}</span>
                         </div>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.username}</span>
-                            <span className="text-gray-800">{model.username}</span>
+                            <span className="text-gray-800">{model?.username}</span>
                         </div>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.email}</span>
-                            <span className="text-gray-800">{model.email}</span>
+                            <span className="text-gray-800">{model?.email}</span>
                         </div>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.user_id}</span>
-                            <span className="text-gray-800">{model.person_id}</span>
+                            <span className="text-gray-800">{model?.person_id}</span>
                         </div>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.id_number}</span>
-                            <span className="text-gray-800">{model.pnr}</span>
+                            <span className="text-gray-800">{model?.pnr}</span>
                         </div>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.role_id}</span>
-                            <span className="text-gray-800">{model.role_id}</span>
+                            <span className="text-gray-800">{model?.role_id}</span>
                         </div>
                     </div>
                 )}
