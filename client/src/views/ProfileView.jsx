@@ -8,6 +8,8 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
 
     function backToLogin() {
         window.location.href = "#/auth";
+        //model.setCookie(null);
+
     }
 
     function handleUpdateInfo() {

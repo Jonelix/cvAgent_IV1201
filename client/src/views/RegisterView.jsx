@@ -12,8 +12,8 @@ const RegisterView = observer(({strings}) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState({});
-    
-    
+
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
@@ -65,14 +65,14 @@ const RegisterView = observer(({strings}) => {
     const registerUser = async (e) => {
         e.preventDefault();
         if (!validateFields()) return;
-        
+        console.log("button is clicked nicely")
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ firstName, lastName, personNumber, username, email, password, confirmPassword }),
             });
-    
+
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             alert("User registered successfully");
@@ -98,10 +98,10 @@ const RegisterView = observer(({strings}) => {
                         .map(({ label, state, setState, name }) => (
                             <div key={name}>
                                 <label className="block text-gray-600 text-sm font-semibold mb-2">{label}</label>
-                                <input 
-                                    type="text" 
-                                    value={state} 
-                                    onChange={(e) => setState(e.target.value)} 
+                                <input
+                                    type="text"
+                                    value={state}
+                                    onChange={(e) => setState(e.target.value)}
                                     className={`w-full p-3 border ${errors[name] ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                 />
                                 {errors[name] && <p className="text-red-500 text-sm">{errors[name]}</p>}
@@ -178,8 +178,8 @@ const RegisterView = observer(({strings}) => {
                             {strings.register}
                         </button>
 
-                        <button 
-                            onClick={goToLogin} 
+                        <button
+                            onClick={goToLogin}
                             className="text-blue-500 hover:underline flex justify-center items-center">
                             {strings.already_has_account}?
                         </button>

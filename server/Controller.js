@@ -1,5 +1,6 @@
 // Controller.js
 const AgentDAO = require('./AgentDAO');
+const Auth = require('./Authentication')
 const Logger = require('./Logger');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -8,6 +9,7 @@ class Controller {
     constructor() {
         this.agentDAO = new AgentDAO();
         this.logger = new Logger();
+        this.Auth = new Auth();
     }
 
     async login(username, password) {
@@ -17,25 +19,47 @@ class Controller {
             const isMatch = await bcrypt.compare(password, user.dataValues.password);
             if (isMatch) {
                 this.logger.log("User logged in: " + JSON.stringify(user.username));
+                console.log("data values are:")
+                console.log(user.dataValues);
+                //delete user.dataValues.password;
                 return user.dataValues;
             }
         }
         return null;
     }
 
+    /*
+   param: cookie
+
+
+    */
+    async authenticateCookie(cookie){
+      console.log("Calling authenticateCookie:");
+      const { username, password } = await this.Auth.authenticateCookie(cookie)
+      const user = await this.agentDAO.findUserWithUsername(username);
+      if (user) {
+        if(password == user?.dataValues.password){
+          this.logger.log("User logged in: " + JSON.stringify(user.username));
+          //delete user.dataValues.password;
+          return user.dataValues;
+        }
+      }
+      return null;
+    }
+
     async register(firstName, lastName, personNumber, username, email, password, confirmPassword, role_id) {
         if (password !== confirmPassword) {
             throw new Error("Passwords do not match");
         }
-        
+
         // Hash the password before sending it to the DAO
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const user = await this.agentDAO.registerUser(firstName, lastName, personNumber, username, email, hashedPassword, role_id);
-    
+
         if (user) {
             const { password, ...userData } = user.dataValues;
-            console.log(userData);
             this.logger.log("User created: " + JSON.stringify(userData.username));
+            //delete user.dataValues.password;
             return userData;
         }
         return null;
@@ -90,8 +114,8 @@ class Controller {
 
     async createApplication(person_id, competencies, availabilities) {
         const application = await this.agentDAO.createApplication(
-            person_id, 
-            competencies, 
+            person_id,
+            competencies,
             availabilities
         );
         this.logger.log(`Application created for person ${person_id}.`);
@@ -108,6 +132,17 @@ class Controller {
         return application;
     }
 
+    async makeCookie(user){
+      return await this.Auth.createCookie(user);
+    }
+
+    async checkUser(cookie){
+      const user = await this.authenticateCookie(cookie);
+      if(user != null){ //CECK ERROR
+        return user;
+      }
+      return -1;
+      }
     async requestPasscode(email) {
         const passcode = Math.random().toString(36).slice(2, 10).toUpperCase();
         const migratingUser = await this.agentDAO.requestPasscode(email, passcode);

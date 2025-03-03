@@ -11,7 +11,7 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const passwordInputRef = useRef(null);
 
-    
+
     const fetchCompetencies = async (e) => {
         e.preventDefault();
         try{
@@ -33,14 +33,15 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
             return { error: error.message };
         }
     }
-        
-    
+
+
     const fetchUser = async (e) => {
         e.preventDefault();
+      console.log("sending to api/login");
         try {
-            
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/login", {
-            //const response = await fetch("http://localhost:5005/api/login", {
+
+            //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/login", {
+            const response = await fetch("http://localhost:5005/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -49,12 +50,14 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
             });
 
             const data = await response.json();
+          console.log("fetchuser resp:");
+          console.log(data.user)
             if (!response.ok) {
                 throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             }
 
-            console.log("Response:", data);
-            onLoginSuccess(data);
+            //console.log("Response:", data);
+            await onLoginSuccess(data);
             return data;
         } catch (error) {
             console.error("Error:", error.message);
@@ -83,7 +86,7 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
             return { error: error.message }; // Return error message instead of throwing
         }
     };
-    
+
 
     return (
         <div className="flex items-center justify-center w-full h-full bg-gray-100 p-8">
@@ -93,11 +96,11 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
                 <form className="flex flex-col gap-6">
                     <div>
                         <label className="block text-gray-600 text-sm font-semibold mb-2">{strings.username}</label>
-                        <input 
-                            type="text" 
-                            value={username} 
-                            onChange={(e) => setUsername(e.target.value)} 
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 
@@ -105,8 +108,8 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
 
                     <div className="relative">
                         <label className="block text-gray-600 text-sm font-semibold mb-2">{strings.password}</label>
-                        <div className="relative flex items-center">                            
-                            <input 
+                        <div className="relative flex items-center">
+                            <input
                                 ref={passwordInputRef}
                                 type={showPassword ? "text" : "password"}
                                 value={password}
@@ -118,7 +121,7 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-14"
                             />
 
-                            
+
                             {isPasswordFocused && (
                                 <button
                                     type="button"

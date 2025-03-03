@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 
 const AuthentificationPresenter = observer(({ model }) => {
     const [strings, setStrings] = useState(model.strings);
-    
+
         useEffect(() => {
             setStrings(model.strings);
         }, [model.strings]);
@@ -13,6 +13,13 @@ const AuthentificationPresenter = observer(({ model }) => {
 
     const handleLoginSuccess = (userData) => {
         model.setUserData(userData);
+        const { cookie } = userData;
+        if(cookie) {
+          model.setCookie(cookie);
+        } else {
+          console.log("no cookie detected");
+        }
+
         window.location.href = "#/profile";
     };
 
