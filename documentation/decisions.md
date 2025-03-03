@@ -33,8 +33,6 @@ We are using a PostgreSQL server hosted on the Heroku platform.
 We decided to not alter the already existing database too much, rather to develop on it. We have created new tables like __applicationstatus__ which handles the status of applciations and which recruiters it is being handled by.
 
 ### Authentification (+Password encryption)
-How and why?
-
 Passwords are sent from client to server in plaintext,
 due to HTTPs already encrypting traffic.
 Server hashes password and checks for hash in DB.
@@ -42,31 +40,33 @@ Server hashes password and checks for hash in DB.
 
 
 ### Authorization
-How and why?
+We use cookies to store the state of a user session and we store it in the database as well and compare validated sessions with the server to make sure that the user's priviliges correspond to the changes he is allowed to make.
 
-### Backend GUI
-Explanation needed on what they mean by this?
 
 ### Validation
 **Server-side**
-Validation of data will be done in the topmost layer possible and right before accessing the DB.
+Validation of data will be done in the topmost layer possible. In our case this corresponds to the RequestHandler and 
 
 **Client-side**
-Validation of data is done on login or account creation before data gets sent. 
-This will lower load on server.
+Validation of data is done on login or account creation before data gets sent. The input on the front-end includes validation for all fields.
 
 **Integration**
+We run another validation before sending requests to the server, this way we have another layer of security.
 
 ### Persistance
-
+We use cookies to make sure we can store our users session. 
 
 ### CORS Policy
+We have set our policy to only accept requests from our domain and our localhost address which we test on.
 
 ### Logging
+We log all the main events to our heroku log. There we timestamp events and we can see when users log in, when a new user registers, when a recruiter updates an application status or when a new application is created.
 
 ### Internationality & Localization
+We handle interntionalization with a JSON with all the strings and display them dynamically depending on the requested language. At this point the only languages added are english and spanish. 
 
 ### Concurrent application handling
+When an applicantion is being handled we store the id of the recruiter handling the application so no other recruiters can update it simultaneously. 
 
 
 ### Code writing
@@ -92,7 +92,11 @@ Here is a example of how to document a method or object.
 Header, footer and main body. Why?
 
 ### Canvas Links
-**Vite** - Uploaded
+**Vite**
+
+**MobX**
+
+**bcrypt**
 
 
 
@@ -129,11 +133,6 @@ Database:
 
 
 ### Client Standards
-#### Naming: 
-
-#### Documentation: 
-
-#### Unit tests: 
 
 #### Structure:
 Model, View, Presenter.
