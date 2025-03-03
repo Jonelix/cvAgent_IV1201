@@ -1,5 +1,5 @@
 const Controller = require('./Controller');
-import Validation from './Validation';
+//import Validation from './Validation';
 
 class RequestHandler {
     constructor() {
@@ -181,6 +181,8 @@ class RequestHandler {
                     user: user,
                     cookie: cookie
                   };
+                  console.log("login response:");
+                  console.log(resp);
                     res.status(200).json(resp);
                 } else {
                     res.status(401).json({ message: 'Invalid credentials' });
@@ -291,31 +293,6 @@ class RequestHandler {
             }
         });
 
-        }
-
-
-        async cookieCheck(req, res){
-          try {
-            //AUTH
-            if (req.headers.cookie == null) {
-              res.status(401).json({ message: 'Not logged in' });
-              return -1;
-            }
-
-            const user = await this.controller.checkUser(req.headers.cookie)
-
-            if(user == -1){
-              res.status(401).json({ message: 'No such user' });
-              return -1;
-            }
-
-            return user;
-
-          } catch (error){
-            console.log("cookieCheck failed");
-          }
-        }
-
         app.post('/api/requestPasscode', async (req, res) => {
             const {email} = req.body;
             try{
@@ -368,7 +345,31 @@ class RequestHandler {
         });
 
 
+
+
     }
+
+    async cookieCheck(req, res){
+              try {
+                //AUTH
+                if (req.headers.cookie == null) {
+                  res.status(401).json({ message: 'Not logged in' });
+                  return -1;
+                }
+
+                const user = await this.controller.checkUser(req.headers.cookie)
+
+                if(user == -1){
+                  res.status(401).json({ message: 'No such user' });
+                  return -1;
+                }
+
+                return user;
+
+              } catch (error){
+                console.log("cookieCheck failed");
+              }
+            }
 }
 
 module.exports = RequestHandler;

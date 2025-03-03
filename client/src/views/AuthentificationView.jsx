@@ -50,12 +50,14 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
             });
 
             const data = await response.json();
+          console.log("fetchuser resp:");
+          console.log(data.user)
             if (!response.ok) {
                 throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             }
 
             //console.log("Response:", data);
-            onLoginSuccess(data);
+            await onLoginSuccess(data);
             return data;
         } catch (error) {
             console.error("Error:", error.message);
