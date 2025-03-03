@@ -1,5 +1,5 @@
 const Controller = require('./Controller');
-import Validation from './Validation';
+const Validation = require('./ServerValidation');
 
 class RequestHandler {
     constructor() {

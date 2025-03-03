@@ -3,14 +3,16 @@
 ## Decisions
 
 ### Architecture
-**Monolith** - (Create Diagram) + Why?
+We have decided that for our application a monolithic architecture is the most appropriate. This is because it doesn't need different services rather only serve on single prupose, to create and review CV's. Therefore we build our service around the CV. 
 
-**Frontend** - (Create Diagram) + Why?
+Our application can be sepparated into three main sections: client, server and database. The client, built in the React framework, is where the users, both recruiters and applcants, are servered the corresponding data from our servers. The website is rendered at the client so the server only has to handle data requests from the users.
 
-**Databse** - (Create Diagram) + Why?
+The server server the web client and handles data requests from the client. It is scalable vertically and horizontallty. This way if it is desired to handle a higher number of requests you just have to augment the number of servers or you can implement new servers that are able to server other platforms like mobile.
+
+The last section of the stack is the database, which communicates with the server and stores information on the applicants and recruiters.
 
 ### Build tool
-**Vite** Why?
+**Vite** We chose Vite as our build tool since it is a tool we are familiar with after using it in other courses at KTH. 
 
 ### Version Control
 **Git & GitHub** Is is the industry standard when in comes to version control and everyone has some familiarity with it.
@@ -28,7 +30,7 @@ What database are we using?
 We are using a PostgreSQL server hosted on the Heroku platform. 
 
 **Data migration**
-How was migration handled?
+We decided to not alter the already existing database too much, rather to develop on it. We have created new tables like __applicationstatus__ which handles the status of applciations and which recruiters it is being handled by.
 
 ### Authentification (+Password encryption)
 How and why?
@@ -106,6 +108,7 @@ Frontend:
 - Vite
 - MobX
 - npm
+- MUI Material
 
 Backend:
 - npm
@@ -114,6 +117,11 @@ Backend:
 - CORS
 - DotEnv
 - pg
+- cls-hooked
+- cookie-parser
+- jsonwebtoken
+- sequelize
+- verror
 
 Database:
 - PostgreSQL

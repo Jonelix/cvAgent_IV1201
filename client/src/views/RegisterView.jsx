@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { observer } from "mobx-react-lite";
-import Validation from '../../../server/Validation';
+import Validation from '../FrontendValidation';
 
 const RegisterView = observer(({strings}) => {
 
