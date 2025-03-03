@@ -23,6 +23,7 @@ class UserModel {
         this.checkCookieOnLoad();
     }
 
+
     setCookie(cookie){
       this.cookie = cookie;
       document.cookie = `authCookie=${cookie}; path=/;`;
@@ -57,8 +58,9 @@ class UserModel {
         }
         console.log("cookie found on load: " + jwt);
         this.autoLogin(document.cookie);
+        return
       }
-      console.log("no coolie found");
+      console.log("no cookie found");
     }
 
      isJWTExpired(token) {

@@ -6,6 +6,8 @@ const ProfileView = ({ model, strings}) => {
 
     function backToLogin() {
         window.location.href = "#/auth";
+        //model.setCookie(null);
+
     }
   console.log("this is the model:");
   console.log(model);

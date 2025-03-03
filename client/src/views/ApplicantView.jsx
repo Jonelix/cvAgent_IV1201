@@ -26,11 +26,11 @@ const ApplicantView = ({ model, strings }) => {
     const isOverlapping = (newFromDate, newToDate) => {
         const newFrom = new Date(newFromDate);
         const newTo = new Date(newToDate);
-    
+
         return availabilities.some((availability) => {
             const existingFrom = new Date(availability.from_date);
             const existingTo = new Date(availability.to_date);
-    
+
             return (
                 (newFrom >= existingFrom && newFrom <= existingTo) || // New start date is within an existing period
                 (newTo >= existingFrom && newTo <= existingTo) || // New end date is within an existing period
@@ -69,7 +69,7 @@ const ApplicantView = ({ model, strings }) => {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userCompetencies", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ person_id: model?.person_id }), 
+                body: JSON.stringify({ person_id: model?.person_id }),
             });
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
@@ -78,13 +78,18 @@ const ApplicantView = ({ model, strings }) => {
             console.error("Error:", error.message);
         }
     };
-    
+
     const fetchUserAvailability = async () => {
         try {
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ person_id: model?.person_id }),
+            //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
+            const response = await fetch("http://localhost:5005/api/userAvailability", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: 'include',
+              body: JSON.stringify({
+                person_id: model?.person_id,
+                cookie: model?.cookie ?? null // Send null if cookie is undefined
+              })
             });
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
@@ -103,18 +108,18 @@ const ApplicantView = ({ model, strings }) => {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    person_id: model?.person_id, 
+                body: JSON.stringify({
+                    person_id: model?.person_id,
                     competencies: userCompetencies,  // Send all competencies
                     availabilities: availabilities,  // Send all availabilities
                 }),
             });
-    
+
             const data = await response.json();
             console.log("hello")
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
-            
-            
+
+
             if(data.message) {
                 alert(data.message);
                 await fetchUserCompetencies(e);
@@ -148,7 +153,7 @@ const ApplicantView = ({ model, strings }) => {
         } catch (error) {
             console.error("Error:", error.message);
         }
-    };  
+    };
 
     const removeUserAvailability = async (e) => {
         e.preventDefault();
@@ -163,7 +168,7 @@ const ApplicantView = ({ model, strings }) => {
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
 
             await fetchUserAvailability(e);
-            
+
             setIsApplicationUpdated(true);
             setStage("main");
             alert("Availability deleted successfully");
@@ -214,8 +219,8 @@ const ApplicantView = ({ model, strings }) => {
             {/* Header Section */}
             <div className="flex justify-between items-center w-full mb-8 bg-white p-6 rounded-xl shadow-sm">
                 <h1 className="text-3xl font-bold text-gray-800">
-                    {stage === "main" ? strings.current_application : 
-                     stage === "competence" || stage === "availability" ? strings.updating_your_application : 
+                    {stage === "main" ? strings.current_application :
+                     stage === "competence" || stage === "availability" ? strings.updating_your_application :
                      strings.application_summary}
                 </h1>
                 {stage === "main" && (
@@ -250,7 +255,7 @@ const ApplicantView = ({ model, strings }) => {
                         {/* Competence Section */}
                         <div className="p-6 bg-white rounded-xl shadow-sm">
                             <h2 className="text-2xl font-semibold text-gray-800 mb-4">{strings.competence}</h2>
-                        
+
                             <button
                                 onClick={removeUserCompetence}
                                 className="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300">
@@ -333,8 +338,8 @@ const ApplicantView = ({ model, strings }) => {
                     return;
                 }
 
-                setUserCompetencies([...userCompetencies, { 
-                    competence_name: selectedCompetence, 
+                setUserCompetencies([...userCompetencies, {
+                    competence_name: selectedCompetence,
                     years_of_experience: 0,  // Store as number
                     years_of_experienceStr: "0"  // Store as string for input
                 }]);
@@ -346,10 +351,10 @@ const ApplicantView = ({ model, strings }) => {
 
         {/* List of Selected Competencies */}
         <div className="space-y-4">
-            {                      
+            {
             userCompetencies.map((competence, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
-                    <span className="text-gray-700 text-lg">{competence.competence_name}</span> 
+                    <span className="text-gray-700 text-lg">{competence.competence_name}</span>
                     <input
                         type="number"
                         step="0.1" // Allow increments/decrements of 0.1 (one decimal place)
@@ -361,7 +366,7 @@ const ApplicantView = ({ model, strings }) => {
                             updatedCompetencies[index].years_of_experienceStr = e.target.value;
                             // Parse float for validation
                             updatedCompetencies[index].years_of_experience = parseFloat(e.target.value) || 0;
-                            
+
                             setUserCompetencies(updatedCompetencies);
                 }}
                 className="w-20 p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
