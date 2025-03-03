@@ -665,6 +665,46 @@ class AgentDAO {
             throw error;
         }
     }
+
+    async checkCookie(cookie) {
+        console.log("RATIMIRRRRRRRRRRRR: " , cookie);
+        try {
+            console.log("Executing query:", `SELECT cookie_string FROM cookie_table WHERE cookie_string = '${cookie}'`);
+            
+            const result = await database.query(
+                `SELECT cookie_string FROM cookie_table WHERE cookie_string = :cookie`,
+                { 
+                    replacements: { cookie }, 
+                    type: database.QueryTypes.SELECT,
+                    raw: true 
+                }
+            );
+    
+            console.log("Query result:", result);
+            return result.length > 0 ? result[0] : null;
+            
+        } catch (error) {
+            console.error('Error checking cookie:', error);
+            throw error;
+        }
+    }
+    
+
+    async deleteCookie(cookie) {
+        try{
+            const result = await database.query(
+                `DELETE FROM cookie_table WHERE cookie_string = :cookie`,
+                { 
+                    replacements: { cookie }, 
+                    type: database.QueryTypes.DELETE 
+                }
+            );
+            return result;
+        }catch(error){
+            console.error('Error deleting cookie:', error);
+            throw error;
+        }
+    }
     
 
 }

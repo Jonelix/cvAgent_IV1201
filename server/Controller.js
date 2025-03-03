@@ -34,6 +34,13 @@ class Controller {
 
     */
     async authenticateCookie(cookie){
+        const bluescook = cookie.split('authCookie=')[1];
+        const respDB = await this.agentDAO.checkCookie(bluescook);
+        if(respDB == -1){
+            return null;
+        }
+        console.log("Cookie from db");
+        console.log(respDB);
         const { username, password } = await this.Auth.authenticateCookie(cookie)
         const user = await this.agentDAO.findUserWithUsername(username);
       if (user) {

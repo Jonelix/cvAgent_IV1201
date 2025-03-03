@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
 
 const ProfileView = ({ model, strings, onLoginSuccess }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [email, setEmail] = useState(model.email || "");
     const [pnr, setPnr] = useState(model.pnr || "");
+    const [currentModel, setCurrentModel] = useState(model);
+
 
     function backToLogin() {
         window.location.href = "#/auth";
@@ -19,10 +21,11 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
     function handleCancel() {
         setIsEditing(false);
     }
-
-    function fetchModel(){
-        console.log(model);
-    }
+    
+    useEffect(() => {
+        fetchModel(); // No await here because it's not an async function
+    }, [model]); // Depend on `model`, so it runs when model changes
+    
 
     const updateRecruiterDetails = async (e) => {
         e.preventDefault();
@@ -97,7 +100,6 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        <button onClick={fetchModel}> button </button>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.full_name}</span>
                             <span className="text-gray-800">{model?.name} {model?.surname}</span>
