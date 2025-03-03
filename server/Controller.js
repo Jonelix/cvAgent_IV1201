@@ -168,10 +168,10 @@ class Controller {
     async requestPasscode(email) {
         const passcode = Math.random().toString(36).slice(2, 10).toUpperCase();
         const migratingUser = await this.agentDAO.requestPasscode(email, passcode);
-    
+
         // Ensure migratingUser exists before destructuring
         if (!migratingUser) return null;
-    
+
         // Return only the required fields
         return {
             email: migratingUser.email,
@@ -183,7 +183,7 @@ class Controller {
         const migratingUser = await this.agentDAO.confirmPasscode(email, passcode);
         // Ensure migratingUser exists before destructuring
         if (!migratingUser) return null;
-    
+
         // Return only the required fields
         return {
             email: migratingUser.email,
