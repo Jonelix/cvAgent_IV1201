@@ -21,7 +21,8 @@ const Person = database.define('person', {
     email: { type: DataTypes.STRING, allowNull: true, unique: true },
     password: { type: DataTypes.STRING, allowNull: true },
     role_id: { type: DataTypes.INTEGER, allowNull: true },
-    username: { type: DataTypes.STRING, allowNull: true, unique: true }
+    username: { type: DataTypes.STRING, allowNull: true, unique: true },
+    recovery_token: { type: DataTypes.STRING, allowNull: true }
 }, {
     tableName: 'person', // Ensure Sequelize does not pluralize the table name
     timestamps: false     // Disable automatic createdAt/updatedAt columns if not needed
@@ -556,6 +557,92 @@ class AgentDAO {
             return result;
         }catch(error){
             console.error('Error deleting availability:', error);
+            throw error;
+        }
+    }
+
+    async requestPasscode(email, securityCode) {
+        try {
+            // Find the user by email
+            const user = await Person.findOne({ where: { email } });
+    
+            if (!user) {
+                console.error(`User with email ${email} not found.`);
+                return null; // or throw an error depending on your logic
+            }
+    
+            // Update the recovery_token field
+            user.recovery_token = securityCode;
+            await user.save();
+    
+            console.log(`Recovery token updated for ${email}`);
+            return user; // return updated user if needed
+        } catch (error) {
+            console.error('Error updating recovery token:', error);
+            throw error;
+        }
+    }
+
+    async confirmPasscode(email, securityCode) {
+        try {
+            // Find the user by email and recovery_token
+            const user = await Person.findOne({ where: { email, recovery_token: securityCode } });
+    
+            if (!user) {
+                console.error(`User with email ${email} and recovery token ${securityCode} not found.`);
+                return null; // or throw an error depending on your logic
+            }
+    
+            console.log(`Recovery token confirmed for ${email}`);
+            return user; // return user if needed
+        } catch (error) {
+            console.error('Error confirming recovery token:', error);
+            throw error;
+        }
+    }
+
+    async updateMigratingApplicant(email, securityCode, username, password) {
+        try {
+                // Find the user by email and recovery_token
+                const user = await Person.findOne({ where: { email, recovery_token: securityCode } });
+        
+                if (!user) {
+                    console.error(`User with email ${email} and recovery token ${securityCode} not found.`);
+                    return null; // or throw an error depending on your logic
+                }
+        
+                // Update the user's username and password
+                user.username = username;
+                user.password = password;
+                await user.save();
+        
+                //console.log(`User ${email} updated with username and password`);
+                return user; // return updated user if needed
+        } catch (error) {
+                //console.error('Error updating username and password:', error);
+                throw error;
+        }
+    }
+
+    async updateRecruiter(person_id, email, pnr) {
+        try {
+            // Find the recruiter by person_id
+            const recruiter = await Person.findOne({ where: { person_id } });
+    
+            if (!recruiter) {
+                console.error(`Recruiter with person_id ${person_id} not found.`);
+                return null; // or throw an error depending on your logic
+            }
+    
+            // Update the recruiter's email and pnr
+            recruiter.email = email;
+            recruiter.pnr = pnr;
+            await recruiter.save();
+    
+            console.log(`Recruiter ${person_id} updated with email and pnr`);
+            return recruiter; // return updated recruiter if needed
+        } catch (error) {
+            console.error('Error updating email and pnr:', error);
             throw error;
         }
     }

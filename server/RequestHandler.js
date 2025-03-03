@@ -1,4 +1,5 @@
 const Controller = require('./Controller');
+import Validation from './Validation';
 
 class RequestHandler {
     constructor() {
@@ -193,8 +194,8 @@ class RequestHandler {
             const { firstName, lastName, personNumber, username, email, password, confirmPassword, role_id = 2 } = req.body;
 
             try {
-                if (!firstName || !lastName || !personNumber || !username || !email || !password || !confirmPassword || !role_id) {
-                    return res.status(400).json({ message: 'All fields are required' });
+                if (!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || !Validation.validateEmail(confirmPassword) || !role_id) {
+                    return res.status(400).json({ message: 'All fields were not entered with valid information.' });
                 }
 
                 const user = await this.controller.register(firstName, lastName, personNumber, username, email, password, confirmPassword, role_id);
@@ -284,7 +285,7 @@ class RequestHandler {
                     return res.status(400).json({ message: 'Person ID are required' });
                 }
                 const application = await this.controller.deleteAvailability(person_id);
-                res.status(201).json({ message: 'Application deleted successfully', application });
+                res.status(201).json({ message: 'Application deleted successfully', application});
             }catch (error) {
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
@@ -315,6 +316,59 @@ class RequestHandler {
           }
         }
 
+        app.post('/api/requestPasscode', async (req, res) => {
+            const {email} = req.body;
+            try{
+                if(!email){
+                    return res.status(400).json({ message: 'Email field missing' });
+                }
+                const application = await this.controller.requestPasscode(email);
+                res.status(201).json({ message: 'Security code was created', application });
+            }catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
+        app.post('/api/confirmPasscode', async (req, res) => {
+            const {email, passcode} = req.body;
+            try{
+                if(!email || !passcode){
+                    return res.status(400).json({ message: 'Email or passcode field missing' });
+                }
+                const application = await this.controller.confirmPasscode(email, passcode);
+                res.status(201).json({ message: 'Security code was confirmed', application });
+            }catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+        }});
+
+        app.post('/api/updateMigratingApplicant', async (req, res) => {
+            const {email, passcode, username, password, confirmPassword} = req.body;
+            try{
+                if(!email || !passcode || !username || !password || !confirmPassword){
+                    return res.status(400).json({ message: 'All fields are required' });
+                }
+                const application = await this.controller.updateMigratingApplicant(email, passcode, username, password, confirmPassword);
+                res.status(201).json({ message: 'Applicant was updated', application });
+            }catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
+        app.post('/api/updateRecruiter', async (req, res) => {
+            const {person_id, email, pnr} = req.body;
+            try{
+                if(!person_id || !email || !pnr){
+                    return res.status(400).json({ message: 'All fields are required' });
+                }
+                const application = await this.controller.updateRecruiter(person_id, email, pnr);
+                res.status(201).json({ message: 'Recruiter was updated', application });
+            }catch (error) {
+                res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        });
+
+
+    }
 }
 
 module.exports = RequestHandler;

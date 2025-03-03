@@ -95,20 +95,8 @@ Header, footer and main body. Why?
 
 
 ## Non-Functional Requirements
-- Availability
-  - Should be easy to justify that Heroku provides the necesary tools to be available. 
-- ~~Reliability~~
-- ~~Response time~~
+- Response time
 - Capacity
-  - Should be easy to justify that Heroku provides the necesary tools to be available. 
-- ~~Scalability~~
-- ~~Manageability~~
-- ~~Configureability~~
-- ~~Packaging~~
-- ~~Standard~~
-- ~~Usability~~
-- ~~Security~~
-- ~~Design goals~~
 
 ## Technologies we are using
 

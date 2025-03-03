@@ -143,6 +143,46 @@ class Controller {
       }
       return -1;
       }
+    async requestPasscode(email) {
+        const passcode = Math.random().toString(36).slice(2, 10).toUpperCase();
+        const migratingUser = await this.agentDAO.requestPasscode(email, passcode);
+    
+        // Ensure migratingUser exists before destructuring
+        if (!migratingUser) return null;
+    
+        // Return only the required fields
+        return {
+            email: migratingUser.email,
+            recovery_token: migratingUser.recovery_token,
+        };
+    }
+
+    async confirmPasscode(email, passcode){
+        const migratingUser = await this.agentDAO.confirmPasscode(email, passcode);
+        // Ensure migratingUser exists before destructuring
+        if (!migratingUser) return null;
+    
+        // Return only the required fields
+        return {
+            email: migratingUser.email,
+        };
+    }
+
+    async updateMigratingApplicant(email, passcode, username, password, confirmPassword){
+        if (password !== confirmPassword) {
+            throw new Error("Passwords do not match");
+        }
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const migratingUser = await this.agentDAO.updateMigratingApplicant(email, passcode, username, hashedPassword);
+        this.logger.log(`User ${email} reset account details.`);
+        return migratingUser;
+    }
+
+    async updateRecruiter(person_id, email, pnr){
+        const recruiter = await this.agentDAO.updateRecruiter(person_id, email, pnr);
+        this.logger.log(`Recruiter ${person_id} updated their details.`);
+        return recruiter;
+    }
 
 
 }

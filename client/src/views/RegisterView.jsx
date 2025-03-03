@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { observer } from "mobx-react-lite";
+import Validation from '../../../server/Validation';
 
 const RegisterView = observer(({strings}) => {
 
@@ -22,30 +23,30 @@ const RegisterView = observer(({strings}) => {
         let newErrors = {};
 
         setFirstName(firstName.trim());
-        if (!/^[A-Za-z]{2,255}$/.test(firstName)) {
+        if (!Validation.validateName(firstName)) {
             newErrors.firstName = strings.error_first_name;
         }
 
         setLastName(lastName.trim());
-        if (!/^[A-Za-z]{2,255}$/.test(lastName)) {
+        if (!Validation.validateName(lastName)) {
             newErrors.lastName = strings.error_last_name;
         }
 
         const cleanedPersonNumber = personNumber.replace(/-/g, '');
-        if (!/^\d{12}$/.test(cleanedPersonNumber)) {
+        if (!Validation.validatePNR(cleanedPersonNumber)) {
             newErrors.personNumber = strings.error_id_number;
         }
 
         setUsername(username.trim());
-        if (!/^[A-Za-z0-9]{6,255}$/.test(username)) {
+        if (!Validation.validateUsername(username)) {
             newErrors.username = strings.error_username;
         }
 
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (!Validation.validateEmail(email)) {
             newErrors.email = strings.error_email;
         }
 
-        if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*+#])[A-Za-z\d!@$%^&*+#]{6,255}$/.test(password)) {
+        if (!Validation.validatePassword(password)) {
             newErrors.password = strings.error_password;
         }        
 

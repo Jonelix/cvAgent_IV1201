@@ -6,6 +6,7 @@ import ProfilePresenter from "./ProfilePresenter.jsx";
 import AuthentificationPresenter from "./AuthentificationPresenter.jsx";
 import RegisterPresenter from "../presenters/RegisterPresenter.jsx";
 import DashboardPresenter from "./DashboardPresenter.jsx";
+import MigrationPresenter from "./MigrationPresenter.jsx";
 
 const MainPresenter = observer(({ model, applicantsModel }) => {
 
@@ -17,6 +18,7 @@ const MainPresenter = observer(({ model, applicantsModel }) => {
                 <Route path="/auth" element={<AuthentificationPresenter model={model}/>} />
                 <Route path="/registration" element={<RegisterPresenter model={model}/>} />
                 <Route path="/dashboard" element={<DashboardPresenter model={model} applicantsModel={applicantsModel}/>} />
+                <Route path="/reset" element={<MigrationPresenter model={model} applicantsModel={applicantsModel}/>} />d
             </Routes>
         </div>
     );
