@@ -160,6 +160,7 @@ class RequestHandler {
                 if (user) {
                   console.log("calling make cookie:");
                   const cookie = await this.controller.makeCookie(user);
+                  delete user.password
                   const resp = {
                     user: user,
                     cookie: cookie
