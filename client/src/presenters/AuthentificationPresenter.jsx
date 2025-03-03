@@ -12,6 +12,7 @@ const AuthentificationPresenter = observer(({ model }) => {
 
 
     const handleLoginSuccess = (userData) => {
+      model.setUserData(userData.user);
         const { cookie } = userData;
         if(cookie) {
           model.setCookie(cookie);
@@ -19,7 +20,6 @@ const AuthentificationPresenter = observer(({ model }) => {
         } else {
           console.log("no cookie detected");
         }
-        model.setUserData(userData);
 
         window.location.href = "#/profile";
     };

@@ -34,17 +34,32 @@ class Controller {
 
     */
     async authenticateCookie(cookie){
-      console.log("Calling authenticateCookie:");
-      const { username, password } = await this.Auth.authenticateCookie(cookie)
-      const user = await this.agentDAO.findUserWithUsername(username);
+        const { username, password } = await this.Auth.authenticateCookie(cookie)
+        const user = await this.agentDAO.findUserWithUsername(username);
       if (user) {
         if(password == user?.dataValues.password){
           this.logger.log("User logged in: " + JSON.stringify(user.username));
           //delete user.dataValues.password;
           return user.dataValues;
         }
+    }
+        return null;
+ 
+     /*   console.log("Calling authenticateCookie:");
+      if(this.agentDAO.checkCookie(cookie)){
+        const { username, password } = await this.Auth.authenticateCookie(cookie)
+        const user = await this.agentDAO.findUserWithUsername(username);
+      if (user) {
+        if(password == user?.dataValues.password){
+          this.logger.log("User logged in: " + JSON.stringify(user.username));
+          //delete user.dataValues.password;
+          return user.dataValues;
+        }
+      }else{
+        console.log("Cookie not found or error when loading cookie");
+        return null;
       }
-      return null;
+      }  */  
     }
 
     async register(firstName, lastName, personNumber, username, email, password, confirmPassword, role_id) {
@@ -133,7 +148,14 @@ class Controller {
     }
 
     async makeCookie(user){
-      return await this.Auth.createCookie(user);
+        const cookie = await this.Auth.createCookie(user);
+        const resp = await this.agentDAO.insertCookie(cookie);
+        
+        if(resp == -1){
+            return -1;
+        }
+        return cookie;
+
     }
 
     async checkUser(cookie){

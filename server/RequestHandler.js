@@ -111,8 +111,6 @@ class RequestHandler {
           } catch (error) {
             res.status(500).json({ message: 'Server error', error: error.message });
           }
-
-
         });
 
         app.get('/api/applicantProfiles', async (req, res) => {

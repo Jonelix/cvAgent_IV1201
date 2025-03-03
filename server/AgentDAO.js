@@ -647,6 +647,26 @@ class AgentDAO {
         }
     }
 
+    async insertCookie(cookie) {
+        try {
+            const result = await database.query(
+                `INSERT INTO cookie_table (cookie_string, timestamp) VALUES (:cookie, :timestamp)`,
+                { 
+                    replacements: { 
+                        cookie, 
+                        timestamp: Math.floor(Date.now() / 1000) // Current Unix timestamp
+                    }, 
+                    type: database.QueryTypes.INSERT 
+                }
+            );
+            return result;
+        } catch (error) {
+            console.error('Error inserting cookie:', error);
+            throw error;
+        }
+    }
+    
+
 }
 
 
