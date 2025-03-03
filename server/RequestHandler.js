@@ -43,6 +43,18 @@ class RequestHandler {
         });
 
         app.post('/api/userAvailability', async (req, res) => {
+          let user = await this.cookieCheck(req, res);
+          const { person_id } = req.body;
+
+          console.log("in userAvailability:");
+          console.log("user:");
+          console.log(user);
+          console.log("person_id");
+          console.log(person_id);
+          if(user == -1){
+            return;
+          }
+          if(user.person_id == person_id){
             try {
                 const { person_id } = req.body;
                 if (!person_id) {
@@ -58,6 +70,9 @@ class RequestHandler {
             } catch (error) {
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
+          } else {
+            res.status(403).json({message: 'Permission Denied'})
+          }
         });
 
         app.post('/api/fetchPerson', async (req, res) => {
