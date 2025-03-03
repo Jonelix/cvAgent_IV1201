@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 class Authentication{
 
 async createCookie(user){
-  console.log("cookie user id: " + JSON.stringify(user))
   const { username, password } = user;
+  console.log("in cookie \n username: " + username + " password: " + password);
   const cookie = jwt.sign(
     { username, password },
     process.env.JWT_KEY,
@@ -16,10 +16,10 @@ async createCookie(user){
 }
 
 async authenticateCookie(cookie){
-  console.log("Token received:", cookie);
   const authCookieValue = cookie.split('authCookie=')[1];
     const decoded = jwt.verify(authCookieValue, process.env.JWT_KEY);
-    console.log("Token data:", decoded);
+  console.log("decoded cookie:");
+  console.log(decoded);
     const { password, username } = decoded;
     return { username, password }
 

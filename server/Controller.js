@@ -21,7 +21,7 @@ class Controller {
                 this.logger.log("User logged in: " + JSON.stringify(user.username));
                 console.log("data values are:")
                 console.log(user.dataValues);
-                delete user.dataValues.password;
+                //delete user.dataValues.password;
                 return user.dataValues;
             }
         }
@@ -34,15 +34,13 @@ class Controller {
 
     */
     async authenticateCookie(cookie){
+      console.log("Calling authenticateCookie:");
       const { username, password } = await this.Auth.authenticateCookie(cookie)
       const user = await this.agentDAO.findUserWithUsername(username);
-
       if (user) {
-        if(password == user.dataValues.password){
+        if(password == user?.dataValues.password){
           this.logger.log("User logged in: " + JSON.stringify(user.username));
-          console.log("user data values:");
-          delete user.dataValues.password;
-          console.log(user.dataValues);
+          //delete user.dataValues.password;
           return user.dataValues;
         }
       }
@@ -60,9 +58,8 @@ class Controller {
 
         if (user) {
             const { password, ...userData } = user.dataValues;
-            console.log(userData);
             this.logger.log("User created: " + JSON.stringify(userData.username));
-            delete user.dataValues.password;
+            //delete user.dataValues.password;
             return userData;
         }
         return null;
@@ -141,8 +138,6 @@ class Controller {
 
     async checkUser(cookie){
       const user = await this.authenticateCookie(cookie);
-      console.log("user in checkuser:");
-      console.log(user);
       if(user != null){ //CECK ERROR
         return user;
       }

@@ -145,15 +145,20 @@ class RequestHandler {
         app.post('/api/login', async (req, res) => {
           let user;
             if(req.headers.cookie != null){
+              console.log("cookie case:");
               user = await this.controller.authenticateCookie(req.headers.cookie)
             } else {
-              console.log("no cookie");
+              console.log("no cookie case:");
               const { username, password } = req.body;
-              console.log("cookie username: " + username + " cookie password: " + password);
+              console.log("In login request handler:");
+              console.log("username: " + username + " password: " + password);
                 user = await this.controller.login(username, password);
             }
             try {
+              console.log("user found:");
+              console.log(user);
                 if (user) {
+                  console.log("calling make cookie:");
                   const cookie = await this.controller.makeCookie(user);
                   const resp = {
                     user: user,
