@@ -181,6 +181,7 @@ class RequestHandler {
                     user: user,
                     cookie: cookie
                   };
+                  console.log("this runs");
                   console.log("login response:");
                   console.log(resp);
                     res.status(200).json(resp);
