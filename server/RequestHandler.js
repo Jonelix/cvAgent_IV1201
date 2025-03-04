@@ -111,8 +111,6 @@ class RequestHandler {
           } catch (error) {
             res.status(500).json({ message: 'Server error', error: error.message });
           }
-
-
         });
 
         app.get('/api/applicantProfiles', async (req, res) => {
@@ -181,6 +179,7 @@ class RequestHandler {
                     user: user,
                     cookie: cookie
                   };
+                  console.log("this runs");
                   console.log("login response:");
                   console.log(resp);
                     res.status(200).json(resp);

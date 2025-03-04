@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
 
 const ProfileView = ({ model, strings, onLoginSuccess }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [email, setEmail] = useState(model.email || "");
     const [pnr, setPnr] = useState(model.pnr || "");
+    const [currentModel, setCurrentModel] = useState(model);
+
 
     function backToLogin() {
         window.location.href = "#/auth";
-        //model.setCookie(null);
+        model.logOut();
 
     }
 
@@ -19,13 +21,18 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
     function handleCancel() {
         setIsEditing(false);
     }
+    
+    useEffect(() => {
+        fetchModel(); // No await here because it's not an async function
+    }, [model]); // Depend on `model`, so it runs when model changes
+    
 
     const updateRecruiterDetails = async (e) => {
         e.preventDefault();
         try {
             
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/updateRecruiter", {
-            //const response = await fetch("http://localhost:5005/api/updateRecruiter", {
+            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/updateRecruiter", {
+            const response = await fetch("http://localhost:5005/api/updateRecruiter", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -95,34 +102,34 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
                     <div className="space-y-4">
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.full_name}</span>
-                            <span className="text-gray-800">{model.name} {model.surname}</span>
+                            <span className="text-gray-800">{model?.name} {model?.surname}</span>
                         </div>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.username}</span>
-                            <span className="text-gray-800">{model.username}</span>
+                            <span className="text-gray-800">{model?.username}</span>
                         </div>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.email}</span>
-                            <span className="text-gray-800">{model.email}</span>
+                            <span className="text-gray-800">{model?.email}</span>
                         </div>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.user_id}</span>
-                            <span className="text-gray-800">{model.person_id}</span>
+                            <span className="text-gray-800">{model?.person_id}</span>
                         </div>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.id_number}</span>
-                            <span className="text-gray-800">{model.pnr}</span>
+                            <span className="text-gray-800">{model?.pnr}</span>
                         </div>
                         <div className="flex justify-between border-b pb-2">
                             <span className="text-gray-600 font-semibold">{strings.role_id}</span>
-                            <span className="text-gray-800">{model.role_id}</span>
+                            <span className="text-gray-800">{model?.role_id}</span>
                         </div>
                     </div>
                 )}
 
                 {model.role_id === 1 && (model.email == null || model.pnr == null || model.email == "" || model.pnr == "") && !isEditing && (
-                    <button 
-                        onClick={handleUpdateInfo} 
+                    <button
+                        onClick={handleUpdateInfo}
                         className="w-full bg-yellow-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition-all mt-4">
                         {strings.missing_info}
                     </button>

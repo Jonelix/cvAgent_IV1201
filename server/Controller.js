@@ -34,17 +34,39 @@ class Controller {
 
     */
     async authenticateCookie(cookie){
-      console.log("Calling authenticateCookie:");
-      const { username, password } = await this.Auth.authenticateCookie(cookie)
-      const user = await this.agentDAO.findUserWithUsername(username);
+        const bluescook = cookie.split('authCookie=')[1];
+        const respDB = await this.agentDAO.checkCookie(bluescook);
+        if(respDB == -1){
+            return null;
+        }
+        console.log("Cookie from db");
+        console.log(respDB);
+        const { username, password } = await this.Auth.authenticateCookie(cookie)
+        const user = await this.agentDAO.findUserWithUsername(username);
       if (user) {
         if(password == user?.dataValues.password){
           this.logger.log("User logged in: " + JSON.stringify(user.username));
           //delete user.dataValues.password;
           return user.dataValues;
         }
+    }
+        return null;
+ 
+     /*   console.log("Calling authenticateCookie:");
+      if(this.agentDAO.checkCookie(cookie)){
+        const { username, password } = await this.Auth.authenticateCookie(cookie)
+        const user = await this.agentDAO.findUserWithUsername(username);
+      if (user) {
+        if(password == user?.dataValues.password){
+          this.logger.log("User logged in: " + JSON.stringify(user.username));
+          //delete user.dataValues.password;
+          return user.dataValues;
+        }
+      }else{
+        console.log("Cookie not found or error when loading cookie");
+        return null;
       }
-      return null;
+      }  */  
     }
 
     async register(firstName, lastName, personNumber, username, email, password, confirmPassword, role_id) {
@@ -133,7 +155,14 @@ class Controller {
     }
 
     async makeCookie(user){
-      return await this.Auth.createCookie(user);
+        const cookie = await this.Auth.createCookie(user);
+        const resp = await this.agentDAO.insertCookie(cookie);
+        
+        if(resp == -1){
+            return -1;
+        }
+        return cookie;
+
     }
 
     async checkUser(cookie){
@@ -146,10 +175,10 @@ class Controller {
     async requestPasscode(email) {
         const passcode = Math.random().toString(36).slice(2, 10).toUpperCase();
         const migratingUser = await this.agentDAO.requestPasscode(email, passcode);
-    
+
         // Ensure migratingUser exists before destructuring
         if (!migratingUser) return null;
-    
+
         // Return only the required fields
         return {
             email: migratingUser.email,
@@ -161,7 +190,7 @@ class Controller {
         const migratingUser = await this.agentDAO.confirmPasscode(email, passcode);
         // Ensure migratingUser exists before destructuring
         if (!migratingUser) return null;
-    
+
         // Return only the required fields
         return {
             email: migratingUser.email,
