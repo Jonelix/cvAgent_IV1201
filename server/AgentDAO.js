@@ -36,6 +36,17 @@ const Competence = database.define('competence', {
     timestamps: false     // Disable automatic createdAt/updatedAt columns if not needed
 });
 
+const ApplicationStatus = database.define('applicationstatus', {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    person_id: { type: DataTypes.INTEGER, allowNull: false },
+    status: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+    timeout: { type: DataTypes.DATE, allowNull: true, defaultValue: null  },
+    beinghandled: { type: DataTypes.INTEGER, allowNull: true, defaultValue: null  }
+}, {
+    tableName: 'applicationstatus',
+    timestamps: false
+});
+
 (async () => {
     await database.sync({ force: false }); // Adjust as needed
 })();
@@ -647,7 +658,42 @@ class AgentDAO {
         }
     }
 
+    async stressTestInsert(n) {
+        try {
+            await database.sync(); // Ensure tables exist
+    
+            for (let i = 1; i <= n; i++) {
+                const numStr = String(i).padStart(5, '0'); // Ensures five-digit formatting for consistency
+    
+                const newPerson = await Person.create({
+                    name: `Stress${numStr}`,
+                    surname: `Test${numStr}`,
+                    username: `StressTest${numStr}`,
+                    email: `${numStr}@stresstest.com`,
+                    pnr: `0000000${numStr}`,
+                    password: `password${numStr}`,
+                    role_id: 2,
+                    recovery_token: null
+                });
+    
+                await ApplicationStatus.create({
+                    person_id: newPerson.person_id,
+                    status: 0, // Default status
+                    timeout: null, // Current timestamp
+                    beinghandled: null
+                });
+    
+                console.log(`Inserted user Stress${numStr} with ID ${newPerson.person_id}`);
+            }
+    
+            console.log(`Successfully inserted ${n} users.`);
+        } catch (error) {
+            console.error("Error inserting test data:", error);
+        }
+    }
+
 }
+
 
 
 module.exports = AgentDAO;

@@ -102,7 +102,15 @@ Header, footer and main body. Why?
 
 ## Non-Functional Requirements
 - Response time
+
+    For the non-functional requirement _Response time_ we decided that we wanted to have our page available in 1 second. We then tested the page for this requirement, running 10000 requests with and average answer time of 
+    36.22 ms. 
+    ![Image](./diagrams/benchmark_responseTime.png)
+
 - Capacity
+    For the _Capacity_ non-functional requirement we assess the number of user we can support. Since the task specification expects 15000 users, we decided to set an expectation for the double of that, 30000.
+
+    We therefore created 
 
 ## Technologies we are using
 
