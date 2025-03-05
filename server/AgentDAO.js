@@ -694,9 +694,9 @@ class AgentDAO {
     }
 
     async insertCookie(cookie) {
-        if(!Validation.validateCookie(cookie)) {
+      /*  if(!Validation.validateCookie(cookie)) {
             return null;
-        }
+        }*/
         try {
             const result = await database.query(
                 `INSERT INTO cookie_table (cookie_string, timestamp) VALUES (:cookie, :timestamp)`,
@@ -716,9 +716,9 @@ class AgentDAO {
     }
 
     async checkCookie(cookie) {
-        if(!Validation.validateCookie(cookie)) {
+       /* if(!Validation.validateCookie(cookie)) {
             return null;
-        }
+        }*/
         try {
             console.log("Executing query:", `SELECT cookie_string FROM cookie_table WHERE cookie_string = '${cookie}'`);
             
@@ -742,9 +742,9 @@ class AgentDAO {
     
 
     async deleteCookie(cookie) {
-        if(!Validation.validateCookie(cookie)) {
+      /*  if(!Validation.validateCookie(cookie)) {
             return null;
-        }
+        }*/
         try{
             const result = await database.query(
                 `DELETE FROM cookie_table WHERE cookie_string = :cookie`,
@@ -762,9 +762,10 @@ class AgentDAO {
     
 
     async stressTestInsert(n) {
+        /*
         if(!Validation.validateID(n)) {
             return null;
-        }
+        }*/
         try {
             await database.sync(); // Ensure tables exist
     
