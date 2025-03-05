@@ -8,6 +8,19 @@ import RegisterPresenter from "../presenters/RegisterPresenter.jsx";
 import DashboardPresenter from "./DashboardPresenter.jsx";
 import MigrationPresenter from "./MigrationPresenter.jsx";
 
+/**
+ * MainPresenter Component - Manages the routing structure of the application.
+ * 
+ * - Observes changes in the MobX store (`model`).
+ * - Provides routes to different pages including Home, Profile, Authentication, Registration, Dashboard, and Reset.
+ * - Passes the appropriate model and applicantsModel to respective presenters.
+ * 
+ * @param {Object} props - Component props.
+ * @param {Object} props.model - The application model containing user and localization data.
+ * @param {Object} props.applicantsModel - The model containing applicants data (used in Dashboard and Migration pages).
+ * 
+ * @returns {JSX.Element} The main routing structure of the application.
+ */
 const MainPresenter = observer(({ model, applicantsModel }) => {
 
     return (
