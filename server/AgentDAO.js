@@ -397,11 +397,13 @@ class AgentDAO {
 
     async createApplication(person_id, competencies, availabilityList) {
         if(!Validation.validateID(person_id) || !Validation.validateArray(competencies) || !Validation.validateArray(availabilityList)) {
+            console.log("DB: Invalid input provided.");
             return { message: 'Invalid input provided.' };
         }
     const transaction = await database.transaction();
 
     try {
+        console.log("DB: CREATING APPLCIAITON")
         // Process all competencies
         for (const comp of competencies) {
             const competence_id = await this.fetchCompetenceId(comp.competence_name);
@@ -538,7 +540,7 @@ class AgentDAO {
             type: database.QueryTypes.INSERT,
             transaction
         });
-        
+        console.log("DB: COMMITING TRANSACTION")
         await transaction.commit();
         return { message: 'Application successfully processed!' };
     } catch (error) {

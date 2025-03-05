@@ -255,20 +255,23 @@ class RequestHandler {
 
 
         app.post('/api/createApplication', async (req, res) => {
+            console.log("Started createApplication");
             const { person_id, competencies, availabilities } = req.body;
             try {
                 console.log("Person_id: ", person_id, "Availability: ", availabilities, "Competencies: ", competencies);
 
                 if(!Validation.validateID(person_id) || !Validation.validateArray(competencies) || !Validation.validateArray(availabilities)) {
+                    console.log("Invalid input");
                     return res.status(400).json({ message: 'Invalid input' });
                 }
 
-
+                console.log("Valid input");
                 const application = await this.controller.createApplication(
                     person_id,
                     competencies,
                     availabilities
                 );
+                console.log("Application created");
 
                 res.status(201).json(application);
             } catch (error) {
