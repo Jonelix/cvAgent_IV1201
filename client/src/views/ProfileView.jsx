@@ -22,11 +22,6 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
         setIsEditing(false);
     }
     
-    useEffect(() => {
-        fetchModel(); // No await here because it's not an async function
-    }, [model]); // Depend on `model`, so it runs when model changes
-    
-
     const updateRecruiterDetails = async (e) => {
         e.preventDefault();
         try {
