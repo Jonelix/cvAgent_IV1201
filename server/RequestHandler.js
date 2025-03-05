@@ -195,10 +195,11 @@ class RequestHandler {
             const { firstName, lastName, personNumber, username, email, password, confirmPassword, role_id = 2 } = req.body;
 
             try {
-                if (!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || !Validation.validateEmail(confirmPassword) || !role_id) {
-                    return res.status(400).json({ message: 'All fields were not entered with valid information.' });
-                }
 
+                if(!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || !Validation.validatePassword(confirmPassword) || role_id == null) {
+                    return res.status(400).json({ message: 'Invalid input' });
+                }
+                
                 const user = await this.controller.register(firstName, lastName, personNumber, username, email, password, confirmPassword, role_id);
                 res.status(201).json({ message: 'User registered successfully', user });
             } catch (error) {
