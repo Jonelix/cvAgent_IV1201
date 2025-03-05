@@ -64,7 +64,14 @@
         "recovery_code": "Recovery code",
         "continue": "Continue",
         "missing_info":  "Fill in missing information",
-        "cancel":  "Cancel"
+        "cancel":  "Cancel",
+        "years": "year(s)",
+        "availability_error":"Error: \"From Date\" cannot be later than \"To Date\".",
+        "competence_empty": "Cannot add an empty competence.",
+        "competence_exists": "Competence already exists.",
+        "availability_deleted": "Availability deleted.",
+        "competence_deleted": "Competence deleted.",
+        "competence_experience_empty": "Please provide the years of experience for all competencies or remove them."
     },
     "es": {
         "dashboard": "Panel",
@@ -131,7 +138,14 @@
         "recovery_code": "Código de recuperación",
         "continue": "Continuar",
         "missing_info":  "Rellena información faltante",
-        "cancel":  "Cancelar"
+        "cancel":  "Cancelar",
+        "years": "año(s)",
+        "availability_error":"Error: \"Fecha de inicio\" no puede ser posterior a \"Fecha de fin\".",
+        "competence_empty": "No se puede agregar una competencia vacía",
+        "competence_exists": "La competencia ya existe",
+        "availability_deleted": "Disponibilidad eliminada",
+        "competence_deleted": "Competencia eliminada",
+        "competence_experience_empty": "Proporcione los años de experiencia para todas las competencias o elimínelas."
     }
   }
   
