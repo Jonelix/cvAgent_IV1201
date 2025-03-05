@@ -49,8 +49,8 @@ const ProfileView = ({ model, strings, onLoginSuccess }) => {
         e.preventDefault();
         try {
             
-            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/updateRecruiter", {
-            const response = await fetch("http://localhost:5005/api/updateRecruiter", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/updateRecruiter", {
+            // const response = await fetch("http://localhost:5005/api/updateRecruiter", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

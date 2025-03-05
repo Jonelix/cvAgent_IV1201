@@ -110,8 +110,8 @@ const ApplicantView = ({ model, strings }) => {
      */
     const fetchUserAvailability = async () => {
         try {
-            //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
-            const response = await fetch("http://localhost:5005/api/userAvailability", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
+            // const response = await fetch("http://localhost:5005/api/userAvailability", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: 'include',
