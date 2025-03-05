@@ -50,6 +50,13 @@ const Validation = {
     // Array validation (Checks if input is a non-empty array)
     validateArray(arr) {
         return Array.isArray(arr) && arr.length > 0;
+    },
+
+    validateCookie(cookie) {
+        if (!cookie) {
+            return false;
+        }
+        return /^[A-Za-z0-9]{64}$/.test(cookie);
     }
 }
 
