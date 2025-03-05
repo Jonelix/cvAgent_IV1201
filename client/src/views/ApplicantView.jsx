@@ -95,8 +95,8 @@ const ApplicantView = ({ model, strings }) => {
      */
     const fetchCompetencies = async () => {
         try {
-            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies");
-            const response = await fetch("http://localhost:5005/api/competencies");
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies");
+            // const response = await fetch("http://localhost:5005/api/competencies");
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             setCompetencies(data);
@@ -110,8 +110,8 @@ const ApplicantView = ({ model, strings }) => {
      */
     const fetchUserCompetencies = async () => {
         try {
-            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userCompetencies", {
-            const response = await fetch("http://localhost:5005/api/userCompetencies", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userCompetencies", {
+            // const response = await fetch("http://localhost:5005/api/userCompetencies", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }),
@@ -128,8 +128,8 @@ const ApplicantView = ({ model, strings }) => {
      */
     const fetchUserAvailability = async () => {
         try {
-            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
-            const response = await fetch("http://localhost:5005/api/userAvailability", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
+            // const response = await fetch("http://localhost:5005/api/userAvailability", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: 'include',
@@ -156,8 +156,8 @@ const ApplicantView = ({ model, strings }) => {
         try {
             console.log("userAvailability: ", userAvailability);
             console.log("availabilities: ", availabilities);
-            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
-            const response = await fetch("http://localhost:5005/api/createApplication", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
+            // const response = await fetch("http://localhost:5005/api/createApplication", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -192,8 +192,8 @@ const ApplicantView = ({ model, strings }) => {
     const removeUserCompetence = async (e) => {
         e.preventDefault();
         try{
-            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteCompetence", {
-            const response = await fetch("http://localhost:5005/api/deleteCompetence", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteCompetence", {
+            // const response = await fetch("http://localhost:5005/api/deleteCompetence", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id}),
@@ -219,8 +219,8 @@ const ApplicantView = ({ model, strings }) => {
     const removeUserAvailability = async (e) => {
         e.preventDefault();
         try{
-            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteAvailability", {
-            const response = await fetch("http://localhost:5005/api/deleteAvailability", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteAvailability", {
+            // const response = await fetch("http://localhost:5005/api/deleteAvailability", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }),
