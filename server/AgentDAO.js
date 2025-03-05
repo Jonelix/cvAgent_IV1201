@@ -396,9 +396,8 @@ class AgentDAO {
         */
 
     async createApplication(person_id, competencies, availabilityList) {
-        if(!Validation.validateID(person_id) || !Validation.validateArray(competencies) || !Validation.validateArray(availabilityList)) {
-            console.log("DB: Invalid input provided.");
-            return { message: 'Invalid input provided.' };
+        if(!Validation.validateID(person_id)) {
+            return null;
         }
     const transaction = await database.transaction();
 
