@@ -1,4 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const Validation = require('./ServerValidation');
+
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -53,11 +55,17 @@ const ApplicationStatus = database.define('applicationstatus', {
 
 class AgentDAO {
     async findUserWithUsername(username) {
+        if(!Validation.validateUsername(username)) {
+            return null;
+        }
         return await Person.findOne({ where: { username } });
     }
 
     async registerUser(firstName, lastName, personNumber, username, email, password, role_id) {
         //const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+        if(!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || role_id !== 2) {
+            return null;
+        }
         return await Person.create({ 
             name: firstName, 
             surname: lastName, 
@@ -74,23 +82,6 @@ class AgentDAO {
         return competencies;
         
     }
-
-    /*
-    async getApplicantProfile() {
-        const applicant = await database.query(
-    `  SELECT cp.*, 
-        p.name AS person_name, 
-        p.surname, 
-        c.name AS competence_name 
-    FROM competence_profile cp
-        JOIN person p ON cp.person_id = p.person_id
-        JOIN competence c ON cp.competence_id = c.competence_id
-        LIMIT 40;
-
-    `, { type: database.QueryTypes.SELECT });   
-    return applicant;
-    }
-    */
     
     async getApplicantProfiles() {
         const applicant = await database.query(
@@ -130,6 +121,9 @@ class AgentDAO {
     }
 
     async getApplicantProfile(personId) {
+        if(!Validation.validateID(personId)) {
+            return [];
+        }
         // Check if the provided ID corresponds to a person with role_id = 2
         const personRole = await database.query(
             `
@@ -189,6 +183,9 @@ class AgentDAO {
     }
     
     async handleApplicantStatus(rec_id, app_id) {
+        if(!Validation.validateID(rec_id) || !Validation.validateID(app_id)) {
+            return "Invalid identifiers provided.";
+        }
         const application = await database.query(
             `
             WITH selected_application AS (
@@ -238,6 +235,9 @@ class AgentDAO {
     
 
     async confirmStatusUpdate(rec_id, app_id, status) {
+        if(!Validation.validateID(rec_id) || !Validation.validateID(app_id) || !Validation.validateID(status)) {
+            return "Invalid identifiers or status provided.";
+        }
         const application = await database.query(
             `
             WITH selected_application AS (
@@ -287,6 +287,9 @@ class AgentDAO {
     }
 
     async fetchPerson(firstName, lastName) {
+        if(!Validation.validateName(firstName) || !Validation.validateName(lastName)) {
+            return [];
+        }
         const query = `SELECT * FROM person WHERE name = :firstName AND surname = :lastName`;
     
         try {
@@ -303,6 +306,9 @@ class AgentDAO {
     }
     
     async getUserCompetencies(person_id) {
+        if(!Validation.validateID(person_id)) {
+            return [];
+        }
         const query = `
             SELECT 
                 c.name AS competence_name, 
@@ -326,6 +332,9 @@ class AgentDAO {
     }
 
     async getUserAvailability(person_id) {
+        if(!Validation.validateID(person_id)) {
+            return [];
+        }
         const query = `
             SELECT 
                 from_date, 
@@ -348,6 +357,9 @@ class AgentDAO {
     }
 
     async fetchCompetenceId(competence) {
+        if(!Validation.validateName(competence)) {
+            return null;
+        }
         const query = `SELECT competence_id FROM competence WHERE name = :competence`;
     
         try {
@@ -384,6 +396,9 @@ class AgentDAO {
         */
 
     async createApplication(person_id, competencies, availabilityList) {
+        if(!Validation.validateID(person_id) || !Validation.validateArray(competencies) || !Validation.validateArray(availabilityList)) {
+            return { message: 'Invalid input provided.' };
+        }
     const transaction = await database.transaction();
 
     try {
@@ -536,6 +551,9 @@ class AgentDAO {
         
         
     async deleteCompetence(person_id) {
+        if(!Validation.validateID(person_id)) {
+            return null;
+        }
         const query = `
             DELETE FROM competence_profile
             WHERE person_id = :person_id;
@@ -555,6 +573,9 @@ class AgentDAO {
     }
 
     async deleteAvailability(person_id) {
+        if(!Validation.validateID(person_id)) {
+            return null;
+        }
         const query = `
             DELETE FROM availability
             WHERE person_id = :person_id;
@@ -573,6 +594,9 @@ class AgentDAO {
     }
 
     async requestPasscode(email, securityCode) {
+        if(!Validation.validateEmail(email) || !Validation.validateID(securityCode)) {
+            return null;
+        }
         try {
             // Find the user by email
             const user = await Person.findOne({ where: { email } });
@@ -595,6 +619,9 @@ class AgentDAO {
     }
 
     async confirmPasscode(email, securityCode) {
+        if(!Validation.validateEmail(email) || !Validation.validateID(securityCode)) {
+            return null;
+        }
         try {
             // Find the user by email and recovery_token
             const user = await Person.findOne({ where: { email, recovery_token: securityCode } });
@@ -613,6 +640,9 @@ class AgentDAO {
     }
 
     async updateMigratingApplicant(email, securityCode, username, password) {
+        if(!Validation.validateEmail(email) || !Validation.validateID(securityCode) || !Validation.validateUsername(username) || !Validation.validatePassword(password)) {
+            return null;
+        }
         try {
                 // Find the user by email and recovery_token
                 const user = await Person.findOne({ where: { email, recovery_token: securityCode } });
@@ -636,6 +666,9 @@ class AgentDAO {
     }
 
     async updateRecruiter(person_id, email, pnr) {
+        if(!Validation.validateID(person_id) || !Validation.validateEmail(email) || !Validation.validatePNR(pnr)) {
+            return null;
+        }
         try {
             // Find the recruiter by person_id
             const recruiter = await Person.findOne({ where: { person_id } });
@@ -659,6 +692,9 @@ class AgentDAO {
     }
 
     async insertCookie(cookie) {
+        if(!Validation.validateCookie(cookie)) {
+            return null;
+        }
         try {
             const result = await database.query(
                 `INSERT INTO cookie_table (cookie_string, timestamp) VALUES (:cookie, :timestamp)`,
@@ -678,7 +714,9 @@ class AgentDAO {
     }
 
     async checkCookie(cookie) {
-        console.log("RATIMIRRRRRRRRRRRR: " , cookie);
+        if(!Validation.validateCookie(cookie)) {
+            return null;
+        }
         try {
             console.log("Executing query:", `SELECT cookie_string FROM cookie_table WHERE cookie_string = '${cookie}'`);
             
@@ -702,6 +740,9 @@ class AgentDAO {
     
 
     async deleteCookie(cookie) {
+        if(!Validation.validateCookie(cookie)) {
+            return null;
+        }
         try{
             const result = await database.query(
                 `DELETE FROM cookie_table WHERE cookie_string = :cookie`,
@@ -719,6 +760,9 @@ class AgentDAO {
     
 
     async stressTestInsert(n) {
+        if(!Validation.validateID(n)) {
+            return null;
+        }
         try {
             await database.sync(); // Ensure tables exist
     
