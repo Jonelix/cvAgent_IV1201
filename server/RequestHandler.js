@@ -28,7 +28,8 @@ class RequestHandler {
         app.post('/api/userCompetencies', async (req, res) => {
             try {
                 const { person_id } = req.body;
-                if (!person_id) {
+
+                if (!Validation.validateID(person_id)) {
                     return res.status(400).json({ message: 'Missing person_id' });
                 }
 
@@ -44,21 +45,26 @@ class RequestHandler {
         });
 
         app.post('/api/userAvailability', async (req, res) => {
-          let user = await this.cookieCheck(req, res);
+          
+         let user = await this.cookieCheck(req, res);
           const { person_id } = req.body;
+          if (!Validation.validateID(person_id)) {
+            return res.status(400).json({ message: 'Missing person_id' });
+        }
 
-          console.log("in userAvailability:");
+       /*   console.log("in userAvailability:");
           console.log("user:");
           console.log(user);
           console.log("person_id");
-          console.log(person_id);
+          console.log(person_id);*/
+
           if(user == -1){
             return;
           }
           if(user.person_id == person_id){
             try {
                 const { person_id } = req.body;
-                if (!person_id) {
+                if (!Validation.validateID(person_id)) {
                     return res.status(400).json({ message: 'Missing person_id' });
                 }
 
@@ -80,7 +86,7 @@ class RequestHandler {
             try {
                 const {firstName, lastName } = req.body;
 
-                if (!firstName || !lastName) {
+                if (!Validation.validateName(firstName) || !Validation.validateName(lastName)) {
                     return res.status(400).json({ message: 'Missing first name or last name' });
                 }
 
@@ -139,7 +145,7 @@ class RequestHandler {
             try {
                 const { applicant_id } = req.body;
 
-                if (!applicant_id) {
+                if(!Validation.validateID(applicant_id)) {
                     return res.status(400).json({ message: 'Missing applicant_id' });
                 }
 
@@ -166,6 +172,10 @@ class RequestHandler {
               const { username, password } = req.body;
               console.log("In login request handler:");
               console.log("username: " + username + " password: " + password);
+               
+              if(!Validation.validateUsername(username) || !Validation.validatePassword(password)){
+                return res.status(400).json({ message: 'Invalid credentials' });
+                }  
                 user = await this.controller.login(username, password);
             }
             try {
@@ -195,11 +205,10 @@ class RequestHandler {
             const { firstName, lastName, personNumber, username, email, password, confirmPassword, role_id = 2 } = req.body;
 
             try {
-
-                if(!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || !Validation.validatePassword(confirmPassword) || role_id == null) {
-                    return res.status(400).json({ message: 'Invalid input' });
+                if (!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || !Validation.validateEmail(confirmPassword) || !role_id) {
+                    return res.status(400).json({ message: 'All fields were not entered with valid information.' });
                 }
-                
+
                 const user = await this.controller.register(firstName, lastName, personNumber, username, email, password, confirmPassword, role_id);
                 res.status(201).json({ message: 'User registered successfully', user });
             } catch (error) {
@@ -213,7 +222,7 @@ class RequestHandler {
         app.post('/api/handleApplicantStatus', async (req, res) => {
             const { rec_id, app_id, timestamp } = req.body;
             try {
-                if (!rec_id || !app_id || !timestamp) {
+                if (!Validation.validateID(rec_id) || !Validation.validateID(app_id) || !Validation.validateID(timestamp)) {
                     return res.status(400).json({ message: 'All fields are required' });
                 }
 
@@ -230,10 +239,10 @@ class RequestHandler {
         app.post('/api/confirmStatusUpdate', async (req, res) => {
             const { rec_id, app_id, status } = req.body;
             try {
-                if (rec_id == null || app_id == null || status == null) {
+                
+                if (!Validation.validateID(rec_id) || !Validation.validateID(app_id) || !Validation.validateID(status)) {
                     return res.status(400).json({ message: 'All fields are required' });
                 }
-
                 const user = await this.controller.confirmStatusUpdate(rec_id, app_id, status);
                 res.status(201).json({ message: 'User status handling has been initiated', user });
             } catch (error) {
@@ -249,8 +258,9 @@ class RequestHandler {
             const { person_id, competencies, availabilities } = req.body;
             try {
                 console.log("Person_id: ", person_id, "Availability: ", availabilities, "Competencies: ", competencies);
-                if(!person_id || !availabilities?.length || !competencies?.length) {
-                    return res.status(400).json({ message: 'All fields are required' });
+
+                if(!Validation.validateID(person_id) || !Validation.validateArray(competencies) || !Validation.validateArray(availabilities)) {
+                    return res.status(400).json({ message: 'Invalid input' });
                 }
 
 
@@ -270,9 +280,10 @@ class RequestHandler {
 
             const {person_id} = req.body;
             try{
-                if(!person_id){
-                    return res.status(400).json({ message: 'Person ID' });
+                if(!Validation.validateID(person_id)){
+                    return res.status(400).json({ message: 'Invalid person ID' });
                 }
+
                 const application = await this.controller.deleteCompetence(person_id);
                 res.status(201).json({ message: 'Competence deleted successfully', application });
             }catch (error) {
@@ -283,8 +294,8 @@ class RequestHandler {
         app.post('/api/deleteAvailability', async (req, res) => {
             const {person_id} = req.body;
             try{
-                if(!person_id){
-                    return res.status(400).json({ message: 'Person ID are required' });
+                if(!Validation.validateID(person_id)){
+                    return res.status(400).json({ message: 'Invalid person ID' });
                 }
                 const application = await this.controller.deleteAvailability(person_id);
                 res.status(201).json({ message: 'Application deleted successfully', application});
@@ -296,8 +307,8 @@ class RequestHandler {
         app.post('/api/requestPasscode', async (req, res) => {
             const {email} = req.body;
             try{
-                if(!email){
-                    return res.status(400).json({ message: 'Email field missing' });
+                if(!Validation.validateEmail(email)){
+                    return res.status(400).json({ message: 'Invalid email' });
                 }
                 const application = await this.controller.requestPasscode(email);
                 res.status(201).json({ message: 'Security code was created', application });
@@ -309,8 +320,8 @@ class RequestHandler {
         app.post('/api/confirmPasscode', async (req, res) => {
             const {email, passcode} = req.body;
             try{
-                if(!email || !passcode){
-                    return res.status(400).json({ message: 'Email or passcode field missing' });
+                if(!Validation.validateEmail(email) || !Validation.validateID(passcode)){
+                    return res.status(400).json({ message: 'Invalid email or passcode' });
                 }
                 const application = await this.controller.confirmPasscode(email, passcode);
                 res.status(201).json({ message: 'Security code was confirmed', application });
@@ -321,8 +332,8 @@ class RequestHandler {
         app.post('/api/updateMigratingApplicant', async (req, res) => {
             const {email, passcode, username, password, confirmPassword} = req.body;
             try{
-                if(!email || !passcode || !username || !password || !confirmPassword){
-                    return res.status(400).json({ message: 'All fields are required' });
+                if(!Validation.validateEmail(email) || !Validation.validateID(passcode) || !Validation.validateUsername(username) || !Validation.validatePassword(password) || !Validation.validatePassword(confirmPassword)){
+                    return res.status(400).json({ message: 'Invalid email, passcode, username, password or confirm password' });
                 }
                 const application = await this.controller.updateMigratingApplicant(email, passcode, username, password, confirmPassword);
                 res.status(201).json({ message: 'Applicant was updated', application });
@@ -334,8 +345,8 @@ class RequestHandler {
         app.post('/api/updateRecruiter', async (req, res) => {
             const {person_id, email, pnr} = req.body;
             try{
-                if(!person_id || !email || !pnr){
-                    return res.status(400).json({ message: 'All fields are required' });
+                if(!Validation.validateID(person_id) || !Validation.validateEmail(email) || !Validation.validatePNR(pnr)){
+                    return res.status(400).json({ message: 'Invalid person ID, email or pnr' });
                 }
                 const application = await this.controller.updateRecruiter(person_id, email, pnr);
                 res.status(201).json({ message: 'Recruiter was updated', application });
@@ -343,10 +354,6 @@ class RequestHandler {
                 res.status(500).json({ message: 'Server error', error: error.message });
             }
         });
-
-
-
-
     }
 
     async cookieCheck(req, res){
