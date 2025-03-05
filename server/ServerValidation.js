@@ -52,12 +52,13 @@ const Validation = {
         return Array.isArray(arr) && arr.length > 0;
     },
 
+    /*
     validateCookie(cookie) {
         if (!cookie) {
             return false;
         }
         return /^[A-Za-z0-9]{64}$/.test(cookie);
-    }
+    }*/
 }
 
 module.exports = Validation;
