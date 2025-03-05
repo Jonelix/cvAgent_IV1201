@@ -2,6 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
+/**
+ * ApplicantView Component - Manages user application process including competencies, availabilities, and profile summary.
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.model - User model containing personal information
+ * @param {Object} props.strings - Localization strings for UI text
+ * 
+ * @returns {JSX.Element} ApplicantView component
+ */
 const competenceLocalization = {
     "ticket sales": {
       en: "Ticket sales",
@@ -21,6 +30,8 @@ const competenceLocalization = {
 
 const ApplicantView = ({ model, strings }) => {
     const navigate = useNavigate();
+
+    /** State Hooks */
     const [competencies, setCompetencies] = useState([]);
     const [userCompetencies, setUserCompetencies] = useState([]);
     const [newCopetence, setNewCompetence] = useState([]);
@@ -35,10 +46,20 @@ const ApplicantView = ({ model, strings }) => {
     const [userAvailability, setUserAvailability] = useState([]);
     const [isApplicationUpdated, setIsApplicationUpdated] = useState(false); // Track if application is updated
 
+    /**
+     * Navigates to the competence stage when creating a new application.
+     */
     const handleCreateNewApplication = () => {
         setStage("competence"); // Move to the competence stage
     };
 
+    /**
+     * Checks if a new availability period overlaps with existing ones.
+     * 
+     * @param {string} newFromDate - Start date of new availability
+     * @param {string} newToDate - End date of new availability
+     * @returns {boolean} True if overlapping, otherwise false
+     */
     const isOverlapping = (newFromDate, newToDate) => {
         const newFrom = new Date(newFromDate);
         const newTo = new Date(newToDate);
@@ -54,8 +75,9 @@ const ApplicantView = ({ model, strings }) => {
             );
         });
     };
-
-    // Fetch competencies automatically when stage changes to "competence"
+     /**
+     * Fetches competencies, user competencies, and user availability based on the stage.
+     */
     useEffect(() => {
         if (stage === "main") {
             fetchUserCompetencies();
@@ -68,7 +90,9 @@ const ApplicantView = ({ model, strings }) => {
         }
     }, [stage]);
 
-
+    /**
+     * Fetches available competencies from API.
+     */
     const fetchCompetencies = async () => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies");
@@ -81,6 +105,9 @@ const ApplicantView = ({ model, strings }) => {
         }
     };
 
+    /**
+     * Fetches user's competencies from API.
+     */
     const fetchUserCompetencies = async () => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userCompetencies", {
@@ -96,7 +123,9 @@ const ApplicantView = ({ model, strings }) => {
             console.error("Error:", error.message);
         }
     };
-
+     /**
+     * Fetches user's availability periods from API.
+     */
     const fetchUserAvailability = async () => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
@@ -117,7 +146,11 @@ const ApplicantView = ({ model, strings }) => {
             console.error("Error:", error.message);
         }
     };
-
+    /**
+     * Updates user profile by sending competencies and availabilities to API.
+     * 
+     * @param {Event} e - Form submission event
+     */
     const updateUserProfile = async (e) => {
         e.preventDefault();
         try {
@@ -151,7 +184,11 @@ const ApplicantView = ({ model, strings }) => {
             alert(error.message);
         }
     };
-
+    /**
+     * Removes a user competence from the database.
+     * 
+     * @param {Event} e - Click event
+     */
     const removeUserCompetence = async (e) => {
         e.preventDefault();
         try{
@@ -174,7 +211,11 @@ const ApplicantView = ({ model, strings }) => {
             console.error("Error:", error.message);
         }
     };
-
+    /**
+     * Removes a user availability period from the database.
+     * 
+     * @param {Event} e - Click event
+     */
     const removeUserAvailability = async (e) => {
         e.preventDefault();
         try{
@@ -198,6 +239,9 @@ const ApplicantView = ({ model, strings }) => {
         }
     };
 
+    /**
+     * Cancels the user profile update process.
+     */
     const cancleUserProfile = async (e) => {
         e.preventDefault();
         try{
@@ -210,6 +254,9 @@ const ApplicantView = ({ model, strings }) => {
         }
     }
 
+    /**
+     * Handles navigation to the next stage in the application process.
+     */
     const handleNext = () => {
         if (stage === "competence") {
             setStage("availability");
@@ -218,6 +265,9 @@ const ApplicantView = ({ model, strings }) => {
         }
     };
 
+    /**
+     * Handles navigation to the previous stage in the application process.
+     */
     const handleBack = () => {
         if (stage === "competence") {
             setStage("main");
@@ -227,7 +277,10 @@ const ApplicantView = ({ model, strings }) => {
             setStage("availability");
         }
     };
-
+    
+    /**
+     * Resets the `isApplicationUpdated` state when the application is updated.
+     */
     useEffect(() => {
         if (isApplicationUpdated) {
             // alert("Application updated successfully!");
@@ -238,6 +291,7 @@ const ApplicantView = ({ model, strings }) => {
     return (
         <div className="flex flex-col w-full h-full p-8 bg-gray-50">
             {/* Header Section */}
+            {/* Component UI here */}
             <div className="flex justify-between items-center w-full mb-8 bg-white p-6 rounded-xl shadow-sm">
                 <h1 className="text-3xl font-bold text-gray-800">
                     {stage === "main" ? strings.current_application :

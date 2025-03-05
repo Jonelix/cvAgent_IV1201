@@ -1,6 +1,5 @@
 const Validation = {
-    //WILL RETURN TRUE IF THERE ARE NO ERRORS
-
+    // Name validation (Allows letters, spaces, and hyphens)
     //Name validation
     validateName(name) {
         if (!name) {
@@ -38,6 +37,19 @@ const Validation = {
             return false;
         }
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    },
+
+    // ID validation (Generic for IDs)
+    validateID(id) {
+        if (!id) {
+            return false;
+        }
+        return /^\d+$/.test(id);
+    },
+
+    // Array validation (Checks if input is a non-empty array)
+    validateArray(arr) {
+        return Array.isArray(arr) && arr.length > 0;
     }
 }
 

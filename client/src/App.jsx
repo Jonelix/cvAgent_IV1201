@@ -7,6 +7,12 @@ import ApplicantsModel from "./models/applicantsModel.js";
 const userModel = new UserModel();
 const applicantsModel = new ApplicantsModel();
 
+/**
+ * App Component - The main entry point of the application.
+ * It initializes the user and applicants models and integrates the primary layout structure.
+ * 
+ * @returns {JSX.Element} The App component containing header, main content, and footer.
+ */
 function App() {
     return (
         <div className="flex flex-col min-h-screen">
