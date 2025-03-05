@@ -89,8 +89,8 @@ const RegisterView = observer(({strings}) => {
         if (!validateFields()) return;
         console.log("button is clicked nicely")
         try {
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/register", {
-            // const response = await fetch("http://localhost:5005/api/register", {  
+            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/register", {
+            const response = await fetch("http://localhost:5005/api/register", {  
             method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ firstName, lastName, personNumber, username, email, password, confirmPassword }),
