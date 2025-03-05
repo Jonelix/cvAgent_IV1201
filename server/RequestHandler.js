@@ -259,7 +259,7 @@ class RequestHandler {
             try {
                 console.log("Person_id: ", person_id, "Availability: ", availabilities, "Competencies: ", competencies);
 
-                if(!Validation.validateID(person_id) || !Validation.validateArray(competencies) || !Validation.validateArray(availabilities)) {
+                if(!Validation.validateID(person_id) || !Validation.validateArray(competencies) || !Validation.validateArray(availabilities)){
                     return res.status(400).json({ message: 'Invalid input' });
                 }
 
