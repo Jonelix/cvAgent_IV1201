@@ -1,33 +1,56 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
 
+/**
+ * ProfileView Component - Displays and allows editing of user profile information.
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.model - User model containing personal information
+ * @param {Object} props.strings - Localization strings for UI text
+ * @param {Function} props.onLoginSuccess - Callback function executed when profile update is successful
+ * 
+ * @returns {JSX.Element} ProfileView component
+ */
 const ProfileView = ({ model, strings, onLoginSuccess }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [email, setEmail] = useState(model.email || "");
     const [pnr, setPnr] = useState(model.pnr || "");
     const [currentModel, setCurrentModel] = useState(model);
 
-
+    /**
+     * Logs the user out and redirects to the login page.
+     */
     function backToLogin() {
         window.location.href = "#/auth";
         model.logOut();
 
     }
-
+    /**
+     * Enables edit mode for updating profile information.
+     */
     function handleUpdateInfo() {
         setIsEditing(true);
     }
 
+    /**
+     * Cancels the edit mode and reverts changes.
+     */
     function handleCancel() {
         setIsEditing(false);
     }
     
+     /**
+     * Updates recruiter details by sending updated email and personal number to API.
+     * 
+     * @param {Event} e - Form submission event
+     * @returns {Promise<Object>} API response data
+     */
     const updateRecruiterDetails = async (e) => {
         e.preventDefault();
         try {
             
-            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/updateRecruiter", {
-            const response = await fetch("http://localhost:5005/api/updateRecruiter", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/updateRecruiter", {
+            // const response = await fetch("http://localhost:5005/api/updateRecruiter", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -7,6 +7,16 @@ const statusColors = {
     2: "bg-red-400",   // Rejected
 };
 
+/**
+ * RecruiterView Component - Manages the display and handling of applicants for recruiters.
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.model - User model containing recruiter information
+ * @param {Object} props.applicantsModel - Model containing applicants data
+ * @param {Object} props.strings - Localization strings for UI text
+ * 
+ * @returns {JSX.Element} RecruiterView component
+ */
 const RecruiterView = ({ model, applicantsModel, strings }) => {
     const statusText = {
         0: strings.unhandled || "Unhandled",
@@ -28,21 +38,27 @@ const RecruiterView = ({ model, applicantsModel, strings }) => {
 
     const currentRecruiter = model.person_id || null;
 
-    // Whenever the component mounts or applicantsModel changes,
-    // reset pagination to page 1 and load the new applicants.
+    /**
+     * Updates applicants when `applicantsModel` changes.
+     */
     useEffect(() => {
         setApplicants(applicantsModel.applicants || []);
         setCurrentPage(1);
         setPageInput("1");
     }, [applicantsModel.applicants]);
 
-    // If user finishes editing status, send request to backend
+    /**
+     * If editing status changes, sends request to backend to handle applicant status.
+     */
     useEffect(() => {
         if (editingStatus !== null) {
             postHandleApplicantStatus();
         }
     }, [editingStatus]);
 
+    /**
+     * Fetches all applicants from the backend.
+     */
     const getApplicants = async () => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/applicantProfiles", {
@@ -65,7 +81,12 @@ const RecruiterView = ({ model, applicantsModel, strings }) => {
         }
     };
 
-    // Get applicant by ID
+     /**
+     * Fetches a specific applicant by their ID.
+     * 
+     * @param {number} applicant_id - The applicant's ID
+     * @returns {Promise<Object>} API response data
+     */
     const postGetApplicant = async (applicant_id) => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/applicantProfile", {
@@ -94,7 +115,12 @@ const RecruiterView = ({ model, applicantsModel, strings }) => {
         }
     };
 
-    // Start applicant change status
+     /**
+     * Sends a request to the backend to handle the status update of an applicant.
+     * Generates a timestamp set to 15 minutes in the future.
+     * 
+     * @returns {Promise<Object>} API response data
+     */
     const postHandleApplicantStatus = async () => {
         try {
             // Generate timestamp = current time + 15 minutes
@@ -128,7 +154,14 @@ const RecruiterView = ({ model, applicantsModel, strings }) => {
         }
     };
 
-    // End applicant change status
+    /**
+     * Confirms and updates the status of an applicant.
+     * 
+     * @param {number} currentRecruiter - Recruiter ID
+     * @param {number} editingStatus - Applicant ID whose status is being updated
+     * @param {number} selectedStatus - New status value
+     * @returns {Promise<Object>} API response data
+     */
     const postConfirmStatusUpdate = async (currentRecruiter, editingStatus, selectedStatus) => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/confirmStatusUpdate", {
@@ -162,7 +195,9 @@ const RecruiterView = ({ model, applicantsModel, strings }) => {
         }
     };
 
-    // Reload or search for specific applicant
+    /**
+     * Searches for applicants based on input criteria.
+     */
     const searchForApplicants = () => {
         if (searchTerm.trim() === "") {
             setInputError(false);
@@ -184,18 +219,25 @@ const RecruiterView = ({ model, applicantsModel, strings }) => {
     const indexOfFirstApplicant = indexOfLastApplicant - itemsPerPage;
     const currentApplicants = applicants.slice(indexOfFirstApplicant, indexOfLastApplicant);
 
-    // 3) handle going to next/previous page
+    /**
+     * Moves to the previous page in pagination.
+     */
     const handlePrevPage = () => {
         setCurrentPage((prev) => (prev > 1 ? prev - 1 : 1));
         setPageInput((prev) => String(Math.max(1, Number(prev) - 1)));
     };
 
+    /**
+     * Moves to the next page in pagination.
+     */
     const handleNextPage = () => {
         setCurrentPage((prev) => (prev < totalPages ? prev + 1 : totalPages));
         setPageInput((prev) => String(Math.min(totalPages, Number(prev) + 1)));
     };
 
-    // 4) handle jumping to a page from an input
+    /**
+     * Jumps to a specific page based on user input.
+     */
     const goToPage = () => {
         const pageNum = Number(pageInput);
         if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
@@ -209,6 +251,7 @@ const RecruiterView = ({ model, applicantsModel, strings }) => {
     return (
         <div className="w-full h-full p-4 overflow-auto">
             {/* Search Bar */}
+            {/* UI rendering logic here */}
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-bold">{strings.applicants}</h1>
                 <div className="flex items-center gap-2">

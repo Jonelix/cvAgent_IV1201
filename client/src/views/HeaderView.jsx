@@ -1,12 +1,29 @@
 import React from 'react';
 import { observer } from "mobx-react-lite";
 
+/**
+ * HeaderView Component - Displays the application header with navigation options.
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.model - Application model containing state and settings
+ * @param {boolean} props.isLoggedIn - Boolean flag indicating if the user is logged in
+ * @param {Object} props.strings - Localization strings for UI text
+ * 
+ * @returns {JSX.Element} HeaderView component
+ */
 const HeaderView = observer(({ model, isLoggedIn, strings}) => {
-
+    /**
+     * Redirects the user to the home page.
+     */
     function goToHome(){
         window.location.href = "#/";
     }
 
+    /**
+     * Handles the profile button click.
+     * If the user is logged in, redirects to profile.
+     * Otherwise, redirects to authentication.
+     */
     function handleProfileButton() {
         if (isLoggedIn) {
             goToProfile();
@@ -15,14 +32,23 @@ const HeaderView = observer(({ model, isLoggedIn, strings}) => {
         }
     }
 
+    /**
+     * Redirects the user to the profile page.
+     */
     function goToProfile() {
         window.location.href = "#/profile";
     }
 
+    /**
+     * Redirects the user to the authentication page.
+     */
     function goToAuthentification() {
         window.location.href = "#/auth";
     }
 
+    /**
+     * Redirects the user to the dashboard if logged in, otherwise to authentication.
+     */
     const goToDashboard = () => {
         if (isLoggedIn) {
             window.location.href = "#/dashboard";
@@ -31,7 +57,11 @@ const HeaderView = observer(({ model, isLoggedIn, strings}) => {
         }
     };
 
-    // Language change handler
+    /**
+     * Handles language change selection.
+     * 
+     * @param {Event} e - Change event from the language dropdown
+     */
     const handleLanguageChange = (e) => {
         const selectedLanguage = e.target.value;
         model.setLanguage(selectedLanguage);
