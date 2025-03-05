@@ -1,6 +1,18 @@
 import React, { useState, useRef } from 'react';
 
+/**
+ * AuthentificationView Component - Handles user login authentication.
+ * 
+ * @param {Object} props - Component props
+ * @param {Function} props.onLoginSuccess - Callback function executed when login is successful
+ * @param {Object} props.strings - Localization strings for UI text
+ * 
+ * @returns {JSX.Element} AuthentificationView component
+ */
 const AuthentificationView = ({ onLoginSuccess, strings }) => {
+    /**
+     * Redirects the user to the registration page.
+     */
     function goToRegister() {
         window.location.href = "#/registration";
     }
@@ -11,7 +23,12 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const passwordInputRef = useRef(null);
 
-
+    /**
+     * Fetches available competencies from API.
+     * 
+     * @param {Event} e - Form submission event
+     * @returns {Promise<Object>} API response data
+     */
     const fetchCompetencies = async (e) => {
         e.preventDefault();
         try{
@@ -34,7 +51,12 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
         }
     }
 
-
+    /**
+     * Handles user login by sending credentials to API.
+     * 
+     * @param {Event} e - Form submission event
+     * @returns {Promise<Object>} API response data
+     */
     const fetchUser = async (e) => {
         e.preventDefault();
       console.log("sending to api/login");
@@ -65,6 +87,11 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
         }
     };
 
+    /**
+     * Fetches user profile data from API.
+     * 
+     * @returns {Promise<Object>} API response data
+     */
     const fetchProfile = async (e) => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/applicantProfile", {

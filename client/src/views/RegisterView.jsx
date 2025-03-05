@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { observer } from "mobx-react-lite";
 import Validation from '../FrontendValidation';
 
+/**
+ * RegisterView Component - Handles user registration by validating inputs and submitting registration data.
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.strings - Localization strings for UI text
+ * 
+ * @returns {JSX.Element} RegisterView component
+ */
 const RegisterView = observer(({strings}) => {
 
     const [firstName, setFirstName] = useState('');
@@ -19,6 +27,11 @@ const RegisterView = observer(({strings}) => {
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
 
+    /**
+     * Validates user input fields before submission.
+     * 
+     * @returns {boolean} True if all fields are valid, otherwise false.
+     */
     const validateFields = () => {
         let newErrors = {};
 
@@ -58,10 +71,19 @@ const RegisterView = observer(({strings}) => {
         return Object.keys(newErrors).length === 0;
     };
 
+    /**
+     * Redirects the user to the login page.
+     */
     function goToLogin() {
         window.location.href = "#/auth";
     }
-
+    
+    /**
+     * Handles user registration by sending input data to the API.
+     * 
+     * @param {Event} e - Form submission event
+     * @returns {Promise<Object>} API response data
+     */
     const registerUser = async (e) => {
         e.preventDefault();
         if (!validateFields()) return;
@@ -87,6 +109,7 @@ const RegisterView = observer(({strings}) => {
 
     return (
         <div className="flex items-center justify-center w-full h-full bg-gray-100 p-8">
+            {/* UI rendering logic here */}
             <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-2xl">
                 <h2 className="text-2xl font-bold mb-6 text-left text-gray-700">{strings.register}</h2>
                 <form className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * MigrationView Component - Handles the migration process for existing users.
+ * Allows users to request a passcode, verify it, and complete registration by setting a username and password.
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.model - Application model containing state and settings
+ * @param {Object} props.strings - Localization strings for UI text
+ * @param {Function} props.onLoginSuccess - Callback function executed when the migration process is completed successfully
+ * 
+ * @returns {JSX.Element} MigrationView component
+ */
 const MigrationView = ({ model, strings, onLoginSuccess }) => {
     const [email, setEmail] = useState('');
     const [passcode, setPasscode] = useState('');
@@ -14,31 +25,61 @@ const MigrationView = ({ model, strings, onLoginSuccess }) => {
 
     const [step, setStep] = useState(1); // 1 = Email Entry, 2 = Passcode Entry, 3 = Complete Registration
 
-    // Simple regex for email validation: ensures an "@" and a "."
+    /**
+     * Validates email format using a simple regex.
+     * 
+     * @param {string} value - Email input value
+     * @returns {boolean} True if email is valid, false otherwise
+     */
     const validateEmail = (value) => {
         const regex = /^\S+@\S+\.\S+$/;
         return regex.test(value);
     };
 
+    /**
+     * Handles email input change and validates it.
+     * 
+     * @param {Event} e - Input change event
+     */
     const handleEmailChange = (e) => {
         const value = e.target.value;
         setEmail(value);
         setEmailError(validateEmail(value) ? '' : 'Please enter a valid email address.');
     };
 
+    /**
+     * Handles passcode input change.
+     * 
+     * @param {Event} e - Input change event
+     */
     const handlePasscodeChange = (e) => {
         setPasscode(e.target.value);
         setPasscodeError('');
     };
 
+    /**
+     * Handles password input change.
+     * 
+     * @param {Event} e - Input change event
+     */
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
     };
 
+     /**
+     * Handles confirm password input change.
+     * 
+     * @param {Event} e - Input change event
+     */
     const handleConfirmPasswordChange = (e) => {
         setConfirmPassword(e.target.value);
     };
 
+     /**
+     * Sends a request to generate a passcode for the provided email.
+     * 
+     * @param {Event} e - Form submission event
+     */
     const fetchCreatePasscode = async (e) => {
         e.preventDefault();
         if (!validateEmail(email)) {
@@ -63,6 +104,11 @@ const MigrationView = ({ model, strings, onLoginSuccess }) => {
         }
     };
 
+    /**
+     * Verifies the entered passcode.
+     * 
+     * @param {Event} e - Form submission event
+     */
     const fetchConfirmPasscode = async (e) => {
         e.preventDefault();
         if (!passcode) {
@@ -88,6 +134,11 @@ const MigrationView = ({ model, strings, onLoginSuccess }) => {
         }
     };
 
+    /**
+     * Completes user migration by registering a username and password.
+     * 
+     * @param {Event} e - Form submission event
+     */
     const fetchRegisterMissingInfo = async (e) => {
         e.preventDefault();
         if (!username || !password || !confirmPassword) {
@@ -119,6 +170,7 @@ const MigrationView = ({ model, strings, onLoginSuccess }) => {
 
     return (
         <div className="flex items-center justify-center w-full h-full bg-gray-100 p-8">
+                 {/* UI rendering logic here */}
             <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-6 text-left text-gray-700">
                     {strings.migration || 'Migration'}
