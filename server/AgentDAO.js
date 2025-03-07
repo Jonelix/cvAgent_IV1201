@@ -478,13 +478,10 @@ class AgentDAO {
                 if (new Date(newAvailability.from_date).toISOString() === new Date(availability.from_date).toISOString() && 
                     new Date(newAvailability.to_date).toISOString() === new Date(availability.to_date).toISOString()) {
                     await transaction.rollback();
-                    return { 
-                        message: 'One of the availabilities you entered already exists in our database. Please check for duplicates.',  
-                        conflictAvailability: {
-                            from_date: availability.from_date,
-                            to_date: availability.to_date
-                        }
-                    };            
+                    return { errormessage: 'One of the availabilities you entered already exists in our database. Please check for duplicates.' };                    
+                    /*return { 
+                        errormessage: 'One of the availabilities you entered already exists in our database. Please check for duplicates.',  
+                    };   */        
                 }
 
                 // Scenario 2: If either from_date or to_date match, update the row

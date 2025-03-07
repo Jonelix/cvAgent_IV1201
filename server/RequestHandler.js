@@ -176,7 +176,7 @@ class RequestHandler {
               console.log("username: " + username + " password: " + password);
                
               if(!Validation.validateUsername(username) || !Validation.validatePassword(password)){
-                return res.status(400).json({ message: 'Invalid credentials' });
+                return res.status(401).json({ message: 'Incorrect username or password. Please try again.' });
             }
                 user = await this.controller.login(username, password);
             }
@@ -196,7 +196,7 @@ class RequestHandler {
                   console.log(resp);
                     res.status(200).json(resp);
                 } else {
-                    res.status(401).json({ message: 'Invalid credentials' });
+                    res.status(401).json({ message: 'Incorrect username or password. Please try again.' });
                 }
             } catch (error) {
                 res.status(500).json({ message: 'Server error', error: error.message });
@@ -271,6 +271,10 @@ class RequestHandler {
                     competencies,
                     availabilities
                 );
+
+                if(application.errormessage){
+                    return res.status(400).json({ message: application.errormessage });
+                }
 
                 res.status(201).json(application);
             } catch (error) {
