@@ -57,7 +57,7 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
             }
 
             console.log("Response:", data);
-            onLoginSuccess(data.user); 
+            onLoginSuccess(data);
             return data;
         } catch (error) {
             console.error("Error:", error.message);

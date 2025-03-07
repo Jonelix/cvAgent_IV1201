@@ -66,7 +66,8 @@ class UserModel {
      isJWTExpired(token) {
       try {
         // Split the JWT into its parts (header, payload, signature)
-        const payloadBase64 = token.split('.')[1];
+        console.log("case 0");
+        const payloadBase64 = token.split('.')[0];
         // Decode the base64 payload
         const payload = JSON.parse(atob(payloadBase64));
         // Get the current time in seconds

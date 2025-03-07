@@ -105,7 +105,8 @@ const ApplicantView = ({ model, strings }) => {
         try {
             console.log("userAvailability: ", userAvailability);
             console.log("availabilities: ", availabilities);
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
+            //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
+            const response = await fetch("http://localhost:5005/api/createApplication", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

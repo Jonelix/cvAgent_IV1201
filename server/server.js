@@ -3,7 +3,6 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const RequestHandler = require('./RequestHandler');
-
 const app = express();
 app.use(cors({
     origin: ['https://cvagent-b8c3fb279d06.herokuapp.com/', 'http://localhost:5005']

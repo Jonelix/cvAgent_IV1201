@@ -19,7 +19,7 @@ const AuthentificationPresenter = observer(({ model }) => {
         } else {
           console.log("no cookie detected");
         }
-        model.setUserData(userData);
+        model.setUserData(userData.user);
 
         window.location.href = "#/profile";
     };

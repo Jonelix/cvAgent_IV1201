@@ -159,6 +159,7 @@ class RequestHandler {
 
 
         app.post('/api/login', async (req, res) => {
+          console.log("Starting login process:")
           let user;
             if(req.headers.cookie != null){
               console.log("cookie case:");
