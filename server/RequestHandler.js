@@ -1,3 +1,7 @@
+/**
+ * RequestHandler - Handles API requests and routes.
+ * Manages request validation, authentication, and communication with the Controller.
+ */
 const Controller = require('./Controller');
 const Validation = require('./ServerValidation');
 
@@ -6,10 +10,16 @@ class RequestHandler {
         this.controller = new Controller();
     }
 
+    /**
+     * Initializes all API routes.
+     * @param {Object} app - The Express application instance.
+     */
     initializeRoutes(app) {
 
-        //Create application (post)
-
+        /**
+         * GET /api/competencies
+         * Retrieves all competencies.
+         */
         app.get('/api/competencies', async (req, res) => {
             try {
                 const competencies = await this.controller.competencies();
@@ -25,6 +35,10 @@ class RequestHandler {
             }
         });
 
+        /**
+         * POST /api/userCompetencies
+         * Retrieves competencies for a specific user.
+         */
         app.post('/api/userCompetencies', async (req, res) => {
             try {
                 const { person_id } = req.body;
@@ -44,6 +58,10 @@ class RequestHandler {
             }
         });
 
+        /**
+         * POST /api/userAvailability
+         * Retrieves availability for a specific user.
+         */
         app.post('/api/userAvailability', async (req, res) => {
           
          let user = await this.cookieCheck(req, res);
@@ -84,6 +102,10 @@ class RequestHandler {
           }
         });
 
+        /**
+         * POST /api/fetchPerson
+         * Retrieves a person's information based on first and last name.
+         */
         app.post('/api/fetchPerson', async (req, res) => {
             try {
                 const {firstName, lastName } = req.body;
@@ -104,6 +126,11 @@ class RequestHandler {
         });
 
 
+        
+         /**
+         * Checks authentication status of the user.
+         * @route GET /api/testAuth
+         */
         app.get('/api/testAuth', async (req, res) => {
           try {
             //AUTH
@@ -121,6 +148,10 @@ class RequestHandler {
           }
         });
 
+         /**
+         * Retrieves all applicant profiles.
+         * @route GET /api/applicantProfiles
+         */
         app.get('/api/applicantProfiles', async (req, res) => {
           let user = await this.cookieCheck(req, res);
           if(user == -1){
@@ -143,6 +174,11 @@ class RequestHandler {
           }
         });
 
+        
+        /**
+         * Retrieves a specific applicant profile by ID.
+         * @route POST /api/applicantProfile
+         */
         app.post('/api/applicantProfile', async (req, res) => {
             try {
                 const { applicant_id } = req.body;
@@ -164,6 +200,10 @@ class RequestHandler {
         });
 
 
+        /**
+         * POST /api/login
+         * Handles user login and authentication.
+         */
         app.post('/api/login', async (req, res) => {
           let user;
             if(req.headers.cookie != null){
@@ -203,6 +243,10 @@ class RequestHandler {
             }
         });
 
+        /**
+         * POST /api/register
+         * Handles user registration.
+         */
         app.post('/api/register', async (req, res) => {
             const { firstName, lastName, personNumber, username, email, password, confirmPassword, role_id = 2 } = req.body;
 
@@ -221,6 +265,13 @@ class RequestHandler {
             }
         });
 
+        /**
+         * Handles updating the applicant's status.
+         * @route POST /api/handleApplicantStatus
+         * @param {number} rec_id - Recruiter ID handling the status.
+         * @param {number} app_id - Applicant ID whose status is being handled.
+         * @param {number} timestamp - Timestamp of the request.
+         */
         app.post('/api/handleApplicantStatus', async (req, res) => {
             const { rec_id, app_id, timestamp } = req.body;
             try {
@@ -238,6 +289,13 @@ class RequestHandler {
             }
         });
 
+        /**
+         * Confirms the status update of an applicant.
+         * @route POST /api/confirmStatusUpdate
+         * @param {number} rec_id - Recruiter ID.
+         * @param {number} app_id - Applicant ID.
+         * @param {number} status - New status of the applicant.
+         */
         app.post('/api/confirmStatusUpdate', async (req, res) => {
             const { rec_id, app_id, status } = req.body;
             try {
@@ -256,6 +314,13 @@ class RequestHandler {
         });
 
 
+         /**
+         * Creates a new job application.
+         * @route POST /api/createApplication
+         * @param {number} person_id - ID of the person applying.
+         * @param {Array} competencies - List of competencies.
+         * @param {Array} availabilities - List of available time periods.
+         */
         app.post('/api/createApplication', async (req, res) => {
             console.log("Started createApplication");
             const { person_id, competencies, availabilities } = req.body;
@@ -281,6 +346,11 @@ class RequestHandler {
             }
         });
 
+        /**
+         * Deletes a competence entry for a user.
+         * @route POST /api/deleteCompetence
+         * @param {number} person_id - ID of the person whose competence will be deleted.
+         */
         app.post('/api/deleteCompetence', async (req, res) => {
 
             const {person_id} = req.body;
@@ -296,6 +366,11 @@ class RequestHandler {
             }
         });
 
+        /**
+         * Deletes availability for a user.
+         * @route POST /api/deleteAvailability
+         * @param {number} person_id - ID of the person whose availability will be deleted.
+         */
         app.post('/api/deleteAvailability', async (req, res) => {
             const {person_id} = req.body;
             try{
@@ -309,6 +384,11 @@ class RequestHandler {
             }
         });
 
+        /**
+         * Requests a security passcode for user authentication.
+         * @route POST /api/requestPasscode
+         * @param {string} email - User's email address.
+         */
         app.post('/api/requestPasscode', async (req, res) => {
             const {email} = req.body;
             try{
@@ -322,6 +402,12 @@ class RequestHandler {
             }
         });
 
+        /**
+         * Confirms a security passcode.
+         * @route POST /api/confirmPasscode
+         * @param {string} email - User's email.
+         * @param {string} passcode - Security passcode.
+         */
         app.post('/api/confirmPasscode', async (req, res) => {
             const {email, passcode} = req.body;
             try{
@@ -334,6 +420,10 @@ class RequestHandler {
                 res.status(500).json({ message: 'Server error', error: error.message });
         }});
 
+        /**
+         * Updates an applicant's credentials after account migration.
+         * @route POST /api/updateMigratingApplicant
+         */
         app.post('/api/updateMigratingApplicant', async (req, res) => {
             const {email, passcode, username, password, confirmPassword} = req.body;
             try{
@@ -347,6 +437,11 @@ class RequestHandler {
             }
         });
 
+        
+        /**
+        * Updates a recruiter's email and personal number (PNR).
+        * @route POST /api/updateRecruiter
+        */
         app.post('/api/updateRecruiter', async (req, res) => {
             const {person_id, email, pnr} = req.body;
             try{
@@ -361,6 +456,12 @@ class RequestHandler {
         });
     }
 
+    /**
+     * Checks the authentication cookie and validates the user session.
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @returns {Promise<Object|number>} - Returns user data or -1 if authentication fails.
+     */
     async cookieCheck(req, res){
               try {
                 //AUTH
