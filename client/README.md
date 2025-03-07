@@ -1,4 +1,5 @@
 # IV1201 Project
+Created by Jonathan Amdam, Joar Enekvist, Ratimir Ernman, and Ziang Wang
 
 ## Overview
 The IV1201 project is a web application designed to manage CVs and applications efficiently. It consists of a client-side application built with React and a server-side application powered by Node.js and Express.
@@ -75,6 +76,55 @@ By default, the client will run on `http://localhost:3000` and the server on `ht
 - **DELETE /api/deleteCompetence** - Deletes a competence entry for a user
 - **DELETE /api/deleteAvailability** - Deletes availability for a user
 
+## Backend Documentation
+The server-side application is built using **Node.js and Express**, with **Sequelize ORM** for database interactions. Below is a breakdown of key modules:
+
+### Server Structure
+The backend is organized into the following key modules:
+- **`server.js`** - The main entry point for the backend. It:
+  - Loads environment variables.
+  - Initializes middleware and CORS settings.
+  - Serves static files from the frontend.
+  - Configures API routes.
+  - Starts the Express server.
+
+### Controllers
+Controllers handle business logic and user interactions:
+- **`Controller.js`**
+  - Manages authentication, registration, and profile management.
+  - Handles user login and cookie-based authentication.
+  - Manages job applications and recruiter actions.
+
+### Data Access Layer
+The **AgentDAO.js** module is responsible for database interactions:
+- Retrieves and updates user profiles, competencies, and availability.
+- Handles job applications and recruiter assignments.
+- Manages authentication tokens and user sessions.
+
+### Request Handling
+The **RequestHandler.js** module defines API endpoints and routes:
+- Routes requests to appropriate controllers.
+- Implements input validation and authentication checks.
+
+### Authentication
+The **Authentication.js** module manages user authentication using **JWT tokens**:
+- Generates and verifies JWT authentication cookies.
+- Handles automatic user login via stored authentication cookies.
+
+### Validation
+The **ServerValidation.js** module ensures data integrity by validating:
+- Usernames (minimum 6 alphanumeric characters).
+- Passwords (must contain uppercase letters, numbers, and special characters).
+- Emails (standard email format validation).
+- PNR (12-digit personal identification number).
+
+### Logging & Debugging
+- **Logger.js**
+  - Logs system messages and errors.
+  - Ensures debugging information is available for troubleshooting.
+- **Benchmark.js**
+  - Measures API response times for performance optimization.
+
 ## Client Documentation
 ### Frontend Structure
 - **`App.jsx`** - Initializes the application, setting up the main layout and integrating key components.
@@ -82,48 +132,28 @@ By default, the client will run on `http://localhost:3000` and the server on `ht
 
 ### Presenters
 Presenters act as the logic layer between the MobX store and the views, handling state updates and passing data to components.
-- **`ProfilePresenter.jsx`** - Manages profile state and localization, updates user data, and redirects on login.
-- **`RegisterPresenter.jsx`** - Manages state and localization for user registration.
-- **`ApplicantPresenter.jsx`** - Handles applicant data, observes MobX store, and updates localization dynamically.
-- **`RecruiterPresenter.jsx`** - Manages recruiter dashboard state and provides applicants data.
-- **`AuthentificationPresenter.jsx`** - Handles authentication logic, updates user data, and manages login success.
-- **`DashboardPresenter.jsx`** - Displays recruiter or applicant views based on user role.
-- **`HeaderPresenter.jsx`** - Manages header state and updates localization dynamically.
-- **`FooterPresenter.jsx`** - Handles localization and passes updated strings to the footer component.
-- **`MigrationPresenter.jsx`** - Manages the migration process, including passcode verification and user updates.
+- **ProfilePresenter.jsx** - Manages profile state and localization.
+- **RegisterPresenter.jsx** - Handles user registration logic.
+- **ApplicantPresenter.jsx** - Manages applicant data and localization.
+- **RecruiterPresenter.jsx** - Handles recruiter dashboard logic.
+- **AuthentificationPresenter.jsx** - Manages authentication logic.
+- **DashboardPresenter.jsx** - Determines the correct dashboard view based on user role.
+- **HeaderPresenter.jsx** - Controls the application header and navigation logic.
+- **FooterPresenter.jsx** - Manages footer localization.
+- **MigrationPresenter.jsx** - Handles the user migration process.
 
 ### Views
 Views are responsible for displaying the UI and interacting with the Presenters.
-- **`ProfileView.jsx`** - Displays and allows editing of user profile information.
-- **`HomeView.jsx`** - Displays the home screen.
-- **`RegisterView.jsx`** - Handles user registration, validation, and API submission.
-- **`AuthentificationView.jsx`** - Manages user login and authentication.
-- **`ApplicantView.jsx`** - Manages the user application process, including competencies and availabilities.
-- **`RecruiterView.jsx`** - Displays and manages applicants for recruiters.
-- **`MigrationView.jsx`** - Handles user migration by verifying passcodes and setting up accounts.
-- **`HeaderView.jsx`** - Displays the application header with navigation options.
-- **`FooterView.jsx`** - Displays the application footer.
-- **`MainView.jsx`** - Serves as the container for rendering child components.
-
-### Models
-Models manage the state and data persistence of the application using MobX.
-- **`applicantsModel.js`** - Handles applicant and user data:
-  - Stores a list of applicants.
-  - Maintains logged-in user details.
-  - Provides methods to update the applicant list and user data dynamically.
-  - Uses MobX for reactive state management.
-
-### Validation Utilities
-- **`FrontendValidation.js`** - Provides validation methods:
-  - `validateName()` - Ensures names contain only letters, spaces, and hyphens.
-  - `validateUsername()` - Enforces a minimum length and alphanumeric characters.
-  - `validatePassword()` - Checks for uppercase letters, numbers, and special characters.
-  - `validatePNR()` - Verifies a 12-digit personal number.
-  - `validateEmail()` - Ensures standard email formatting.
-
-### Configuration
-- **`vite.config.js`** - Defines the build process and optimizations for the frontend.
-- **`eslint.config.js`** - Configures linting rules for the project to enforce code quality.
+- **ProfileView.jsx** - Displays and manages user profile information.
+- **HomeView.jsx** - Displays the home screen.
+- **RegisterView.jsx** - Handles user registration and validation.
+- **AuthentificationView.jsx** - Manages login and authentication.
+- **ApplicantView.jsx** - Handles the applicant process and form submissions.
+- **RecruiterView.jsx** - Displays and manages applicants for recruiters.
+- **MigrationView.jsx** - Manages user migration and account setup.
+- **HeaderView.jsx** - Displays the navigation header.
+- **FooterView.jsx** - Displays the application footer.
+- **MainView.jsx** - Serves as the container for rendering other views.
 
 ## Authentication
 The project uses JWT-based authentication:
@@ -137,13 +167,6 @@ The backend uses Sequelize ORM to interact with the database. The `AgentDAO` mod
 - **Competencies Management:** Fetching and updating user competencies.
 - **Application Processing:** Handling job applications and recruiter assignments.
 - **Authentication Cookie Management:** Inserting, validating, and deleting authentication cookies.
-
-## Validation Rules
-The `ServerValidation.js` module ensures user input meets the following criteria:
-- **Username:** At least 6 alphanumeric characters
-- **Password:** Must contain an uppercase letter, a number, and a special character
-- **Email:** Validates standard email format
-- **PNR:** Exactly 12 digits
 
 ## Contributing
 1. Fork the repository.
