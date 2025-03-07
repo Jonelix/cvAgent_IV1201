@@ -62,6 +62,7 @@ const RecruiterView = ({ model, applicantsModel, strings }) => {
     const getApplicants = async () => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/applicantProfiles", {
+            //const response = await fetch("http://localhost:5005/api/applicantProfiles", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -90,6 +91,7 @@ const RecruiterView = ({ model, applicantsModel, strings }) => {
     const postGetApplicant = async (applicant_id) => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/applicantProfile", {
+            //const response = await fetch("http://localhost:5005/api/applicantProfile", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -129,6 +131,7 @@ const RecruiterView = ({ model, applicantsModel, strings }) => {
             const formattedTimestamp = timestamp.toISOString().slice(0, 19).replace("T", " ");
 
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/handleApplicantStatus", {
+            //const response = await fetch("http://localhost:5005/api/handleApplicantStatus", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -165,6 +168,7 @@ const RecruiterView = ({ model, applicantsModel, strings }) => {
     const postConfirmStatusUpdate = async (currentRecruiter, editingStatus, selectedStatus) => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/confirmStatusUpdate", {
+            //const response = await fetch("http://localhost:5005/api/confirmStatusUpdate", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

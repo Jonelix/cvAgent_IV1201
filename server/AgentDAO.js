@@ -81,9 +81,9 @@ class AgentDAO {
      * @returns {Promise<Object|null>} - The created user object or null if validation fails.
      */
     async registerUser(firstName, lastName, personNumber, username, email, password, role_id) {
-        //const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
-      
-        if(!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validateID(role_id)) {
+        
+        if(!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email)) {
+
             return null;
         }
 
@@ -679,7 +679,7 @@ class AgentDAO {
      * @returns {Promise<Object|null>} - Updated user object or null if not found.
      */
     async requestPasscode(email, securityCode) {
-        if(!Validation.validateEmail(email) || !Validation.validateID(securityCode)) {
+        if(!Validation.validateEmail(email)) {
             return null;
         }
         try {
@@ -710,7 +710,7 @@ class AgentDAO {
      * @returns {Promise<Object|null>} - User object if verification is successful, otherwise null.
      */
     async confirmPasscode(email, securityCode) {
-        if(!Validation.validateEmail(email) || !Validation.validateID(securityCode)) {
+        if(!Validation.validateEmail(email)) {
             return null;
         }
         try {
@@ -739,7 +739,7 @@ class AgentDAO {
      * @returns {Promise<Object|null>} - Updated user object or null if validation fails.
      */
     async updateMigratingApplicant(email, securityCode, username, password) {
-        if(!Validation.validateEmail(email) || !Validation.validateID(securityCode) || !Validation.validateUsername(username) ) {
+        if(!Validation.validateEmail(email) || !Validation.validateUsername(username) ) {
             return null;
         }
         try {

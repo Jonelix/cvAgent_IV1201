@@ -249,7 +249,6 @@ class RequestHandler {
          */
         app.post('/api/register', async (req, res) => {
             const { firstName, lastName, personNumber, username, email, password, confirmPassword, role_id = 2 } = req.body;
-
             try {
                 if (!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || !Validation.validatePassword(confirmPassword) || !role_id) {
                     return res.status(400).json({ message: 'All fields were not entered with valid information.' });
@@ -275,7 +274,7 @@ class RequestHandler {
         app.post('/api/handleApplicantStatus', async (req, res) => {
             const { rec_id, app_id, timestamp } = req.body;
             try {
-                if (!Validation.validateID(rec_id) || !Validation.validateID(app_id) || !Validation.validateID(timestamp)) {
+                if (!Validation.validateID(rec_id) || !Validation.validateID(app_id)) {
                     return res.status(400).json({ message: 'All fields are required' });
                 }
 
@@ -400,6 +399,9 @@ class RequestHandler {
                     return res.status(400).json({ message: 'Invalid email' });
                 }
                 const application = await this.controller.requestPasscode(email);
+                if (application == null) {
+                    return res.status(400).json({ message: "Account not found" });
+                }
                 res.status(201).json({ message: 'Security code was created', application });
             }catch (error) {
                 res.status(500).json({ message: 'Server error', error: error.message });
@@ -415,10 +417,15 @@ class RequestHandler {
         app.post('/api/confirmPasscode', async (req, res) => {
             const {email, passcode} = req.body;
             try{
-                if(!Validation.validateEmail(email) || !Validation.validateID(passcode)){
+                if(!Validation.validateEmail(email)){
                     return res.status(400).json({ message: 'Invalid email or passcode' });
                 }
                 const application = await this.controller.confirmPasscode(email, passcode);
+
+                if(application == null){
+                    return res.status(400).json({ message: "Account not found" });
+
+                }
                 res.status(201).json({ message: 'Security code was confirmed', application });
             }catch (error) {
                 res.status(500).json({ message: 'Server error', error: error.message });
@@ -431,7 +438,7 @@ class RequestHandler {
         app.post('/api/updateMigratingApplicant', async (req, res) => {
             const {email, passcode, username, password, confirmPassword} = req.body;
             try{
-                if(!Validation.validateEmail(email) || !Validation.validateID(passcode) || !Validation.validateUsername(username) || !Validation.validatePassword(password) || !Validation.validatePassword(confirmPassword)){
+                if(!Validation.validateEmail(email) || !Validation.validateUsername(username) || !Validation.validatePassword(password) || !Validation.validatePassword(confirmPassword)){
                     return res.status(400).json({ message: 'Invalid email, passcode, username, password or confirm password' });
                 }
                 const application = await this.controller.updateMigratingApplicant(email, passcode, username, password, confirmPassword);

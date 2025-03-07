@@ -28,7 +28,8 @@ const MigrationPresenter = observer(({ model }) => {
      */
     const handleLoginSuccess = (userData) => {
         model.setUserData(userData);
-        window.location.href = "#/profile";
+        model.logOut();
+        window.location.href = "#/auth";
     };
     
 
