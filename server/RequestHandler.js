@@ -48,9 +48,11 @@ class RequestHandler {
           
          let user = await this.cookieCheck(req, res);
           const { person_id } = req.body;
+          
           if (!Validation.validateID(person_id)) {
             return res.status(400).json({ message: 'Missing person_id' });
-        }
+          }
+          
 
        /*   console.log("in userAvailability:");
           console.log("user:");
@@ -175,7 +177,7 @@ class RequestHandler {
                
               if(!Validation.validateUsername(username) || !Validation.validatePassword(password)){
                 return res.status(400).json({ message: 'Invalid credentials' });
-                }  
+            }
                 user = await this.controller.login(username, password);
             }
             try {
