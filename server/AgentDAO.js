@@ -63,9 +63,11 @@ class AgentDAO {
 
     async registerUser(firstName, lastName, personNumber, username, email, password, role_id) {
         //const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
-        if(!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || role_id !== 2) {
+      
+        if(!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || !Validation.validateID(role_id)) {
             return null;
         }
+
         return await Person.create({ 
             name: firstName, 
             surname: lastName, 
