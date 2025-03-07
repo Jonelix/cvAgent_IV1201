@@ -5,7 +5,7 @@ const Validation = {
         if (!name) {
             return false;
         }
-        return /^[A-Za-z]{2,255}$/.test(name);
+        return /^[A-Za-z\s'-]{2,255}$/.test(name);
     },
 
     validateUsername(username) {
@@ -49,11 +49,9 @@ const Validation = {
 
     // Array validation (Checks if input is a non-empty array)
     validateArray(arr) {
-        if(!arr){
-            return false;
-        }
-        return arr.length > 0;
-    },
+        return Array.isArray(arr) && arr.length > 0;
+    }
+    
 
     /*
     validateCookie(cookie) {

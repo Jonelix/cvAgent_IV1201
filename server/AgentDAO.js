@@ -64,7 +64,7 @@ class AgentDAO {
     async registerUser(firstName, lastName, personNumber, username, email, password, role_id) {
         //const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
       
-        if(!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || !Validation.validateID(role_id)) {
+        if(!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validateID(role_id)) {
             return null;
         }
 
@@ -642,7 +642,7 @@ class AgentDAO {
     }
 
     async updateMigratingApplicant(email, securityCode, username, password) {
-        if(!Validation.validateEmail(email) || !Validation.validateID(securityCode) || !Validation.validateUsername(username) || !Validation.validatePassword(password)) {
+        if(!Validation.validateEmail(email) || !Validation.validateID(securityCode) || !Validation.validateUsername(username) ) {
             return null;
         }
         try {
