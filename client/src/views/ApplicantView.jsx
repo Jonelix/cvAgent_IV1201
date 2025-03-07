@@ -2,9 +2,36 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
+/**
+ * ApplicantView Component - Manages user application process including competencies, availabilities, and profile summary.
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.model - User model containing personal information
+ * @param {Object} props.strings - Localization strings for UI text
+ * 
+ * @returns {JSX.Element} ApplicantView component
+ */
+const competenceLocalization = {
+    "ticket sales": {
+      en: "Ticket sales",
+      es: "Venta de entradas"
+    },
+    "lotteries": {
+      en: "Lotteries",
+      es: "Loterías"
+    },
+    "roller coaster operation": {
+      en: "Roller coaster operation",
+      es: "Operación de montañas rusas"
+    },
+    // Add more competence names here...
+  };
+
 
 const ApplicantView = ({ model, strings }) => {
     const navigate = useNavigate();
+
+    /** State Hooks */
     const [competencies, setCompetencies] = useState([]);
     const [userCompetencies, setUserCompetencies] = useState([]);
     const [newCopetence, setNewCompetence] = useState([]);
@@ -19,10 +46,20 @@ const ApplicantView = ({ model, strings }) => {
     const [userAvailability, setUserAvailability] = useState([]);
     const [isApplicationUpdated, setIsApplicationUpdated] = useState(false); // Track if application is updated
 
+    /**
+     * Navigates to the competence stage when creating a new application.
+     */
     const handleCreateNewApplication = () => {
         setStage("competence"); // Move to the competence stage
     };
 
+    /**
+     * Checks if a new availability period overlaps with existing ones.
+     * 
+     * @param {string} newFromDate - Start date of new availability
+     * @param {string} newToDate - End date of new availability
+     * @returns {boolean} True if overlapping, otherwise false
+     */
     const isOverlapping = (newFromDate, newToDate) => {
         const newFrom = new Date(newFromDate);
         const newTo = new Date(newToDate);
@@ -38,8 +75,9 @@ const ApplicantView = ({ model, strings }) => {
             );
         });
     };
-
-    // Fetch competencies automatically when stage changes to "competence"
+     /**
+     * Fetches competencies, user competencies, and user availability based on the stage.
+     */
     useEffect(() => {
         if (stage === "main") {
             fetchUserCompetencies();
@@ -52,10 +90,13 @@ const ApplicantView = ({ model, strings }) => {
         }
     }, [stage]);
 
-
+    /**
+     * Fetches available competencies from API.
+     */
     const fetchCompetencies = async () => {
         try {
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies");
+            //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies");
+            const response = await fetch("http://localhost:5005/api/competencies");
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
             setCompetencies(data);
@@ -64,9 +105,13 @@ const ApplicantView = ({ model, strings }) => {
         }
     };
 
+    /**
+     * Fetches user's competencies from API.
+     */
     const fetchUserCompetencies = async () => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userCompetencies", {
+            // const response = await fetch("http://localhost:5005/api/userCompetencies", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }),
@@ -78,11 +123,13 @@ const ApplicantView = ({ model, strings }) => {
             console.error("Error:", error.message);
         }
     };
-
+     /**
+     * Fetches user's availability periods from API.
+     */
     const fetchUserAvailability = async () => {
         try {
-            //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
-            const response = await fetch("http://localhost:5005/api/userAvailability", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
+            // const response = await fetch("http://localhost:5005/api/userAvailability", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: 'include',
@@ -99,7 +146,11 @@ const ApplicantView = ({ model, strings }) => {
             console.error("Error:", error.message);
         }
     };
-
+    /**
+     * Updates user profile by sending competencies and availabilities to API.
+     * 
+     * @param {Event} e - Form submission event
+     */
     const updateUserProfile = async (e) => {
         e.preventDefault();
         try {
@@ -133,11 +184,16 @@ const ApplicantView = ({ model, strings }) => {
             alert(error.message);
         }
     };
-
+    /**
+     * Removes a user competence from the database.
+     * 
+     * @param {Event} e - Click event
+     */
     const removeUserCompetence = async (e) => {
         e.preventDefault();
         try{
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteCompetence", {
+            // const response = await fetch("http://localhost:5005/api/deleteCompetence", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id}),
@@ -150,16 +206,21 @@ const ApplicantView = ({ model, strings }) => {
 
             setIsApplicationUpdated(true);
             setStage("main");
-            alert("Competence deleted successfully");
+            alert(strings.competence_deleted);
         } catch (error) {
             console.error("Error:", error.message);
         }
     };
-
+    /**
+     * Removes a user availability period from the database.
+     * 
+     * @param {Event} e - Click event
+     */
     const removeUserAvailability = async (e) => {
         e.preventDefault();
         try{
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteAvailability", {
+            // const response = await fetch("http://localhost:5005/api/deleteAvailability", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }),
@@ -172,12 +233,15 @@ const ApplicantView = ({ model, strings }) => {
 
             setIsApplicationUpdated(true);
             setStage("main");
-            alert("Availability deleted successfully");
+            alert(strings.availability_deleted);
         } catch (error) {
             console.error("Error:", error.message);
         }
     };
 
+    /**
+     * Cancels the user profile update process.
+     */
     const cancleUserProfile = async (e) => {
         e.preventDefault();
         try{
@@ -190,6 +254,9 @@ const ApplicantView = ({ model, strings }) => {
         }
     }
 
+    /**
+     * Handles navigation to the next stage in the application process.
+     */
     const handleNext = () => {
         if (stage === "competence") {
             setStage("availability");
@@ -198,6 +265,9 @@ const ApplicantView = ({ model, strings }) => {
         }
     };
 
+    /**
+     * Handles navigation to the previous stage in the application process.
+     */
     const handleBack = () => {
         if (stage === "competence") {
             setStage("main");
@@ -207,7 +277,10 @@ const ApplicantView = ({ model, strings }) => {
             setStage("availability");
         }
     };
-
+    
+    /**
+     * Resets the `isApplicationUpdated` state when the application is updated.
+     */
     useEffect(() => {
         if (isApplicationUpdated) {
             // alert("Application updated successfully!");
@@ -218,6 +291,7 @@ const ApplicantView = ({ model, strings }) => {
     return (
         <div className="flex flex-col w-full h-full p-8 bg-gray-50">
             {/* Header Section */}
+            {/* Component UI here */}
             <div className="flex justify-between items-center w-full mb-8 bg-white p-6 rounded-xl shadow-sm">
                 <h1 className="text-3xl font-bold text-gray-800">
                     {stage === "main" ? strings.current_application :
@@ -266,7 +340,7 @@ const ApplicantView = ({ model, strings }) => {
                                 {userCompetencies.length > 0 ? (
                                     userCompetencies.map((competence, index) => (
                                         <div key={index} className="p-3 bg-gray-100 rounded-lg">
-                                            <p className="text-gray-700">{competence.competence_name}: {competence.years_of_experience} year(s)</p>
+                                            <p className="text-gray-700">{competenceLocalization[competence.competence_name][model.language] || competence.competence_name}: {competence.years_of_experience} {strings.years}</p>
                                         </div>
                                     ))
                                 ) : (
@@ -314,7 +388,7 @@ const ApplicantView = ({ model, strings }) => {
                 <option value="" disabled>{strings.select_competence}</option>
                 {competencies.map((competence, index) => (
                     <option key={index} value={competence.name} className="text-lg">
-                        {competence.name}
+                        {competenceLocalization[competence.name][model.language] || competence.name}
                     </option>
                 ))}
             </select>
@@ -325,7 +399,7 @@ const ApplicantView = ({ model, strings }) => {
             onClick={() => {
 
                 if (!selectedCompetence) {
-                    alert("Please select a competence before adding.");
+                    alert(strings.competence_empty);
                     return;
                 }
 
@@ -335,7 +409,7 @@ const ApplicantView = ({ model, strings }) => {
                 );
 
                 if (isDuplicate) {
-                    alert("Competence already exists!");
+                    alert(strings.competence_exists);
                     return;
                 }
 
@@ -355,7 +429,7 @@ const ApplicantView = ({ model, strings }) => {
             {
             userCompetencies.map((competence, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
-                    <span className="text-gray-700 text-lg">{competence.competence_name}</span>
+                    <span className="text-gray-700 text-lg">{competenceLocalization[competence.competence_name][model.language] || competence.competence_name}</span>
                     <input
                         type="number"
                         step="0.1" // Allow increments/decrements of 0.1 (one decimal place)
@@ -388,7 +462,7 @@ const ApplicantView = ({ model, strings }) => {
 
         {/* Error Message for Invalid Years of Experience */}
         {userCompetencies.some(comp => comp.yearsOfExperience === 0) && (
-            <p className="text-red-500 mt-4">Please provide the years of experience for all competencies or remove them.</p>
+            <p className="text-red-500 mt-4">{strings.competence_experience_empty}</p>
         )}
 
         {/* Navigation Buttons */}
@@ -485,7 +559,7 @@ const ApplicantView = ({ model, strings }) => {
         {/* Error Message */}
         {newAvailability.from_date && newAvailability.to_date &&
             new Date(newAvailability.from_date) > new Date(newAvailability.to_date) && (
-                <p className="text-red-500 mb-4">Error: "From Date" cannot be later than "To Date".</p>
+                <p className="text-red-500 mb-4">{strings.availability_error}</p>
             )}
 
         {/* Navigation Buttons */}
@@ -531,7 +605,7 @@ const ApplicantView = ({ model, strings }) => {
                         {userCompetencies.length > 0 ? (
                             userCompetencies.map((competence, index) => (
                                 <div key={index} className="p-3 bg-gray-100 rounded-lg mb-2">
-                                    <p className="text-gray-700">{competence.competence_name}: {competence.years_of_experience} year(s)</p>
+                                    <p className="text-gray-700">{competenceLocalization[competence.competence_name][model.language] || competence.competence_name}: {competence.years_of_experience} {strings.years}</p>
                                 </div>
                             ))
                         ) : (

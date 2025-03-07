@@ -1,3 +1,11 @@
+/**
+ * FooterView Component - Displays the footer section of the application.
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.strings - Localization strings for UI text
+ * 
+ * @returns {JSX.Element} FooterView component
+ */
 const FooterView = ({strings}) => {
     return (
         <footer className="bg-gray-800 text-white text-center py-4 w-full">

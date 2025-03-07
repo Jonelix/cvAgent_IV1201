@@ -1,4 +1,12 @@
-
+/**
+ * HomeView Component - Displays the home screen with a welcome message.
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.model - Application model containing state and settings
+ * @param {Object} props.strings - Localization strings for UI text
+ * 
+ * @returns {JSX.Element} HomeView component
+ */
 
 const HomeView = ({ model, strings }) => {
     

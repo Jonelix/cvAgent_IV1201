@@ -1,4 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const Validation = require('./ServerValidation');
+
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -36,17 +38,36 @@ const Competence = database.define('competence', {
     timestamps: false     // Disable automatic createdAt/updatedAt columns if not needed
 });
 
+const ApplicationStatus = database.define('applicationstatus', {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    person_id: { type: DataTypes.INTEGER, allowNull: false },
+    status: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+    timeout: { type: DataTypes.DATE, allowNull: true, defaultValue: null  },
+    beinghandled: { type: DataTypes.INTEGER, allowNull: true, defaultValue: null  }
+}, {
+    tableName: 'applicationstatus',
+    timestamps: false
+});
+
 (async () => {
     await database.sync({ force: false }); // Adjust as needed
 })();
 
 class AgentDAO {
     async findUserWithUsername(username) {
+        if(!Validation.validateUsername(username)) {
+            return null;
+        }
         return await Person.findOne({ where: { username } });
     }
 
     async registerUser(firstName, lastName, personNumber, username, email, password, role_id) {
         //const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+      
+        if(!Validation.validateName(firstName) || !Validation.validateName(lastName) || !Validation.validatePNR(personNumber) || !Validation.validateUsername(username) || !Validation.validateEmail(email) || !Validation.validatePassword(password) || !Validation.validateID(role_id)) {
+            return null;
+        }
+
         return await Person.create({ 
             name: firstName, 
             surname: lastName, 
@@ -63,23 +84,6 @@ class AgentDAO {
         return competencies;
         
     }
-
-    /*
-    async getApplicantProfile() {
-        const applicant = await database.query(
-    `  SELECT cp.*, 
-        p.name AS person_name, 
-        p.surname, 
-        c.name AS competence_name 
-    FROM competence_profile cp
-        JOIN person p ON cp.person_id = p.person_id
-        JOIN competence c ON cp.competence_id = c.competence_id
-        LIMIT 40;
-
-    `, { type: database.QueryTypes.SELECT });   
-    return applicant;
-    }
-    */
     
     async getApplicantProfiles() {
         const applicant = await database.query(
@@ -119,6 +123,9 @@ class AgentDAO {
     }
 
     async getApplicantProfile(personId) {
+        if(!Validation.validateID(personId)) {
+            return [];
+        }
         // Check if the provided ID corresponds to a person with role_id = 2
         const personRole = await database.query(
             `
@@ -178,6 +185,9 @@ class AgentDAO {
     }
     
     async handleApplicantStatus(rec_id, app_id) {
+        if(!Validation.validateID(rec_id) || !Validation.validateID(app_id)) {
+            return "Invalid identifiers provided.";
+        }
         const application = await database.query(
             `
             WITH selected_application AS (
@@ -227,6 +237,9 @@ class AgentDAO {
     
 
     async confirmStatusUpdate(rec_id, app_id, status) {
+        if(!Validation.validateID(rec_id) || !Validation.validateID(app_id) || !Validation.validateID(status)) {
+            return "Invalid identifiers or status provided.";
+        }
         const application = await database.query(
             `
             WITH selected_application AS (
@@ -276,6 +289,9 @@ class AgentDAO {
     }
 
     async fetchPerson(firstName, lastName) {
+        if(!Validation.validateName(firstName) || !Validation.validateName(lastName)) {
+            return [];
+        }
         const query = `SELECT * FROM person WHERE name = :firstName AND surname = :lastName`;
     
         try {
@@ -292,6 +308,9 @@ class AgentDAO {
     }
     
     async getUserCompetencies(person_id) {
+        if(!Validation.validateID(person_id)) {
+            return [];
+        }
         const query = `
             SELECT 
                 c.name AS competence_name, 
@@ -315,6 +334,9 @@ class AgentDAO {
     }
 
     async getUserAvailability(person_id) {
+        if(!Validation.validateID(person_id)) {
+            return [];
+        }
         const query = `
             SELECT 
                 from_date, 
@@ -337,6 +359,9 @@ class AgentDAO {
     }
 
     async fetchCompetenceId(competence) {
+        if(!Validation.validateName(competence)) {
+            return null;
+        }
         const query = `SELECT competence_id FROM competence WHERE name = :competence`;
     
         try {
@@ -373,9 +398,13 @@ class AgentDAO {
         */
 
     async createApplication(person_id, competencies, availabilityList) {
+        if(!Validation.validateID(person_id)) {
+            return null;
+        }
     const transaction = await database.transaction();
 
     try {
+        console.log("DB: CREATING APPLCIAITON")
         // Process all competencies
         for (const comp of competencies) {
             const competence_id = await this.fetchCompetenceId(comp.competence_name);
@@ -512,7 +541,7 @@ class AgentDAO {
             type: database.QueryTypes.INSERT,
             transaction
         });
-        
+        console.log("DB: COMMITING TRANSACTION")
         await transaction.commit();
         return { message: 'Application successfully processed!' };
     } catch (error) {
@@ -525,6 +554,9 @@ class AgentDAO {
         
         
     async deleteCompetence(person_id) {
+        if(!Validation.validateID(person_id)) {
+            return null;
+        }
         const query = `
             DELETE FROM competence_profile
             WHERE person_id = :person_id;
@@ -544,6 +576,9 @@ class AgentDAO {
     }
 
     async deleteAvailability(person_id) {
+        if(!Validation.validateID(person_id)) {
+            return null;
+        }
         const query = `
             DELETE FROM availability
             WHERE person_id = :person_id;
@@ -562,6 +597,9 @@ class AgentDAO {
     }
 
     async requestPasscode(email, securityCode) {
+        if(!Validation.validateEmail(email) || !Validation.validateID(securityCode)) {
+            return null;
+        }
         try {
             // Find the user by email
             const user = await Person.findOne({ where: { email } });
@@ -584,6 +622,9 @@ class AgentDAO {
     }
 
     async confirmPasscode(email, securityCode) {
+        if(!Validation.validateEmail(email) || !Validation.validateID(securityCode)) {
+            return null;
+        }
         try {
             // Find the user by email and recovery_token
             const user = await Person.findOne({ where: { email, recovery_token: securityCode } });
@@ -602,6 +643,9 @@ class AgentDAO {
     }
 
     async updateMigratingApplicant(email, securityCode, username, password) {
+        if(!Validation.validateEmail(email) || !Validation.validateID(securityCode) || !Validation.validateUsername(username) || !Validation.validatePassword(password)) {
+            return null;
+        }
         try {
                 // Find the user by email and recovery_token
                 const user = await Person.findOne({ where: { email, recovery_token: securityCode } });
@@ -625,6 +669,9 @@ class AgentDAO {
     }
 
     async updateRecruiter(person_id, email, pnr) {
+        if(!Validation.validateID(person_id) || !Validation.validateEmail(email) || !Validation.validatePNR(pnr)) {
+            return null;
+        }
         try {
             // Find the recruiter by person_id
             const recruiter = await Person.findOne({ where: { person_id } });
@@ -647,7 +694,114 @@ class AgentDAO {
         }
     }
 
+    async insertCookie(cookie) {
+      /*  if(!Validation.validateCookie(cookie)) {
+            return null;
+        }*/
+        try {
+            const result = await database.query(
+                `INSERT INTO cookie_table (cookie_string, timestamp) VALUES (:cookie, :timestamp)`,
+                { 
+                    replacements: { 
+                        cookie, 
+                        timestamp: Math.floor(Date.now() / 1000) // Current Unix timestamp
+                    }, 
+                    type: database.QueryTypes.INSERT 
+                }
+            );
+            return result;
+        } catch (error) {
+            console.error('Error inserting cookie:', error);
+            throw error;
+        }
+    }
+
+    async checkCookie(cookie) {
+       /* if(!Validation.validateCookie(cookie)) {
+            return null;
+        }*/
+        try {
+            console.log("Executing query:", `SELECT cookie_string FROM cookie_table WHERE cookie_string = '${cookie}'`);
+            
+            const result = await database.query(
+                `SELECT cookie_string FROM cookie_table WHERE cookie_string = :cookie`,
+                { 
+                    replacements: { cookie }, 
+                    type: database.QueryTypes.SELECT,
+                    raw: true 
+                }
+            );
+    
+            console.log("Query result:", result);
+            return result.length > 0 ? result[0] : null;
+            
+        } catch (error) {
+            console.error('Error checking cookie:', error);
+            throw error;
+        }
+    }
+    
+
+    async deleteCookie(cookie) {
+      /*  if(!Validation.validateCookie(cookie)) {
+            return null;
+        }*/
+        try{
+            const result = await database.query(
+                `DELETE FROM cookie_table WHERE cookie_string = :cookie`,
+                { 
+                    replacements: { cookie }, 
+                    type: database.QueryTypes.DELETE 
+                }
+            );
+            return result;
+        }catch(error){
+            console.error('Error deleting cookie:', error);
+            throw error;
+        }
+    }
+    
+
+    async stressTestInsert(n) {
+        /*
+        if(!Validation.validateID(n)) {
+            return null;
+        }*/
+        try {
+            await database.sync(); // Ensure tables exist
+    
+            for (let i = 1; i <= n; i++) {
+                const numStr = String(i).padStart(5, '0'); // Ensures five-digit formatting for consistency
+    
+                const newPerson = await Person.create({
+                    name: `Stress${numStr}`,
+                    surname: `Test${numStr}`,
+                    username: `StressTest${numStr}`,
+                    email: `${numStr}@stresstest.com`,
+                    pnr: `0000000${numStr}`,
+                    password: `password${numStr}`,
+                    role_id: 2,
+                    recovery_token: null
+                });
+    
+                await ApplicationStatus.create({
+                    person_id: newPerson.person_id,
+                    status: 0, // Default status
+                    timeout: null, // Current timestamp
+                    beinghandled: null
+                });
+    
+                console.log(`Inserted user Stress${numStr} with ID ${newPerson.person_id}`);
+            }
+    
+            console.log(`Successfully inserted ${n} users.`);
+        } catch (error) {
+            console.error("Error inserting test data:", error);
+        }
+    }
+
 }
+
 
 
 module.exports = AgentDAO;

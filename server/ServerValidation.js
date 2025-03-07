@@ -1,6 +1,5 @@
 const Validation = {
-    //WILL RETURN TRUE IF THERE ARE NO ERRORS
-
+    // Name validation (Allows letters, spaces, and hyphens)
     //Name validation
     validateName(name) {
         if (!name) {
@@ -38,7 +37,31 @@ const Validation = {
             return false;
         }
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-    }
+    },
+
+    // ID validation (Generic for IDs)
+    validateID(id) {
+        if (!id) {
+            return false;
+        }
+        return /^\d+$/.test(id);
+    },
+
+    // Array validation (Checks if input is a non-empty array)
+    validateArray(arr) {
+        if(!arr){
+            return false;
+        }
+        return arr.length > 0;
+    },
+
+    /*
+    validateCookie(cookie) {
+        if (!cookie) {
+            return false;
+        }
+        return /^[A-Za-z0-9]{64}$/.test(cookie);
+    }*/
 }
 
 module.exports = Validation;
