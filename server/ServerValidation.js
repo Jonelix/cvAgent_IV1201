@@ -49,7 +49,10 @@ const Validation = {
 
     // Array validation (Checks if input is a non-empty array)
     validateArray(arr) {
-        return Array.isArray(arr) && arr.length > 0;
+        if(!arr){
+            return false;
+        }
+        return arr.length > 0;
     },
 
     /*
