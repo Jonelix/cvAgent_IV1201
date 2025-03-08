@@ -21,6 +21,7 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+    const [error, setError] = useState("");
     const passwordInputRef = useRef(null);
 
     /**
@@ -32,8 +33,8 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
     const fetchCompetencies = async (e) => {
         e.preventDefault();
         try{
-            const response = await fetch("http://localhost:5005/api/competencies", {
-            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies", {
+            //const response = await fetch("http://localhost:5005/api/competencies", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -42,13 +43,14 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
             const data = await response.json();
             if (!response.ok) {
                 // Return the detailed error message from the server response
-                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+                throw new Error(data.message || "Failed to fetch profile");
             }
             console.log("Response:", data);
             return data;
         }catch(error){
-            console.error("Error:", error.message);
-            return { error: error.message };
+            //console.error("Error:", error.message);
+            setError(error.message);
+            //return { error: error.message };
         }
     }
 
@@ -64,7 +66,7 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
         try {
 
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/login", {
-            // const response = await fetch("http://localhost:5005/api/login", {
+            //const response = await fetch("http://localhost:5005/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -76,15 +78,16 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
           console.log("fetchuser resp:");
           console.log(data)
             if (!response.ok) {
-                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+                throw new Error(data.message || "Login failed");
             }
 
             console.log("Response:", data);
             onLoginSuccess(data);
             return data;
         } catch (error) {
-            console.error("Error:", error.message);
-            return { error: error.message };
+            //console.error("Error:", error.message);
+            setError(error.message);
+            // return { error: error.message };
         }
     };
 
@@ -95,8 +98,8 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
      */
     const fetchProfile = async (e) => {
         try {
-            // const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/applicantProfile", {
-            const response = await fetch("http://localhost:5005/api/applicantProfile", {
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/applicantProfile", {
+            //const response = await fetch("http://localhost:5005/api/applicantProfile", {
             method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -105,14 +108,15 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
             const data = await response.json();
             if (!response.ok) {
                 // Return the detailed error message from the server response
-                throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+                throw new Error(data.message || "Failed to fetch profile");
             }
 
             console.log("Response:", data);
             return data; // Return user data if successfuls
         }catch (error) {
-            console.error("Error:", error.message);
-            return { error: error.message }; // Return error message instead of throwing
+            // console.error("Error:", error.message);
+            setError(error.message);
+            // return { error: error.message }; // Return error message instead of throwing
         }
     };
 
@@ -167,10 +171,20 @@ const AuthentificationView = ({ onLoginSuccess, strings }) => {
                     </div>
 
                     <div>
-                        <button onClick={fetchUser} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
-                            {strings.login}
-                        </button>
+                
+                    <button onClick={fetchUser} className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all">
+                        {strings.login}
+                    </button>
+
+                    {/* Display Error Message with Space */}
+                    {error && (
+                        <div className="text-red-500 text-center mt-4 mb-2">
+                            {error}
+                         </div>
+                    )}
+
                     </div>
+
 
                     <div className="text-center">
                         <p onClick={goToRegister} className="text-blue-500 hover:underline">

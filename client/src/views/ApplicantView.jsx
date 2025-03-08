@@ -45,7 +45,8 @@ const ApplicantView = ({ model, strings }) => {
     const [newAvailability, setNewAvailability] = useState({ from_date: "", to_date: "" }); // Temporary state for the current inpu
     const [userAvailability, setUserAvailability] = useState([]);
     const [isApplicationUpdated, setIsApplicationUpdated] = useState(false); // Track if application is updated
-
+    const [error, setError] = useState("");
+    const [alertmsg, setAlertmsg] = useState("");
     /**
      * Navigates to the competence stage when creating a new application.
      */
@@ -95,13 +96,15 @@ const ApplicantView = ({ model, strings }) => {
      */
     const fetchCompetencies = async () => {
         try {
-            //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies");
-            const response = await fetch("http://localhost:5005/api/competencies");
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/competencies");
+            //const response = await fetch("http://localhost:5005/api/competencies");
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            // if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            if(!response.ok){throw new Error(data.message || "Failed to fetch competencies");}
             setCompetencies(data);
         } catch (error) {
             console.error("Error:", error.message);
+            setError(error.message);
         }
     };
 
@@ -111,16 +114,18 @@ const ApplicantView = ({ model, strings }) => {
     const fetchUserCompetencies = async () => {
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userCompetencies", {
-            // const response = await fetch("http://localhost:5005/api/userCompetencies", {
+            //const response = await fetch("http://localhost:5005/api/userCompetencies", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }),
             });
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            // if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            if(!response.ok){throw new Error(data.message || "Failed to fetch user competencies");}
             setUserCompetencies(data);
         } catch (error) {
             console.error("Error:", error.message);
+            setError(error.message);
         }
     };
      /**
@@ -128,8 +133,13 @@ const ApplicantView = ({ model, strings }) => {
      */
     const fetchUserAvailability = async () => {
         try {
+<<<<<<< HEAD
             //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
             const response = await fetch("http://localhost:5005/api/userAvailability", {
+=======
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
+            //const response = await fetch("http://localhost:5005/api/userAvailability", {
+>>>>>>> main
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: 'include',
@@ -139,11 +149,13 @@ const ApplicantView = ({ model, strings }) => {
               })
             });
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            //if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            if(!response.ok){throw new Error(data.message || "Failed to fetch user availability");}
             setUserAvailability(data);
             setAvailabilities(data);
         } catch (error) {
             console.error("Error:", error.message);
+            setError(error.message);
         }
     };
     /**
@@ -156,8 +168,13 @@ const ApplicantView = ({ model, strings }) => {
         try {
             console.log("userAvailability: ", userAvailability);
             console.log("availabilities: ", availabilities);
+<<<<<<< HEAD
             //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
             const response = await fetch("http://localhost:5005/api/createApplication", {
+=======
+            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
+            //const response = await fetch("http://localhost:5005/api/createApplication", {
+>>>>>>> main
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -169,11 +186,12 @@ const ApplicantView = ({ model, strings }) => {
 
             const data = await response.json();
             console.log("hello")
-            if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            // if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            if(!response.ok){throw new Error(data.message || "Failed to update user profile");}
 
 
             if(data.message) {
-                alert(data.message);
+                alert(data.message);                               
                 await fetchUserCompetencies(e);
                 await fetchUserAvailability(e);
                 setIsApplicationUpdated(true);
@@ -181,7 +199,7 @@ const ApplicantView = ({ model, strings }) => {
             }
         } catch (error) {
             console.error("Error:", error.message);
-            alert(error.message);
+            setError(error.message);
         }
     };
     /**
@@ -193,15 +211,15 @@ const ApplicantView = ({ model, strings }) => {
         e.preventDefault();
         try{
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteCompetence", {
-            // const response = await fetch("http://localhost:5005/api/deleteCompetence", {
+            //const response = await fetch("http://localhost:5005/api/deleteCompetence", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id}),
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
-
+            // if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            if(!response.ok){throw new Error(data.message || "Failed to delete competence");}
             await fetchUserCompetencies(e);
 
             setIsApplicationUpdated(true);
@@ -209,6 +227,7 @@ const ApplicantView = ({ model, strings }) => {
             alert(strings.competence_deleted);
         } catch (error) {
             console.error("Error:", error.message);
+            setError(error.message);
         }
     };
     /**
@@ -220,14 +239,15 @@ const ApplicantView = ({ model, strings }) => {
         e.preventDefault();
         try{
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/deleteAvailability", {
-            // const response = await fetch("http://localhost:5005/api/deleteAvailability", {
+            //const response = await fetch("http://localhost:5005/api/deleteAvailability", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ person_id: model?.person_id }),
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            // if (!response.ok) throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+            if(!response.ok){throw new Error(data.message || "Failed to delete availability");}
 
             await fetchUserAvailability(e);
 
@@ -236,6 +256,7 @@ const ApplicantView = ({ model, strings }) => {
             alert(strings.availability_deleted);
         } catch (error) {
             console.error("Error:", error.message);
+            setError(error.message);
         }
     };
 
@@ -251,6 +272,7 @@ const ApplicantView = ({ model, strings }) => {
 
         } catch (error) {
             console.error("Error:", error.message);
+            setError(error.message);
         }
     }
 
@@ -259,8 +281,10 @@ const ApplicantView = ({ model, strings }) => {
      */
     const handleNext = () => {
         if (stage === "competence") {
+            setError(null); // Clear any previous error messages
             setStage("availability");
         } else if (stage === "availability") {
+            setError(null); // Clear any previous error messages
             setStage("summary");
         }
     };
@@ -270,10 +294,13 @@ const ApplicantView = ({ model, strings }) => {
      */
     const handleBack = () => {
         if (stage === "competence") {
+            setError(null); // Clear any previous error messages
             setStage("main");
         } else if (stage === "availability") {
+            setError(null); // Clear any previous error messages
             setStage("competence");
         } else if (stage === "summary") {
+            setError(null); // Clear any previous error messages
             setStage("availability");
         }
     };
@@ -397,9 +424,12 @@ const ApplicantView = ({ model, strings }) => {
         {/* Add Competence Button */}
         <button
             onClick={() => {
+                
+                setError(null);
+
 
                 if (!selectedCompetence) {
-                    alert(strings.competence_empty);
+                    setError(strings.competence_empty); // Set error if no competence is selected
                     return;
                 }
 
@@ -409,7 +439,7 @@ const ApplicantView = ({ model, strings }) => {
                 );
 
                 if (isDuplicate) {
-                    alert(strings.competence_exists);
+                    setError(strings.competence_exists); // Set error if competence already exists
                     return;
                 }
 
@@ -420,9 +450,15 @@ const ApplicantView = ({ model, strings }) => {
                 }]);
                 setSelectedCompetence("");
             }}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-6">
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-2">
             {strings.add_competence}
         </button>
+            {/* Display Error Message with Space */}
+            {error && (
+            <div className="text-red-500 text-sm mt-2 px-4 py-2 bg-red-100 rounded-lg border border-red-500">
+                <p>{error}</p>
+                </div>
+            )}
 
         {/* List of Selected Competencies */}
         <div className="space-y-4">
@@ -476,7 +512,8 @@ const ApplicantView = ({ model, strings }) => {
                 onClick={() => {
                     // Check if any competency has 0 years of experience
                     if (userCompetencies.some(comp => comp.yearsOfExperience === 0)) {
-                        alert("Please provide the years of experience for all competencies or remove them.");
+                        // alert("Please provide the years of experience for all competencies or remove them.");
+                        setError(strings.competence_experience_empty);
                     } else {
                         handleNext();
                     }
@@ -518,26 +555,33 @@ const ApplicantView = ({ model, strings }) => {
         <button
             onClick={() => {
                 if (!newAvailability.from_date || !newAvailability.to_date) {
-                    alert("Please fill in both 'From Date' and 'To Date'.");
+                    setError("Please fill in both 'From Date' and 'To Date'.");
                     return;
                 }
 
                 if (new Date(newAvailability.from_date) > new Date(newAvailability.to_date)) {
-                    alert("Error: 'From Date' cannot be later than 'To Date'.");
+                    setError("Error: 'From Date' cannot be later than 'To Date'.");
                     return;
                 }
 
                 if (isOverlapping(newAvailability.from_date, newAvailability.to_date)) {
-                    alert("Error: This availability period overlaps with an existing one.");
+                    setError("Error: This availability period overlaps with an existing one.");
                     return;
                 }
 
                 setAvailabilities([...availabilities, newAvailability]); // Add new availability to the list
                 setNewAvailability({ from_date: "", to_date: "" }); // Reset input fields
+                setError(null); // Clear any previous error messages
             }}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-6">
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 mb-2">
             {strings.add_availability}
         </button>
+        {/* Display Error Message with Space */}
+        {error && (
+            <div className="text-red-500 text-sm mt-2 px-4 py-2 bg-red-100 rounded-lg border border-red-500">
+                <p>{error}</p>
+                </div>
+            )}
 
         {/* List of Selected Availabilities */}
         <div className="space-y-4">
@@ -557,10 +601,10 @@ const ApplicantView = ({ model, strings }) => {
         </div>
 
         {/* Error Message */}
-        {newAvailability.from_date && newAvailability.to_date &&
+        {/*newAvailability.from_date && newAvailability.to_date &&
             new Date(newAvailability.from_date) > new Date(newAvailability.to_date) && (
                 <p className="text-red-500 mb-4">{strings.availability_error}</p>
-            )}
+            )*/}
 
         {/* Navigation Buttons */}
         <div className="flex justify-between mt-8">
@@ -569,10 +613,12 @@ const ApplicantView = ({ model, strings }) => {
                 className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
                 {strings.back}
             </button>
+            
             <button
                 onClick={() => {
                     if (availabilities.length === 0) {
-                        alert("Please add at least one availability period.");
+                        // alert("Please add at least one availability period.");
+                        setError("Please add at least one availability period.");
                     } else {
                         handleNext();
                     }
@@ -624,6 +670,15 @@ const ApplicantView = ({ model, strings }) => {
                             ))
                         ) : (
                             <p className="text-gray-500">{strings.no_availability}</p>
+                        )}
+                    </div>
+
+                    <div>
+                         {/* Display Error Message with Space */}
+                            {error && (
+                            <div className="text-red-500 text-sm mt-2 px-4 py-2 bg-red-100 rounded-lg border border-red-500">
+                                <p>{error}</p>
+                            </div>
                         )}
                     </div>
 

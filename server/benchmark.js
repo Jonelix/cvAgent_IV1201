@@ -1,3 +1,14 @@
+/**
+ * Tests the response time of a given URL over multiple iterations.
+ * 
+ * This function measures the time taken for a GET request to complete
+ * and calculates the average response time over successful requests.
+ * It also logs the number of successful and failed attempts.
+ *
+ * @param {string} url - The URL to test.
+ * @param {number} [iterations=1] - The number of times to test the URL.
+ * @returns {Promise<void>} - Logs the results to the console.
+ */
 async function testResponseTime(url, iterations = 1) {
     let totalTime = 0;
     let successCount = 0;

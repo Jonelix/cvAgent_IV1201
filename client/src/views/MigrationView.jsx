@@ -89,6 +89,7 @@ const MigrationView = ({ model, strings, onLoginSuccess }) => {
 
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/requestPasscode", {
+            //const response = await fetch("http://localhost:5005/api/requestPasscode", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
@@ -100,6 +101,7 @@ const MigrationView = ({ model, strings, onLoginSuccess }) => {
             console.log("Passcode Sent:", data);
             setStep(2); // Move to passcode verification stage
         } catch (error) {
+            alert(`Error: ${error.message}`);
             console.error("Error:", error.message);
         }
     };
@@ -118,6 +120,7 @@ const MigrationView = ({ model, strings, onLoginSuccess }) => {
 
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/confirmPasscode", {
+            //const response = await fetch("http://localhost:5005/api/confirmPasscode", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, passcode }),
@@ -129,6 +132,7 @@ const MigrationView = ({ model, strings, onLoginSuccess }) => {
             console.log("Passcode Verified:", data);
             setStep(3); // Move to final registration stage
         } catch (error) {
+            alert("Error:", error.message);
             console.error("Error:", "Email not valid.");
             setPasscodeError("Invalid passcode. Please try again.");
         }
@@ -152,6 +156,7 @@ const MigrationView = ({ model, strings, onLoginSuccess }) => {
 
         try {
             const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/updateMigratingApplicant", {
+            //const response = await fetch("http://localhost:5005/api/updateMigratingApplicant", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, passcode, username, password, confirmPassword }),
@@ -163,6 +168,7 @@ const MigrationView = ({ model, strings, onLoginSuccess }) => {
             console.log("User Updated:", data);
             onLoginSuccess(data.application);
         } catch (error) {
+            alert("Error:", error.message);
             console.error("Error:", error.message);
             setPasswordError("Error updating user. Please try again.");
         }
