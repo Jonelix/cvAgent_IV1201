@@ -133,13 +133,8 @@ const ApplicantView = ({ model, strings }) => {
      */
     const fetchUserAvailability = async () => {
         try {
-<<<<<<< HEAD
             //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
             const response = await fetch("http://localhost:5005/api/userAvailability", {
-=======
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
-            //const response = await fetch("http://localhost:5005/api/userAvailability", {
->>>>>>> main
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: 'include',
@@ -168,13 +163,8 @@ const ApplicantView = ({ model, strings }) => {
         try {
             console.log("userAvailability: ", userAvailability);
             console.log("availabilities: ", availabilities);
-<<<<<<< HEAD
             //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
             const response = await fetch("http://localhost:5005/api/createApplication", {
-=======
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/createApplication", {
-            //const response = await fetch("http://localhost:5005/api/createApplication", {
->>>>>>> main
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -191,7 +181,7 @@ const ApplicantView = ({ model, strings }) => {
 
 
             if(data.message) {
-                alert(data.message);                               
+                alert(data.message);
                 await fetchUserCompetencies(e);
                 await fetchUserAvailability(e);
                 setIsApplicationUpdated(true);
@@ -424,7 +414,7 @@ const ApplicantView = ({ model, strings }) => {
         {/* Add Competence Button */}
         <button
             onClick={() => {
-                
+
                 setError(null);
 
 
@@ -613,7 +603,7 @@ const ApplicantView = ({ model, strings }) => {
                 className="px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-300">
                 {strings.back}
             </button>
-            
+
             <button
                 onClick={() => {
                     if (availabilities.length === 0) {
