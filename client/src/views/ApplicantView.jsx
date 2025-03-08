@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 
 /**
  * ApplicantView Component - Manages user application process including competencies, availabilities, and profile summary.
- * 
+ *
  * @param {Object} props - Component props
  * @param {Object} props.model - User model containing personal information
  * @param {Object} props.strings - Localization strings for UI text
- * 
+ *
  * @returns {JSX.Element} ApplicantView component
  */
 const competenceLocalization = {
@@ -55,7 +55,7 @@ const ApplicantView = ({ model, strings }) => {
 
     /**
      * Checks if a new availability period overlaps with existing ones.
-     * 
+     *
      * @param {string} newFromDate - Start date of new availability
      * @param {string} newToDate - End date of new availability
      * @returns {boolean} True if overlapping, otherwise false
@@ -128,8 +128,8 @@ const ApplicantView = ({ model, strings }) => {
      */
     const fetchUserAvailability = async () => {
         try {
-            const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
-            // const response = await fetch("http://localhost:5005/api/userAvailability", {
+            //const response = await fetch("https://cvagent-b8c3fb279d06.herokuapp.com/api/userAvailability", {
+            const response = await fetch("http://localhost:5005/api/userAvailability", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: 'include',
@@ -148,7 +148,7 @@ const ApplicantView = ({ model, strings }) => {
     };
     /**
      * Updates user profile by sending competencies and availabilities to API.
-     * 
+     *
      * @param {Event} e - Form submission event
      */
     const updateUserProfile = async (e) => {
@@ -186,7 +186,7 @@ const ApplicantView = ({ model, strings }) => {
     };
     /**
      * Removes a user competence from the database.
-     * 
+     *
      * @param {Event} e - Click event
      */
     const removeUserCompetence = async (e) => {
@@ -213,7 +213,7 @@ const ApplicantView = ({ model, strings }) => {
     };
     /**
      * Removes a user availability period from the database.
-     * 
+     *
      * @param {Event} e - Click event
      */
     const removeUserAvailability = async (e) => {
@@ -277,7 +277,7 @@ const ApplicantView = ({ model, strings }) => {
             setStage("availability");
         }
     };
-    
+
     /**
      * Resets the `isApplicationUpdated` state when the application is updated.
      */
